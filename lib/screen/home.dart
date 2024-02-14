@@ -240,16 +240,16 @@ class _HomePageState extends State<HomePage> {
                       const RecomentedPage(),
                       InkWell(
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => ShowRestuarantPage()));
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => MapsPage()),
+                          );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Container(
                             height: 40,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               color: Color.fromARGB(255, 14, 167, 0),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
@@ -261,12 +261,15 @@ class _HomePageState extends State<HomePage> {
                                 )
                               ],
                             ),
-                            child: const Center(
-                                child: Text(
-                              "ดูทั้งหมด",
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
-                            )),
+                            child: Center(
+                              child: Text(
+                                "ดูทั้งหมด",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),

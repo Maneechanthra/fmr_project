@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/add_screen/addAddress_on_map.dart';
 import 'package:fmr_project/add_screen/addTimeOpenClose.dart';
+import 'package:fmr_project/detail_page/all_typerestaurant.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -370,6 +371,66 @@ class _AddResPageState extends State<AddResPage> {
                                     190)), // Change the label text color
                           ),
                         )),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 15.0, top: 15, right: 15),
+              child: Row(
+                children: [
+                  Text(
+                    "ประเภทร้านอาหาร",
+                    style: TextStyle(
+                      fontFamily: 'EkkamaiNew',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: SizedBox(
+                      height: 50,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TypeRestaurantPage(),
+                              ),
+                            );
+                          },
+                          child: TextField(
+                            enabled: false,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color:
+                                      const Color.fromARGB(255, 214, 214, 214),
+                                ),
+                              ),
+                              labelText: "ประเภทร้านอาหาร",
+                              labelStyle: TextStyle(
+                                color: Color.fromARGB(255, 190, 190, 190),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

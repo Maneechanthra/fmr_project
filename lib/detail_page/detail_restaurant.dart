@@ -220,10 +220,20 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                         width: 5,
                       ),
                       Text(
-                        "| 1 รีวิว",
+                        "|",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black12,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        "1 รีวิว",
                         style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            color: Color.fromARGB(255, 175, 175, 175)),
+                            color: Color.fromARGB(255, 0, 0, 0)),
                       ),
                     ],
                   ),
@@ -242,12 +252,15 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                           SizedBox(
                             width: 5,
                           ),
-                          Text("15"),
+                          Text("15 ครั้ง"),
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Text("|"),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Text(
+                          "|",
+                          style: TextStyle(color: Colors.black12),
+                        ),
                       ),
                       Row(
                         children: [

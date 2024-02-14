@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/add_screen/addTimeOpenClose.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -194,8 +192,6 @@ class _editRestaurantState extends State<editRestaurant> {
 
     if (images != null) {
       if (selectedImages.length + images.length > 10) {
-        // แจ้งเตือนว่าไม่สามารถเลือกรูปภาพมากกว่า 10 รูปได้
-        // ในตัวอย่างนี้เราให้แสดง AlertDialog แสดงข้อความแจ้งเตือน
         showDialog(
           context: context,
           builder: (context) {

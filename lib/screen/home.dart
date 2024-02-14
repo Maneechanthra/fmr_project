@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fmr_project/detail_page/searhHistory.dart';
 import 'package:fmr_project/recomented/recomented.dart';
 import 'package:fmr_project/screen/map.dart';
 import 'package:fmr_project/screen/profile.dart';
@@ -87,15 +88,11 @@ class _HomePageState extends State<HomePage> {
                       ),
                       InkWell(
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => const SeachPage()));
-                          // _pageController.animateToPage(
-                          //   _selectedIndex + 1,
-                          //   duration: const Duration(milliseconds: 300),
-                          //   curve: Curves.ease,
-                          // );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SearchHistoryPage()));
                         },
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 15.0),

@@ -9,7 +9,11 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class AddResPage extends StatefulWidget {
-  const AddResPage({Key? key}) : super(key: key);
+  final List<Map<String, dynamic>> selectedCategories;
+  const AddResPage({
+    Key? key,
+    required this.selectedCategories,
+  }) : super(key: key);
 
   @override
   State<AddResPage> createState() => _AddResPageState();
@@ -223,6 +227,20 @@ class _AddResPageState extends State<AddResPage> {
     }
   }
 
+  List<Map<String, dynamic>> selectedCategories = [];
+
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.selectedCategories
+          .map((category) => category["name"])
+          .join(", "),
+    );
+  }
+
   @override
   static const LatLng _latLng = LatLng(17.27274239, 104.1265007);
   String? _address;
@@ -390,20 +408,31 @@ class _AddResPageState extends State<AddResPage> {
                   SizedBox(width: 20),
                   Expanded(
                     child: SizedBox(
-                      height: 50,
+                      height: 60,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: InkWell(
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async {
+                            final result = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => TypeRestaurantPage(),
+                                builder: (context) => TypeRestaurantPage(
+                                  selectedCategories: [],
+                                ),
                               ),
                             );
+
+                            if (result != null) {
+                              setState(() {
+                                _controller.text = result
+                                    .map((category) => category["name"])
+                                    .join(", ");
+                              });
+                            }
                           },
                           child: TextField(
                             enabled: false,
+                            controller: _controller,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.blue),
@@ -453,9 +482,6 @@ class _AddResPageState extends State<AddResPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => AddTimeOpenCloseDialog()));
-                      // showDialog(
-                      //     context: context,
-                      //     builder: (context) => AddTimeOpenCloseDialog());
                     },
                     child: Container(
                       width: 150,

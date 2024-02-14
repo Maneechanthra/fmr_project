@@ -58,6 +58,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   another_carousel_pro: ^1.0.2
   geocoding: ^2.1.1
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fmr_project/add_screen/addVerify.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
 import 'package:fmr_project/edit_screen/editRestaurant.dart';
 import 'package:fmr_project/model/recomented_data.dart';
@@ -53,7 +54,7 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                     margin: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 10),
                     width: 300,
-                    height: 440,
+                    height: 480,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -139,23 +140,16 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                                         fontSize: 18,
                                         fontWeight: FontWeight.w600),
                                   ),
-                                  Container(
-                                    width: 60,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: index == 1
-                                          ? Color.fromARGB(255, 1, 218, 30)
-                                          : Colors
-                                              .red, // Change color based on condition
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        index == 1 ? "ปกติ" : "ไม่ปกติ",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                        ),
+                                  Center(
+                                    child: Text(
+                                      index == 1 ? "ปกติ" : "ไม่ปกติ",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: index == 1
+                                            ? Color.fromARGB(255, 0, 180, 0)
+                                            : const Color.fromARGB(
+                                                255, 255, 0, 0),
                                       ),
                                     ),
                                   )
@@ -164,7 +158,7 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                               Text(
                                 index == 1
                                     ? ""
-                                    : "ร้านอาหารของคุณถูกรายงานความไม่เหมาะสมเกิน 3 ครั้ง",
+                                    : "ร้านอาหารของคุณถูกรายงานความไม่เหมาะสมครบ 3 ครั้ง",
                                 style: TextStyle(
                                   fontSize: 10,
                                   color: const Color.fromARGB(255, 255, 0, 0),
@@ -182,7 +176,7 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                                     children: [
                                       Icon(
                                         Icons.visibility,
-                                        size: 14,
+                                        size: 16,
                                       ),
                                       SizedBox(
                                         width: 5,
@@ -190,7 +184,7 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                                       Text(
                                         res.review.toString(),
                                         style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 16,
                                           color:
                                               Color.fromARGB(255, 97, 97, 97),
                                           fontFamily: 'EkkamaiNew',
@@ -203,7 +197,7 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                                     children: [
                                       Icon(
                                         Icons.reviews_outlined,
-                                        size: 14,
+                                        size: 16,
                                       ),
                                       SizedBox(
                                         width: 5,
@@ -211,7 +205,7 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                                       Text(
                                         res.review.toString(),
                                         style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 16,
                                           color:
                                               Color.fromARGB(255, 97, 97, 97),
                                           fontFamily: 'EkkamaiNew',
@@ -224,6 +218,34 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                               ),
                             ],
                           ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        VerifyRestaurantPage()));
+                          },
+                          child: Center(
+                            child: Container(
+                              width: 330,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Color.fromARGB(255, 0, 163, 22),
+                              ),
+                              child: Center(
+                                  child: Text(
+                                "ยืนยันตัวตน",
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.white),
+                              )),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
                         ),
                         InkWell(
                           onTap: () {

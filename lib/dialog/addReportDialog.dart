@@ -25,7 +25,7 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
         padding: const EdgeInsets.only(top: 80.0),
         child: Dialog(
           child: Container(
-              height: 480,
+              height: 490,
               width: 600,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -82,7 +82,7 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         SizedBox(
                           width: 250,

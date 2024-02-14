@@ -68,7 +68,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                           ),
                           Positioned(
                             top: 5,
-                            left: 100,
+                            left: MediaQuery.of(context).size.width * 0.3,
                             child: Container(
                               width: 50,
                               height: 20,
@@ -125,20 +125,20 @@ class _RecomentedPageState extends State<RecomentedPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 8.0, top: 3),
+                        padding: const EdgeInsets.only(left: 8.0, top: 8),
                         child: Row(
                           children: [
                             Container(
-                              width: 70,
+                              width: 50,
                               height: 20,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                  color: const Color.fromARGB(255, 148, 12, 2)),
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Color.fromARGB(255, 212, 14, 0)),
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(0.8),
                                   child: Text(
-                                    res.kilomate.toString() + " เมตร",
+                                    res.kilomate.toString() + " กม.",
                                     style: GoogleFonts.mitr(
                                         fontSize: 10,
                                         fontWeight: FontWeight.normal,
@@ -149,14 +149,15 @@ class _RecomentedPageState extends State<RecomentedPage> {
                               ),
                             ),
                             const SizedBox(
-                              width: 6,
+                              width: 3,
                             ),
                             Container(
-                              width: 65,
+                              width: 50,
                               height: 20,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                  color: Color.fromARGB(255, 235, 152, 0)),
+                                borderRadius: BorderRadius.circular(5),
+                                color: Color.fromARGB(162, 14, 12, 9),
+                              ),
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(0.8),

@@ -31,7 +31,7 @@ List<Restaurant_2> allRestaurants_2 = [
     rating: 4.5,
     imageUrl:
         "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    kilomate: 100,
+    kilomate: 4,
     review: 20,
     type_restaurant: 'อาหารตามสั่ง',
   ),
@@ -42,7 +42,7 @@ List<Restaurant_2> allRestaurants_2 = [
     longitude: 104.1287784673422,
     rating: 3.2,
     imageUrl: "https://f.ptcdn.info/492/018/000/1399095907-pantiptalk-o.jpg",
-    kilomate: 584,
+    kilomate: 11,
     review: 39,
     type_restaurant: 'บาบีคิว',
   ),
@@ -54,7 +54,7 @@ List<Restaurant_2> allRestaurants_2 = [
     rating: 4.8,
     imageUrl:
         "https://welovetogo.com/wp-content/uploads/2020/08/%E0%B8%AB%E0%B8%A1%E0%B9%88%E0%B8%B2%E0%B8%A5%E0%B9%88%E0%B8%B28-1068x712.jpg",
-    kilomate: 695,
+    kilomate: 3,
     review: 102,
     type_restaurant: 'อาหารจีน',
   ),
@@ -65,7 +65,7 @@ List<Restaurant_2> allRestaurants_2 = [
       longitude: 104.13365916486865,
       rating: 2.9,
       imageUrl: "https://mpics.mgronline.com/pics/Images/566000009640506.JPEG",
-      kilomate: 1.25,
+      kilomate: 2.9,
       review: 56,
       type_restaurant: "ชาบู/หมูกระทะ"),
 ];

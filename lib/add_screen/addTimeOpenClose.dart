@@ -158,15 +158,15 @@ class _AddTimeOpenCloseDialogState extends State<AddTimeOpenCloseDialog> {
       ),
       persistentFooterButtons: [
         Container(
-          height: 80, // กำหนดความสูง
-          width: double.infinity, // กำหนดความกว้างเท่ากับ parent
+          height: 80,
+          width: double.infinity,
           child: ButtonBar(
             alignment: MainAxisAlignment.center,
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AddResPage()));
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => AddResPage()));
                 },
                 child: Container(
                   height: 100,

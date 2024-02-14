@@ -176,7 +176,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AddResPage()),
+                    MaterialPageRoute(
+                        builder: (context) => AddResPage(
+                              selectedCategories: [],
+                            )),
                   );
                 },
                 child: const SizedBox(

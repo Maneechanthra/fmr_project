@@ -34,15 +34,13 @@ class _VerifyRestaurantPageState extends State<VerifyRestaurantPage> {
     );
 
     if (images != null) {
-      if (selectedImages.length + images.length > 10) {
-        // แจ้งเตือนว่าไม่สามารถเลือกรูปภาพมากกว่า 10 รูปได้
-        // ในตัวอย่างนี้เราให้แสดง AlertDialog แสดงข้อความแจ้งเตือน
+      if (selectedImages.length + images.length > 5) {
         showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               title: Text('แจ้งเตือน'),
-              content: Text('ไม่สามารถเลือกรูปภาพมากกว่า 10 รูปได้'),
+              content: Text('ไม่สามารถเลือกรูปภาพมากกว่า 5 รูปได้'),
               actions: [
                 TextButton(
                   onPressed: () {

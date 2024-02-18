@@ -11,7 +11,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("เปลี่ยนรหัสผ่าน")),
+      appBar: AppBar(
+          title: Text(
+        "เปลี่ยนรหัสผ่าน",
+        style: TextStyle(fontSize: 18),
+      )),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
@@ -19,6 +23,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 10,
+                ),
                 Text(
                   "รหัสผ่านปัจจุบัน",
                   style: TextStyle(

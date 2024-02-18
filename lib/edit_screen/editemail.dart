@@ -14,10 +14,7 @@ class _EditEmailPageState extends State<EditEmailPage> {
       appBar: AppBar(
         title: const Text(
           "แก้ไขอีเมล",
-          style: TextStyle(
-              fontFamily: 'EkkamaiNew',
-              fontWeight: FontWeight.w900,
-              fontSize: 18),
+          style: TextStyle(fontSize: 18),
         ),
       ),
       body: Center(

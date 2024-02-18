@@ -16,10 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: const Text(
           "สมัครสมาชิก",
-          style: TextStyle(
-              fontFamily: 'EkkamaiNew',
-              fontWeight: FontWeight.w900,
-              fontSize: 18),
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
         ),
       ),
       body: SingleChildScrollView(
@@ -34,9 +31,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 width: 100,
               ),
             ),
-            // SizedBox(
-            //   height: 20,
-            // ),
             const Center(
               child: Text(
                 "สมัครสมาชิก",
@@ -146,11 +140,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 print("สมัครสมาชิก");
               },
               child: Container(
-                width: MediaQuery.sizeOf(context).width * 0.86,
-                height: 40,
+                width: MediaQuery.sizeOf(context).width * 0.92,
+                height: 50,
                 decoration: BoxDecoration(
                   color: Colors.blue,
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5), // Set shadow color

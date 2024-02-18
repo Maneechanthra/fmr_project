@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fmr_project/detail_page/all_review.dart';
 import 'package:fmr_project/dialog/addReportDialog.dart';
 import 'package:fmr_project/dialog/addReviewDialog.dart';
+import 'package:fmr_project/dialog/detailMoreDialog.dart';
 import 'package:fmr_project/model/recomented_data.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:like_button/like_button.dart';
@@ -20,7 +21,6 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
   bool isFavorite = false;
   late Future<List<Restaurant_2>> futureShowDetailPost;
   int current = 0;
-  static const LatLng _latLng = LatLng(17.27274239, 104.1265007);
 
   @override
   void initState() {
@@ -185,6 +185,32 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                         },
                       ),
                     ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.task_alt_outlined,
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          "Official",
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 5,
@@ -434,7 +460,10 @@ class RestaurantInfoWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  showDialog(
+                      context: context, builder: (context) => MoreDialogPage());
+                },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

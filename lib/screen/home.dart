@@ -102,13 +102,6 @@ class _HomePageState extends State<HomePage> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Color.fromARGB(255, 240, 239, 239),
-                              // boxShadow: const [
-                              //   BoxShadow(
-                              //     color: Color.fromARGB(255, 190, 190, 190),
-                              //     blurRadius: 5.0,
-                              //     offset: Offset(0, 1),
-                              //   )
-                              // ],
                             ),
                             child: const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 15),
@@ -134,79 +127,79 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      Container(
-                        margin:
-                            const EdgeInsets.only(left: 15, top: 15, bottom: 5),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                  width: 20,
-                                  child: Image.asset(
-                                    "assets/img/icons/category.png",
-                                  )),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "ประเภทร้านอาหาร",
-                                style: GoogleFonts.mitr(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color.fromARGB(255, 65, 65, 65),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: List.generate(
-                              categories.length,
-                              (index) => SizedBox(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 5),
-                                  child: InkWell(
-                                    onTap: () {},
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color:
-                                            Color.fromARGB(136, 211, 211, 211),
-                                        // boxShadow: [
-                                        //   BoxShadow(
-                                        //     color: Colors.black87,
-                                        //     offset: Offset(0, 20),
-                                        //     blurRadius: 2,
-                                        //   ),
-                                        // ]
-                                      ),
-                                      child: Center(
-                                          child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: Text(
-                                          categories[index],
-                                        ),
-                                      )),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Container(
+                      //   margin:
+                      //       const EdgeInsets.only(left: 15, top: 15, bottom: 5),
+                      //   child: Align(
+                      //     alignment: Alignment.centerLeft,
+                      //     child: Row(
+                      //       children: [
+                      //         SizedBox(
+                      //             width: 20,
+                      //             child: Image.asset(
+                      //               "assets/img/icons/category.png",
+                      //             )),
+                      //         const SizedBox(
+                      //           width: 5,
+                      //         ),
+                      //         Text(
+                      //           "ประเภทร้านอาหาร",
+                      //           style: GoogleFonts.mitr(
+                      //             fontSize: 20,
+                      //             fontWeight: FontWeight.w500,
+                      //             color: Color.fromARGB(255, 65, 65, 65),
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
+                      // SizedBox(
+                      //   height: 5,
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left: 8.0),
+                      //   child: SingleChildScrollView(
+                      //     scrollDirection: Axis.horizontal,
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //       crossAxisAlignment: CrossAxisAlignment.center,
+                      //       children: List.generate(
+                      //         categories.length,
+                      //         (index) => SizedBox(
+                      //           child: Padding(
+                      //             padding:
+                      //                 const EdgeInsets.symmetric(horizontal: 5),
+                      //             child: InkWell(
+                      //               onTap: () {},
+                      //               child: Container(
+                      //                 decoration: BoxDecoration(
+                      //                   borderRadius: BorderRadius.circular(10),
+                      //                   color:
+                      //                       Color.fromARGB(136, 211, 211, 211),
+                      //                   // boxShadow: [
+                      //                   //   BoxShadow(
+                      //                   //     color: Colors.black87,
+                      //                   //     offset: Offset(0, 20),
+                      //                   //     blurRadius: 2,
+                      //                   //   ),
+                      //                   // ]
+                      //                 ),
+                      //                 child: Center(
+                      //                     child: Padding(
+                      //                   padding: const EdgeInsets.all(15.0),
+                      //                   child: Text(
+                      //                     categories[index],
+                      //                   ),
+                      //                 )),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       Container(
                         margin:
                             const EdgeInsets.only(left: 15, top: 15, bottom: 5),
@@ -239,7 +232,9 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => MapsPage()),
+                            MaterialPageRoute(
+                              builder: (context) => MapsPage(),
+                            ),
                           );
                         },
                         child: Padding(
@@ -284,17 +279,17 @@ class _HomePageState extends State<HomePage> {
           activeColor: Colors.green,
           tabs: const [
             GButton(
-              icon: Icons.home_rounded,
+              icon: Icons.home,
               iconSize: 30,
               text: 'หน้าแรก',
             ),
             GButton(
-              icon: Icons.location_pin,
+              icon: Icons.location_on_rounded,
               iconSize: 30,
               text: 'แผนที่',
             ),
             GButton(
-              icon: Icons.person_3,
+              icon: Icons.person,
               iconSize: 30,
               text: 'ฉัน',
             ),

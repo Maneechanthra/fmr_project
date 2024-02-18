@@ -200,8 +200,6 @@ class _AddResPageState extends State<AddResPage> {
 
     if (images != null) {
       if (selectedImages.length + images.length > 10) {
-        // แจ้งเตือนว่าไม่สามารถเลือกรูปภาพมากกว่า 10 รูปได้
-        // ในตัวอย่างนี้เราให้แสดง AlertDialog แสดงข้อความแจ้งเตือน
         showDialog(
           context: context,
           builder: (context) {
@@ -249,10 +247,7 @@ class _AddResPageState extends State<AddResPage> {
       appBar: AppBar(
         title: const Text(
           "เพิ่มร้านอาหารของฉัน",
-          style: TextStyle(
-              fontFamily: 'EkkamaiNew',
-              fontWeight: FontWeight.w900,
-              fontSize: 18),
+          style: TextStyle(fontSize: 18),
         ),
       ),
       body: SingleChildScrollView(
@@ -526,8 +521,7 @@ class _AddResPageState extends State<AddResPage> {
                       setState(() {
                         _address = address;
                       });
-                      // Handle the returned address here
-                      print('Saved address: $address');
+                      print('กดเพื่อระบุตำแหน่งร้านอาหารของคุณ: $address');
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(top: 15.0),
@@ -558,7 +552,11 @@ class _AddResPageState extends State<AddResPage> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text('Saved address: $_address'),
+                          Text(
+                            _address != null
+                                ? 'ที่อยู่ร้านอาหารของฉัน: $_address'
+                                : 'กดที่นี่เพื่อระบุตำแหน่งร้านอาหารของคุณ',
+                          ),
                         ],
                       ),
                     ),

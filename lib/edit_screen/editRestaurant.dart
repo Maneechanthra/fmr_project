@@ -224,10 +224,7 @@ class _editRestaurantState extends State<editRestaurant> {
       appBar: AppBar(
         title: const Text(
           "แก้ไขร้านอาหารของฉัน",
-          style: TextStyle(
-              fontFamily: 'EkkamaiNew',
-              fontWeight: FontWeight.w900,
-              fontSize: 18),
+          style: TextStyle(fontSize: 18),
         ),
       ),
       body: SingleChildScrollView(

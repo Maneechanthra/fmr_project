@@ -98,7 +98,7 @@ class _MapsPageState extends State<MapsPage> {
                   return SingleChildScrollView(
                     physics: AlwaysScrollableScrollPhysics(),
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 100.0),
+                      padding: const EdgeInsets.only(top: 120.0),
                       child: Dialog(
                         child: Container(
                             height: 350,
@@ -112,7 +112,6 @@ class _MapsPageState extends State<MapsPage> {
                                 Positioned(
                                     top: 3,
                                     left: 240,
-                                    // bottom: 530,
                                     child: InkWell(
                                       onTap: () {
                                         Navigator.pop(context);
@@ -363,7 +362,7 @@ class _MapsPageState extends State<MapsPage> {
         return Column(
           children: [
             Container(
-              height: 100,
+              height: 95,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
@@ -702,12 +701,7 @@ class _MapsPageState extends State<MapsPage> {
             top: MediaQuery.of(context).size.height * 0.17,
             left: MediaQuery.of(context).size.width * 0.19,
             child: ElevatedButton(
-              onPressed: () {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => ShowRestuarantPage()));
-              },
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 foregroundColor: Colors.white,

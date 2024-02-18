@@ -29,10 +29,7 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
             // ),
             Text(
               "ร้านอาหารของฉัน",
-              style: TextStyle(
-                  fontFamily: 'EkkamaiNew',
-                  fontWeight: FontWeight.w900,
-                  fontSize: 18),
+              style: TextStyle(fontSize: 18),
             ),
           ],
         ),

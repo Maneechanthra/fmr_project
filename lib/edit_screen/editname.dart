@@ -14,10 +14,7 @@ class _EditNamePageState extends State<EditNamePage> {
       appBar: AppBar(
         title: const Text(
           "แก้ไขชื่อ-นามสกุล",
-          style: TextStyle(
-              fontFamily: 'EkkamaiNew',
-              fontWeight: FontWeight.w900,
-              fontSize: 18),
+          style: TextStyle(fontSize: 18),
         ),
       ),
       body: Center(

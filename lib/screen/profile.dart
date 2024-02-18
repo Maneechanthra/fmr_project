@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/add_screen/addRestuarant.dart';
+import 'package:fmr_project/detail_page/notification.dart';
 import 'package:fmr_project/detail_page/restaurantOfme.dart';
 import 'package:fmr_project/edit_screen/changepassword.dart';
 import 'package:fmr_project/edit_screen/editemail.dart';
@@ -261,11 +262,11 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               InkWell(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const RestaurantOfMePage()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NotificationPage()),
+                  );
                 },
                 child: const SizedBox(
                   height: 50,
@@ -400,7 +401,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       context,
                       PageRouteBuilder(
                           pageBuilder: (context, animation1, animation2) {
-                        return const HomePage();
+                        return HomePage();
                       }, transitionsBuilder:
                               (context, animation1, animation2, child) {
                         return FadeTransition(

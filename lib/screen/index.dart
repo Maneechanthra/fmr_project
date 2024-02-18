@@ -19,8 +19,8 @@ class _IndexPageState extends State<IndexPage>
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePage()));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
     });
   }
 
@@ -65,24 +65,6 @@ class _IndexPageState extends State<IndexPage>
           const SizedBox(
             height: 300,
           ),
-          // InkWell(
-          //   onTap: () {
-          //     Navigator.push(
-          //         context, MaterialPageRoute(builder: (contdxt) => HomePage()));
-          //   },
-          //   child: Container(
-          //       width: 330,
-          //       height: 50,
-          //       decoration: BoxDecoration(
-          //         color: Colors.blue,
-          //         borderRadius: BorderRadius.circular(10),
-          //       ),
-          //       child: Center(
-          //           child: Text(
-          //         "เริ่มต้นใช้งาน",
-          //         style: TextStyle(fontSize: 18, color: Colors.white),
-          //       ))),
-          // ),
         ],
       ),
     );

@@ -30,10 +30,9 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final List<String>? searchHistory = prefs.getStringList('search_history');
     if (searchHistory != null) {
-      // Filter out search history older than 30 days
       final now = DateTime.now();
       final filteredSearchHistory = searchHistory.where((query) {
-        final queryDate = DateTime.parse(query.split('|')[1]);
+        final queryDate = DateTime.parse(query.split(' | ')[1]);
         return now.difference(queryDate).inDays <= 30;
       }).toList();
       setState(() {
@@ -43,16 +42,13 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
   }
 
   Future<void> _saveSearchHistory(String query) async {
-    // Save search query along with current date
     final String now = DateTime.now().toIso8601String();
     final String queryWithDate = '$query|$now';
 
-    // Add the query to search history
     setState(() {
-      _searchHistory.insert(0, queryWithDate); // Insert at the beginning
+      _searchHistory.insert(0, queryWithDate);
     });
 
-    // Save updated search history to SharedPreferences
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('search_history', _searchHistory);
   }

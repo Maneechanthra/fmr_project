@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/add_screen/addRestuarant.dart';
+import 'package:fmr_project/detail_page/all_restaurant_of_me.dart';
 import 'package:fmr_project/detail_page/notification.dart';
-import 'package:fmr_project/detail_page/restaurantOfme.dart';
 import 'package:fmr_project/edit_screen/changepassword.dart';
 import 'package:fmr_project/edit_screen/editemail.dart';
 import 'package:fmr_project/edit_screen/editname.dart';
@@ -223,7 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const RestaurantOfMePage()),
+                        builder: (context) => const AllRestaurantOfme()),
                   );
                 },
                 child: const SizedBox(

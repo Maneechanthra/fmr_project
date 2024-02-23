@@ -3,6 +3,7 @@ import 'package:fmr_project/detail_page/searhHistory.dart';
 import 'package:fmr_project/recomented/recomented.dart';
 import 'package:fmr_project/screen/map.dart';
 import 'package:fmr_project/screen/profile.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -21,12 +22,33 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    _loadUserLocation();
   }
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadUserLocation() async {
+    try {
+      Position userPosition = await getUserCurrentLocation();
+      // _updateMap(userPosition.latitude, userPosition.longitude);
+      print(
+          'ตำแหน่งปัจจุบัน : ${userPosition.latitude}, ${userPosition.longitude}');
+    } catch (e) {
+      print("Error fetching user location: $e");
+    }
+  }
+
+  Future<Position> getUserCurrentLocation() async {
+    await Geolocator.requestPermission()
+        .then((value) {})
+        .onError((error, stackTrace) {
+      print("error " + error.toString());
+    });
+    return await Geolocator.getCurrentPosition();
   }
 
   final List<String> categories = [
@@ -37,6 +59,7 @@ class _HomePageState extends State<HomePage> {
     "ชาบู/หมูกระทะ",
     "คาเฟ่",
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,79 +150,6 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      // Container(
-                      //   margin:
-                      //       const EdgeInsets.only(left: 15, top: 15, bottom: 5),
-                      //   child: Align(
-                      //     alignment: Alignment.centerLeft,
-                      //     child: Row(
-                      //       children: [
-                      //         SizedBox(
-                      //             width: 20,
-                      //             child: Image.asset(
-                      //               "assets/img/icons/category.png",
-                      //             )),
-                      //         const SizedBox(
-                      //           width: 5,
-                      //         ),
-                      //         Text(
-                      //           "ประเภทร้านอาหาร",
-                      //           style: GoogleFonts.mitr(
-                      //             fontSize: 20,
-                      //             fontWeight: FontWeight.w500,
-                      //             color: Color.fromARGB(255, 65, 65, 65),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: 5,
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left: 8.0),
-                      //   child: SingleChildScrollView(
-                      //     scrollDirection: Axis.horizontal,
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //       crossAxisAlignment: CrossAxisAlignment.center,
-                      //       children: List.generate(
-                      //         categories.length,
-                      //         (index) => SizedBox(
-                      //           child: Padding(
-                      //             padding:
-                      //                 const EdgeInsets.symmetric(horizontal: 5),
-                      //             child: InkWell(
-                      //               onTap: () {},
-                      //               child: Container(
-                      //                 decoration: BoxDecoration(
-                      //                   borderRadius: BorderRadius.circular(10),
-                      //                   color:
-                      //                       Color.fromARGB(136, 211, 211, 211),
-                      //                   // boxShadow: [
-                      //                   //   BoxShadow(
-                      //                   //     color: Colors.black87,
-                      //                   //     offset: Offset(0, 20),
-                      //                   //     blurRadius: 2,
-                      //                   //   ),
-                      //                   // ]
-                      //                 ),
-                      //                 child: Center(
-                      //                     child: Padding(
-                      //                   padding: const EdgeInsets.all(15.0),
-                      //                   child: Text(
-                      //                     categories[index],
-                      //                   ),
-                      //                 )),
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                       Container(
                         margin:
                             const EdgeInsets.only(left: 15, top: 15, bottom: 5),

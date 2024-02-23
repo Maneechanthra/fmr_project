@@ -135,7 +135,8 @@ class _MapsPageState extends State<MapsPage> {
                                       Expanded(
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
-                                          itemCount: 10,
+                                          itemCount:
+                                              restaurant.imageUrls.length,
                                           itemBuilder: (BuildContext context,
                                               int imageIndex) {
                                             return Padding(
@@ -145,7 +146,8 @@ class _MapsPageState extends State<MapsPage> {
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                                 child: Image.network(
-                                                  restaurant.imageUrl,
+                                                  restaurant
+                                                      .imageUrls[imageIndex],
                                                   fit: BoxFit.cover,
                                                   width: 200,
                                                   height: 20,
@@ -162,11 +164,14 @@ class _MapsPageState extends State<MapsPage> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            restaurant.name,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
+                                          SizedBox(
+                                            width: 180,
+                                            child: Text(
+                                              restaurant.name,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
                                           Text(
@@ -387,7 +392,7 @@ class _MapsPageState extends State<MapsPage> {
                     Text(
                       "ค้นหาประเภทร้านอาหาร: ",
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -443,7 +448,7 @@ class _MapsPageState extends State<MapsPage> {
                                 Expanded(
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: 10,
+                                    itemCount: 3,
                                     itemBuilder:
                                         (BuildContext context, int imageIndex) {
                                       return Padding(
@@ -453,7 +458,7 @@ class _MapsPageState extends State<MapsPage> {
                                           borderRadius:
                                               BorderRadius.circular(10),
                                           child: Image.network(
-                                            restaurant.imageUrl,
+                                            restaurant.imageUrls[imageIndex],
                                             fit: BoxFit.cover,
                                             width: 150,
                                             height: 150,
@@ -478,7 +483,7 @@ class _MapsPageState extends State<MapsPage> {
                                       ),
                                     ),
                                     Text(
-                                      "Open",
+                                      "เปิด",
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,

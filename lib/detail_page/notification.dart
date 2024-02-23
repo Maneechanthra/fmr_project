@@ -25,7 +25,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.8,
-                  height: 85,
+                  height: 100,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Color.fromARGB(255, 255, 255, 255),
@@ -57,10 +57,14 @@ class _NotificationPageState extends State<NotificationPage> {
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w600),
                               ),
-                              Text(
-                                "รายงานความไม่เหมาะสมร้านของคุณ",
-                                style: TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w300),
+                              SizedBox(
+                                width: 200,
+                                child: Text(
+                                  "รายของคุณถูกรายงานความไม่เหมาะสมเนื่องจากใช้ภาพจากร้านอื่น",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w300),
+                                ),
                               ),
                             ],
                           ),
@@ -71,7 +75,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 ),
               );
             },
-            childCount: 3,
+            childCount: 1,
           ),
         ),
       ),

@@ -88,7 +88,7 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                           child: Stack(children: [
                             ClipRRect(
                               child: Image.network(
-                                res.imageUrl,
+                                res.imageUrls[0],
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: double.infinity,
@@ -249,7 +249,9 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => editRestaurant()));
+                                    builder: (context) => editRestaurant(
+                                          selectedCategories: [],
+                                        )));
                           },
                           child: Center(
                             child: Container(

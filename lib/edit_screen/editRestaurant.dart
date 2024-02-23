@@ -1,30 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:fmr_project/add_screen/addAddress_on_map.dart';
 import 'package:fmr_project/add_screen/addTimeOpenClose.dart';
+import 'package:fmr_project/detail_page/all_typerestaurant.dart';
+import 'package:fmr_project/screen/profile.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class editRestaurant extends StatefulWidget {
-  const editRestaurant({Key? key}) : super(key: key);
+  final List<Map<String, dynamic>> selectedCategories;
+  const editRestaurant({
+    Key? key,
+    required this.selectedCategories,
+  }) : super(key: key);
 
   @override
   State<editRestaurant> createState() => _editRestaurantState();
 }
 
 class _editRestaurantState extends State<editRestaurant> {
-  // String selectedDay = 'ทุกวัน';
-  // String openingTime = '';
-  // String closingTime = '';
-  // List<String> daysOfWeek = [
-  //   'ทุกวัน',
-  //   'วันจันทร์',
-  //   'วันอังคาร',
-  //   'วันพุธ',
-  //   'วันพฤหัสบดี',
-  //   'วันศุกร์',
-  //   'วันเสาร์',
-  //   'วันอาทิตย์'
-  // ];
+  String selectedDay = 'ทุกวัน';
+  String openingTime = '';
+  String closingTime = '';
+  List<String> daysOfWeek = [
+    'ทุกวัน',
+    'วันจันทร์',
+    'วันอังคาร',
+    'วันพุธ',
+    'วันพฤหัสบดี',
+    'วันศุกร์',
+    'วันเสาร์',
+    'วันอาทิตย์'
+  ];
   // List<String> timesOfDay = [];
   // List<OpeningClosingTime> openingClosingTimes = [];
   // List<OpeningClosingTime> selectedTimes = [];
@@ -217,13 +224,28 @@ class _editRestaurantState extends State<editRestaurant> {
     }
   }
 
+  List<Map<String, dynamic>> selectedCategories = [];
+
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.selectedCategories
+          .map((category) => category["name"])
+          .join(", "),
+    );
+  }
+
   @override
   static const LatLng _latLng = LatLng(17.27274239, 104.1265007);
+  String? _address;
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "แก้ไขร้านอาหารของฉัน",
+          "แก้ไขข้อมูลร้านอาหารของฉัน",
           style: TextStyle(fontSize: 18),
         ),
       ),
@@ -237,9 +259,10 @@ class _editRestaurantState extends State<editRestaurant> {
                   Text(
                     "ชื่อร้าน",
                     style: TextStyle(
-                        fontFamily: 'EkkamaiNew',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14),
+                      fontFamily: 'EkkamaiNew',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                   ),
                   SizedBox(width: 95),
                   Expanded(
@@ -252,18 +275,19 @@ class _editRestaurantState extends State<editRestaurant> {
                                   color:
                                       Colors.blue), // Change the border color
                               borderRadius: BorderRadius.all(
-                                Radius.circular(10),
+                                Radius.circular(5),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.grey),
+                              borderSide: BorderSide(
+                                  color: Colors.grey), // สีขอบเทาเมื่อโฟกัส
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color:
-                                      const Color.fromARGB(255, 214, 214, 214)),
+                                  color: const Color.fromARGB(255, 214, 214,
+                                      214)), // สีขอบเทาเมื่อไม่ได้โฟกัส
                             ),
                             labelText: "ชื่อร้าน",
                             labelStyle: TextStyle(
@@ -286,7 +310,7 @@ class _editRestaurantState extends State<editRestaurant> {
                         fontWeight: FontWeight.bold,
                         fontSize: 14),
                   ),
-                  SizedBox(width: 20),
+                  SizedBox(width: 15),
                   Expanded(
                     child: SizedBox(
                         height: 50,
@@ -297,18 +321,19 @@ class _editRestaurantState extends State<editRestaurant> {
                                   color:
                                       Colors.blue), // Change the border color
                               borderRadius: BorderRadius.all(
-                                Radius.circular(10),
+                                Radius.circular(5),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.grey),
+                              borderSide: BorderSide(
+                                  color: Colors.grey), // สีขอบเทาเมื่อโฟกัส
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color:
-                                      const Color.fromARGB(255, 214, 214, 214)),
+                                  color: const Color.fromARGB(255, 214, 214,
+                                      214)), // สีขอบเทาเมื่อไม่ได้โฟกัส
                             ),
                             labelText: "หมายเลขโทรศัพท์ 1",
                             labelStyle: TextStyle(
@@ -331,16 +356,14 @@ class _editRestaurantState extends State<editRestaurant> {
                         fontWeight: FontWeight.bold,
                         fontSize: 14),
                   ),
-                  SizedBox(width: 20),
+                  SizedBox(width: 15),
                   Expanded(
                     child: SizedBox(
                         height: 50,
                         child: TextField(
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color:
-                                      Colors.blue), // Change the border color
+                              borderSide: BorderSide(color: Colors.blue),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(10),
                               ),
@@ -370,13 +393,84 @@ class _editRestaurantState extends State<editRestaurant> {
               child: Row(
                 children: [
                   Text(
+                    "ประเภทร้านอาหาร",
+                    style: TextStyle(
+                      fontFamily: 'EkkamaiNew',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: SizedBox(
+                      height: 60,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: InkWell(
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TypeRestaurantPage(
+                                  selectedCategories: [],
+                                ),
+                              ),
+                            );
+
+                            if (result != null) {
+                              setState(() {
+                                _controller.text = result
+                                    .map((category) => category["name"])
+                                    .join(", ");
+                              });
+                            }
+                          },
+                          child: TextField(
+                            enabled: false,
+                            controller: _controller,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color:
+                                      const Color.fromARGB(255, 214, 214, 214),
+                                ),
+                              ),
+                              labelText: "ประเภทร้านอาหาร",
+                              labelStyle: TextStyle(
+                                color: Color.fromARGB(255, 190, 190, 190),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 15.0, top: 15, right: 15),
+              child: Row(
+                children: [
+                  Text(
                     "วัน เวลาเปิด/ปิด",
                     style: TextStyle(
                         fontFamily: 'EkkamaiNew',
                         fontWeight: FontWeight.bold,
                         fontSize: 14),
                   ),
-                  SizedBox(width: 40),
+                  SizedBox(width: 45),
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -415,28 +509,55 @@ class _editRestaurantState extends State<editRestaurant> {
                     ),
                   ),
                   const SizedBox(width: 50),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 15.0),
-                    child: Container(
-                      width: 400,
-                      height: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          color: Colors.blue,
+                  InkWell(
+                    onTap: () async {
+                      final address = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PlaceMarkerPage(initialPosition: _latLng),
                         ),
-                      ),
-                      child: GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: _latLng,
-                          zoom: 15,
-                        ),
-                        markers: {
-                          Marker(
-                            markerId: MarkerId('1'),
-                            position: _latLng,
+                      );
+                      setState(() {
+                        _address = address;
+                      });
+                      print('กดเพื่อระบุตำแหน่งร้านอาหารของคุณ: $address');
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 400,
+                            height: 300,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                color: Colors.blue,
+                              ),
+                            ),
+                            child: GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target: _latLng,
+                                zoom: 15,
+                              ),
+                              markers: {
+                                Marker(
+                                  markerId: MarkerId('1'),
+                                  position: _latLng,
+                                ),
+                              },
+                            ),
                           ),
-                        },
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            _address != null
+                                ? 'ที่อยู่ร้านอาหารของฉัน: $_address'
+                                : 'กดที่นี่เพื่อระบุตำแหน่งร้านอาหารของคุณ',
+                          ),
+                        ],
                       ),
                     ),
                   )
@@ -497,7 +618,7 @@ class _editRestaurantState extends State<editRestaurant> {
                     child: InkWell(
                       onTap: _pickImages,
                       child: Container(
-                        width: 380,
+                        width: MediaQuery.sizeOf(context).width * 0.93,
                         height: 40,
                         decoration: BoxDecoration(
                           color: Color.fromARGB(255, 218, 218, 218),
@@ -515,9 +636,12 @@ class _editRestaurantState extends State<editRestaurant> {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                },
                 child: Container(
-                  width: 330,
+                  width: MediaQuery.sizeOf(context).width * 0.93,
                   height: 40,
                   decoration: BoxDecoration(
                     color: Colors.blue,

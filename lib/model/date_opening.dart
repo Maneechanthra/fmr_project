@@ -25,4 +25,34 @@ List<dateOpening> getDateOpening = [
     timeopen: "09.00",
     timeclose: "17.00",
   ),
+  dateOpening(
+    id: 1,
+    day: "วันพุธ",
+    timeopen: "09.00",
+    timeclose: "17.00",
+  ),
+  dateOpening(
+    id: 1,
+    day: "วันพฤหัสบดี",
+    timeopen: "09.00",
+    timeclose: "17.00",
+  ),
+  dateOpening(
+    id: 1,
+    day: "วันศุกร์",
+    timeopen: "09.00",
+    timeclose: "17.00",
+  ),
+  dateOpening(
+    id: 1,
+    day: "วันเสาร์",
+    timeopen: "09.00",
+    timeclose: "17.00",
+  ),
+  dateOpening(
+    id: 1,
+    day: "วันอาทิตย์",
+    timeopen: "ปิด",
+    timeclose: "ปิด",
+  ),
 ];

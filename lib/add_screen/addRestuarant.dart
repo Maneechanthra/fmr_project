@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fmr_project/add_screen/addAddress_on_map.dart';
 import 'package:fmr_project/add_screen/addTimeOpenClose.dart';
 import 'package:fmr_project/detail_page/all_typerestaurant.dart';
+import 'package:fmr_project/screen/profile.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -260,9 +261,10 @@ class _AddResPageState extends State<AddResPage> {
                   Text(
                     "ชื่อร้าน",
                     style: TextStyle(
-                        fontFamily: 'EkkamaiNew',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14),
+                      fontFamily: 'EkkamaiNew',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                   ),
                   SizedBox(width: 95),
                   Expanded(
@@ -310,7 +312,7 @@ class _AddResPageState extends State<AddResPage> {
                         fontWeight: FontWeight.bold,
                         fontSize: 14),
                   ),
-                  SizedBox(width: 20),
+                  SizedBox(width: 15),
                   Expanded(
                     child: SizedBox(
                         height: 50,
@@ -356,7 +358,7 @@ class _AddResPageState extends State<AddResPage> {
                         fontWeight: FontWeight.bold,
                         fontSize: 14),
                   ),
-                  SizedBox(width: 20),
+                  SizedBox(width: 15),
                   Expanded(
                     child: SizedBox(
                         height: 50,
@@ -470,7 +472,7 @@ class _AddResPageState extends State<AddResPage> {
                         fontWeight: FontWeight.bold,
                         fontSize: 14),
                   ),
-                  SizedBox(width: 40),
+                  SizedBox(width: 45),
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -636,7 +638,10 @@ class _AddResPageState extends State<AddResPage> {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                },
                 child: Container(
                   width: MediaQuery.sizeOf(context).width * 0.93,
                   height: 40,

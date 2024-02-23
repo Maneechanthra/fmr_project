@@ -8,6 +8,7 @@ import 'package:fmr_project/model/recomented_data.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:fmr_project/model/comment_review.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailRestaurantPage_2 extends StatefulWidget {
   // final int id;
@@ -15,6 +16,15 @@ class DetailRestaurantPage_2 extends StatefulWidget {
 
   @override
   State<DetailRestaurantPage_2> createState() => _DetailRestaurantPage_2State();
+}
+
+void _openPhoneApp(String phoneNumber) async {
+  final url = 'tel:$phoneNumber';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
 }
 
 class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
@@ -71,9 +81,10 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                   child: AnotherCarousel(
                     images: [
                       NetworkImage(
-                          "https://s359.kapook.com//pagebuilder/9dbc7505-3b39-4b7f-85b4-1c88c2a01e7f.jpg"),
+                          "https://img.wongnai.com/p/1920x0/2023/11/28/130d0614397b4070bb649e7476de69f0.jpg"),
                       NetworkImage(
-                          "https://s359.kapook.com//pagebuilder/6ef91549-ce57-47d6-88db-3ca0c16d1b9e.jpg"),
+                        "https://img.wongnai.com/p/1920x0/2023/06/17/2c0dcb4b0b9c4e6d8d8b9efa25988dde.jpg",
+                      ),
                       NetworkImage(
                           "https://s359.kapook.com//pagebuilder/f08aab92-a04b-4acd-9718-f58f566b476a.jpg"),
                       NetworkImage(
@@ -154,7 +165,7 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.7,
                         child: Text(
-                          "ร้านครัวแล้วแต่ ม.เกษตร จังหวัดสกลนคร",
+                          "ร้านครัวตามสั่ง",
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -219,7 +230,8 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                     "ร้านอาหารตามสั่ง",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: Color.fromARGB(255, 145, 145, 145)),
+                        color: Color.fromARGB(255, 145, 145, 145),
+                        fontSize: 16),
                   ),
                   SizedBox(
                     height: 10,
@@ -238,28 +250,23 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                             "4.5",
                             style: TextStyle(
                               color: const Color.fromARGB(255, 0, 0, 0),
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "(2 รีวิว)",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 155, 155, 155),
+                              fontSize: 16,
                             ),
                           ),
                         ],
                       ),
                       SizedBox(
                         width: 5,
-                      ),
-                      Text(
-                        "|",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black12,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        "1 รีวิว",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Color.fromARGB(255, 0, 0, 0)),
                       ),
                     ],
                   ),
@@ -278,7 +285,12 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                           SizedBox(
                             width: 5,
                           ),
-                          Text("15 ครั้ง"),
+                          Text(
+                            "15 ครั้ง",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
                         ],
                       ),
                       Padding(
@@ -295,12 +307,17 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                               Icon(
                                 Icons.visibility,
                                 color: const Color.fromARGB(255, 153, 153, 153),
-                                size: 16,
+                                size: 18,
                               ),
                               SizedBox(
                                 width: 5,
                               ),
-                              Text("298 ครั้ง"),
+                              Text(
+                                "298 ครั้ง",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -396,6 +413,15 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
 //----------------------------------------------------------------
 class RestaurantInfoWidget extends StatelessWidget {
   static const LatLng _latLng = LatLng(17.27274239, 104.1265007);
+  void _openPhoneApp(String phoneNumber) async {
+    final url = 'tel:$phoneNumber';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -432,7 +458,7 @@ class RestaurantInfoWidget extends StatelessWidget {
             ),
             Divider(),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: SizedBox(
                 height: 40,
                 child: Text(
@@ -441,11 +467,13 @@ class RestaurantInfoWidget extends StatelessWidget {
             ),
             Divider(),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: SizedBox(
                 height: 40,
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    _openPhoneApp("0630038428");
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -458,7 +486,26 @@ class RestaurantInfoWidget extends StatelessWidget {
             ),
             Divider(),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: SizedBox(
+                height: 40,
+                child: InkWell(
+                  onTap: () {
+                    _openPhoneApp("0829606502");
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("โทร: 0829606502"),
+                      Icon(Icons.phone),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: InkWell(
                 onTap: () {
                   showDialog(
@@ -787,7 +834,7 @@ Widget _CommentWidget() {
   return ListView.builder(
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
-    itemCount: Comment.length,
+    itemCount: 2,
     itemBuilder: (BuildContext context, int index) {
       Comments comment = Comment[index];
       return Container(
@@ -799,7 +846,7 @@ Widget _CommentWidget() {
               children: [
                 SizedBox(
                   width: 30,
-                  child: Image.asset("assets/img/icons/person.png"),
+                  child: Image.asset("assets/img/icons/user.png"),
                 ),
                 SizedBox(
                   width: 10,
@@ -817,6 +864,7 @@ Widget _CommentWidget() {
               height: 8,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: List.generate(
@@ -836,14 +884,10 @@ Widget _CommentWidget() {
                     },
                   ),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
                 Text(
                   comment.dateReview,
                   style: TextStyle(
-                    fontSize: 14,
-                  ),
+                      fontSize: 14, color: Color.fromARGB(255, 136, 136, 136)),
                 ),
               ],
             ),
@@ -874,12 +918,12 @@ Widget _CommentWidget() {
               height: 100,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: 7,
+                itemCount: comment.imageUrls.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: Image.network(
-                      comment.imageUrl,
+                      comment.imageUrls[index],
                     ),
                   );
                 },

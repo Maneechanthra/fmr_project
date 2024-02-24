@@ -56,13 +56,13 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: NeverScrollableScrollPhysics(),
+      // physics: NeverScrollableScrollPhysics(),
       child: Padding(
         padding: const EdgeInsets.only(top: 50.0),
         child: Dialog(
           child: Container(
             width: 700,
-            height: 540,
+            height: 570,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: Colors.white,
@@ -132,13 +132,6 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                               color: const Color.fromARGB(255, 0, 0, 0),
                             ),
                           ),
-                          // SizedBox(
-                          //   width: 5,
-                          // ),
-                          // Icon(
-                          //   Icons.edit,
-                          //   size: 14,
-                          // )
                         ],
                       ),
                       SizedBox(
@@ -172,8 +165,25 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                       SizedBox(
                         height: 10,
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "รูปภาพ",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            "ไม่เกิน 10 ภาพ",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.red),
+                          )
+                        ],
+                      ),
                       Container(
-                        height: 100,
+                        height: 80,
                         child: GridView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: selectedImages.length > 0

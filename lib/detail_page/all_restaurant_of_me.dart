@@ -61,7 +61,7 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20)),
-                          child: Image.network(
+                          child: Image.asset(
                             item.imageUrls[0],
                             width: double.maxFinite,
                             height: 200,
@@ -146,7 +146,7 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                                               fontWeight: FontWeight.w600),
                                         )
                                       : Text(
-                                          "ไม่ปกติ",
+                                          "ยกเลิกการเข้าถึงข้อมูลร้านอาหาร",
                                           style: TextStyle(
                                               color: const Color.fromARGB(
                                                   255, 255, 0, 0),

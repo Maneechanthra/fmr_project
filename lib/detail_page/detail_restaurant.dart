@@ -80,15 +80,11 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                   height: 250,
                   child: AnotherCarousel(
                     images: [
-                      NetworkImage(
-                          "https://img.wongnai.com/p/1920x0/2023/11/28/130d0614397b4070bb649e7476de69f0.jpg"),
-                      NetworkImage(
-                        "https://img.wongnai.com/p/1920x0/2023/06/17/2c0dcb4b0b9c4e6d8d8b9efa25988dde.jpg",
-                      ),
-                      NetworkImage(
-                          "https://s359.kapook.com//pagebuilder/f08aab92-a04b-4acd-9718-f58f566b476a.jpg"),
-                      NetworkImage(
-                          "https://s359.kapook.com//pagebuilder/3d735587-e0fd-4409-ad65-bfeb72f15e98.jpg"),
+                      AssetImage("assets/img/foods/18.jpg"),
+                      AssetImage("assets/img/restaurant/01.jpg"),
+                      AssetImage("assets/img/restaurant/02.jpg"),
+                      AssetImage("assets/img/foods/21.jpg"),
+                      AssetImage("assets/img/foods/16.jpg"),
                     ],
                   ),
                 ),
@@ -247,7 +243,7 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                             color: Colors.orange,
                           ),
                           Text(
-                            "4.5",
+                            "4.0",
                             style: TextStyle(
                               color: const Color.fromARGB(255, 0, 0, 0),
                               fontSize: 16,
@@ -257,7 +253,7 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                             width: 10,
                           ),
                           Text(
-                            "(2 รีวิว)",
+                            "(3 รีวิว)",
                             style: TextStyle(
                               color: Color.fromARGB(255, 155, 155, 155),
                               fontSize: 16,
@@ -294,12 +290,14 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(
-                          "|",
-                          style: TextStyle(color: Colors.black12),
-                        ),
-                      ),
+                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          child: Container(
+                            height: 20,
+                            width: 2,
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 219, 219, 219),
+                            ),
+                          )),
                       Row(
                         children: [
                           Row(
@@ -313,7 +311,7 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                                 width: 5,
                               ),
                               Text(
-                                "298 ครั้ง",
+                                "27 ครั้ง",
                                 style: TextStyle(
                                   fontSize: 16,
                                 ),
@@ -324,38 +322,9 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                       ),
                     ],
                   ),
-
                   SizedBox(
                     height: 10,
                   ),
-
-                  // SizedBox(
-                  //   height: 15,
-                  // ),
-                  // DefaultTabController(
-                  //   length: items.length,
-                  //   child: Column(
-                  //     children: [
-                  //       TabBar(
-                  //         tabs: items.map((String tab) {
-                  //           return Tab(text: tab);
-                  //         }).toList(),
-                  //       ),
-                  //       SizedBox(
-                  //         height: 10,
-                  //       ),
-                  //       Container(
-                  //         height: 450,
-                  //         child: TabBarView(
-                  //           children: [
-                  //             RestaurantInfoWidget(),
-                  //             ReviewsWidget(),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -557,7 +526,7 @@ class ReviewsWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "12 รีวิว",
+                  "3 รีวิว",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -591,14 +560,14 @@ class ReviewsWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          "3.5",
+                          "4.0",
                           style: TextStyle(
                             fontSize: 65,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "จาก 12 รีวิว",
+                          "จาก 3 รีวิว",
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -677,7 +646,7 @@ class ReviewsWidget extends StatelessWidget {
                                     width: 5,
                                   ),
                                   const Text(
-                                    "5",
+                                    "3",
                                     style: TextStyle(
                                         fontSize: 14, color: Colors.grey),
                                   ),
@@ -711,7 +680,7 @@ class ReviewsWidget extends StatelessWidget {
                                     width: 5,
                                   ),
                                   const Text(
-                                    "2",
+                                    "0",
                                     style: TextStyle(
                                         fontSize: 14, color: Colors.grey),
                                   ),
@@ -745,7 +714,7 @@ class ReviewsWidget extends StatelessWidget {
                                     width: 5,
                                   ),
                                   const Text(
-                                    "5",
+                                    "0",
                                     style: TextStyle(
                                         fontSize: 14, color: Colors.grey),
                                   ),
@@ -866,28 +835,52 @@ Widget _CommentWidget() {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: List.generate(
-                    5,
-                    (index) {
-                      Color starColor;
-                      if (index < 5) {
-                        starColor = const Color.fromARGB(255, 255, 165, 0);
-                      } else {
-                        starColor = const Color.fromARGB(255, 199, 199, 199);
-                      }
-                      return Icon(
-                        Icons.star,
-                        color: starColor,
-                        size: 14,
-                      );
-                    },
-                  ),
-                ),
+                (comment.id == 1)
+                    ? Row(
+                        children: List.generate(
+                          5,
+                          (index) {
+                            Color starColor;
+                            if (index < 5) {
+                              starColor =
+                                  const Color.fromARGB(255, 255, 165, 0);
+                            } else {
+                              starColor =
+                                  const Color.fromARGB(255, 199, 199, 199);
+                            }
+                            return Icon(
+                              Icons.star,
+                              color: starColor,
+                              size: 14,
+                            );
+                          },
+                        ),
+                      )
+                    : Row(
+                        children: List.generate(
+                          5,
+                          (index) {
+                            Color starColor;
+                            if (index < 3.5) {
+                              starColor =
+                                  const Color.fromARGB(255, 255, 165, 0);
+                            } else {
+                              starColor =
+                                  const Color.fromARGB(255, 199, 199, 199);
+                            }
+                            return Icon(
+                              Icons.star,
+                              color: starColor,
+                              size: 14,
+                            );
+                          },
+                        ),
+                      ),
                 Text(
-                  comment.dateReview,
+                  "วันที่: ${comment.dateReview}",
                   style: TextStyle(
-                      fontSize: 14, color: Color.fromARGB(255, 136, 136, 136)),
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
@@ -922,7 +915,7 @@ Widget _CommentWidget() {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 10.0),
-                    child: Image.network(
+                    child: Image.asset(
                       comment.imageUrls[index],
                     ),
                   );

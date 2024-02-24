@@ -59,7 +59,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                               topLeft: Radius.circular(10),
                               topRight: Radius.circular(10),
                             ),
-                            child: Image.network(
+                            child: Image.asset(
                               res.imageUrls[0],
                               fit: BoxFit.cover,
                               width: double.infinity,

@@ -204,7 +204,7 @@ class _addReviewPageState extends State<addReviewPage> {
               ),
               Center(
                 child: RatingBar.builder(
-                  initialRating: 0,
+                  initialRating: 1,
                   minRating: 1,
                   direction: Axis.horizontal,
                   allowHalfRating: true,
@@ -233,7 +233,7 @@ class _addReviewPageState extends State<addReviewPage> {
                 child: Center(
                   child: Text(
                     "บันทึกข้อมูล",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
               ),

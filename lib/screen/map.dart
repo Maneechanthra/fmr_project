@@ -145,7 +145,7 @@ class _MapsPageState extends State<MapsPage> {
                                               child: ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
-                                                child: Image.network(
+                                                child: Image.asset(
                                                   restaurant
                                                       .imageUrls[imageIndex],
                                                   fit: BoxFit.cover,
@@ -457,7 +457,7 @@ class _MapsPageState extends State<MapsPage> {
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(10),
-                                          child: Image.network(
+                                          child: Image.asset(
                                             restaurant.imageUrls[imageIndex],
                                             fit: BoxFit.cover,
                                             width: 150,

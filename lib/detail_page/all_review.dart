@@ -81,35 +81,57 @@ Widget _AllReivewsPage(BuildContext context) {
                   Divider(
                     color: const Color.fromARGB(255, 158, 158, 158),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: List.generate(
-                          5,
-                          (index) {
-                            Color starColor;
-                            if (index < 5) {
-                              starColor =
-                                  const Color.fromARGB(255, 255, 165, 0);
-                            } else {
-                              starColor =
-                                  const Color.fromARGB(255, 199, 199, 199);
-                            }
-                            return Icon(
-                              Icons.star,
-                              color: starColor,
-                              size: 14,
-                            );
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
+                      (comment.id == 1)
+                          ? Row(
+                              children: List.generate(
+                                5,
+                                (index) {
+                                  Color starColor;
+                                  if (index < 5) {
+                                    starColor =
+                                        const Color.fromARGB(255, 255, 165, 0);
+                                  } else {
+                                    starColor = const Color.fromARGB(
+                                        255, 199, 199, 199);
+                                  }
+                                  return Icon(
+                                    Icons.star,
+                                    color: starColor,
+                                    size: 14,
+                                  );
+                                },
+                              ),
+                            )
+                          : Row(
+                              children: List.generate(
+                                5,
+                                (index) {
+                                  Color starColor;
+                                  if (index < 3.5) {
+                                    starColor =
+                                        const Color.fromARGB(255, 255, 165, 0);
+                                  } else {
+                                    starColor = const Color.fromARGB(
+                                        255, 199, 199, 199);
+                                  }
+                                  return Icon(
+                                    Icons.star,
+                                    color: starColor,
+                                    size: 14,
+                                  );
+                                },
+                              ),
+                            ),
                       Text(
-                        comment.dateReview,
+                        "วันที่: ${comment.dateReview}",
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -145,7 +167,7 @@ Widget _AllReivewsPage(BuildContext context) {
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(right: 10.0),
-                          child: Image.network(
+                          child: Image.asset(
                             comment.imageUrls[index],
                           ),
                         );

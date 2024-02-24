@@ -79,8 +79,8 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                             boxShadow: [
                               BoxShadow(
                                 color: const Color.fromARGB(96, 209, 209, 209),
-                                blurRadius: 10.0,
-                                offset: Offset(5, 10),
+                                blurRadius: 0.8,
+                                offset: Offset(0, 5),
                               ),
                             ]),
                         child: Center(child: Icon(Icons.arrow_back_ios)),

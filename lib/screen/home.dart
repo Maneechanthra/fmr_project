@@ -151,26 +151,53 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Container(
-                        margin:
-                            const EdgeInsets.only(left: 15, top: 15, bottom: 5),
+                        margin: const EdgeInsets.only(
+                            left: 15, top: 15, bottom: 5, right: 15),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SizedBox(
-                                  width: 20,
-                                  child: Image.asset(
-                                    "assets/img/icons/restaurant_re.png",
-                                  )),
-                              const SizedBox(
-                                width: 5,
+                              Row(
+                                children: [
+                                  SizedBox(
+                                      width: 20,
+                                      child: Image.asset(
+                                        "assets/img/icons/restaurant_re.png",
+                                      )),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    "ร้านแนะนำ",
+                                    style: GoogleFonts.mitr(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color.fromARGB(255, 65, 65, 65),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                "ร้านแนะนำ",
-                                style: GoogleFonts.mitr(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color.fromARGB(255, 65, 65, 65),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      PageRouteBuilder(pageBuilder:
+                                          (context, animation1, animation2) {
+                                        return MapsPage();
+                                      }, transitionsBuilder: (context,
+                                          animation1, animation2, child) {
+                                        return FadeTransition(
+                                          opacity: animation1,
+                                          child: child,
+                                        );
+                                      }));
+                                },
+                                child: Text(
+                                  "ดูทั้งหมด",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color.fromARGB(115, 0, 0, 0)),
                                 ),
                               ),
                             ],
@@ -178,43 +205,43 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const RecomentedPage(),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MapsPage(),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 14, 167, 0),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 190, 190, 190),
-                                  blurRadius: 5.0,
-                                  offset: Offset(0, 2),
-                                )
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                "ดูทั้งหมด",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () {
+                      //     Navigator.pushReplacement(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => MapsPage(),
+                      //       ),
+                      //     );
+                      //   },
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.symmetric(horizontal: 10),
+                      //     child: Container(
+                      //       height: 40,
+                      //       decoration: BoxDecoration(
+                      //         color: Color.fromARGB(255, 14, 167, 0),
+                      //         borderRadius:
+                      //             BorderRadius.all(Radius.circular(10)),
+                      //         boxShadow: [
+                      //           BoxShadow(
+                      //             color: Color.fromARGB(255, 190, 190, 190),
+                      //             blurRadius: 5.0,
+                      //             offset: Offset(0, 2),
+                      //           )
+                      //         ],
+                      //       ),
+                      //       child: Center(
+                      //         child: Text(
+                      //           "ดูทั้งหมด",
+                      //           style: TextStyle(
+                      //             fontSize: 16,
+                      //             color: Colors.white,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/add_screen/addRestuarant.dart';
+import 'package:fmr_project/detail_page/all_favorites.dart';
 import 'package:fmr_project/detail_page/all_restaurant_of_me.dart';
 import 'package:fmr_project/detail_page/notification.dart';
 import 'package:fmr_project/edit_screen/changepassword.dart';
@@ -244,6 +245,48 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             Text(
                               "ร้านอาหารของฉัน",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 17,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AllFavoriesPage()),
+                  );
+                },
+                child: const SizedBox(
+                  height: 50,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 200,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.favorite_border,
+                              color: Color.fromARGB(221, 143, 143, 143),
+                            ),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Text(
+                              "ร้านอาหารที่ฉันชื่นชอบ",
                               style: TextStyle(fontSize: 16),
                             ),
                           ],

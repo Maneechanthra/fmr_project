@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/add_screen/addAddress_on_map.dart';
+import 'package:fmr_project/add_screen/addAddress_on_map_for_editForm.dart';
 import 'package:fmr_project/add_screen/addTimeOpenClose.dart';
+import 'package:fmr_project/add_screen/addTimeOpenClose_for_editForm.dart';
 import 'package:fmr_project/detail_page/all_typerestaurant.dart';
+import 'package:fmr_project/detail_page/all_typerestaurant_for_editForm.dart';
 import 'package:fmr_project/screen/profile.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -411,7 +414,7 @@ class _editRestaurantState extends State<editRestaurant> {
                             final result = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => TypeRestaurantPage(
+                                builder: (context) => TypeRestaurantEditPage(
                                   selectedCategories: [],
                                 ),
                               ),
@@ -476,7 +479,8 @@ class _editRestaurantState extends State<editRestaurant> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AddTimeOpenCloseDialog()));
+                              builder: (context) =>
+                                  AddTimeOpenCloseEditDialog()));
                     },
                     child: Container(
                       width: 150,
@@ -515,7 +519,7 @@ class _editRestaurantState extends State<editRestaurant> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              PlaceMarkerPage(initialPosition: _latLng),
+                              PlaceMarkerEditPage(initialPosition: _latLng),
                         ),
                       );
                       setState(() {

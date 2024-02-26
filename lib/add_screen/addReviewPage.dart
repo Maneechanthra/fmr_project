@@ -57,10 +57,7 @@ class _addReviewPageState extends State<addReviewPage> {
       appBar: AppBar(
           title: Text(
             "เขียนรีวิว",
-            style: TextStyle(
-                fontFamily: 'EkkamaiNew',
-                fontWeight: FontWeight.w900,
-                fontSize: 18),
+            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
           ),
           actions: []),
       body: SingleChildScrollView(

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fmr_project/add_screen/addRestuarant.dart';
+import 'package:fmr_project/detail_page/all_restaurant_of_me.dart';
+import 'package:fmr_project/detail_page/detail_restaurant.dart';
+import 'package:fmr_project/detail_page/restaurantOfme.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -10,6 +14,10 @@ class VerifyRestaurantPage extends StatefulWidget {
 }
 
 class _VerifyRestaurantPageState extends State<VerifyRestaurantPage> {
+  final nameController = TextEditingController(text: "สุเมธ มณีจันทรา");
+  final restaurantNameController = TextEditingController(text: "ครัวตามสั่ง");
+  final tagrestaurantController =
+      TextEditingController(text: "อาหารจีน , อาหารไทย");
   String selectedDay = 'ทุกวัน';
   String openingTime = '';
   String closingTime = '';
@@ -23,6 +31,11 @@ class _VerifyRestaurantPageState extends State<VerifyRestaurantPage> {
     'วันเสาร์',
     'วันอาทิตย์'
   ];
+
+  // List<String> tagrestaurant = [
+  //   'อาหารจีน',
+  //   'อาหารอีสาน',
+  // ];
 
   List<File> selectedImages = [];
 
@@ -90,6 +103,7 @@ class _VerifyRestaurantPageState extends State<VerifyRestaurantPage> {
                     child: SizedBox(
                         height: 50,
                         child: TextField(
+                          controller: restaurantNameController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
@@ -136,6 +150,7 @@ class _VerifyRestaurantPageState extends State<VerifyRestaurantPage> {
                     child: SizedBox(
                         height: 50,
                         child: TextField(
+                          controller: tagrestaurantController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
@@ -182,25 +197,23 @@ class _VerifyRestaurantPageState extends State<VerifyRestaurantPage> {
                     child: SizedBox(
                         height: 50,
                         child: TextField(
+                          controller: nameController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color:
-                                      Colors.blue), // Change the border color
+                              borderSide: BorderSide(color: Colors.blue),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(5),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                  color: Colors.grey), // สีขอบเทาเมื่อโฟกัส
+                              borderSide: BorderSide(color: Colors.grey),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: const Color.fromARGB(255, 214, 214,
-                                      214)), // สีขอบเทาเมื่อไม่ได้โฟกัส
+                                  color:
+                                      const Color.fromARGB(255, 214, 214, 214)),
                             ),
                             labelText: "ชื่อ-นามสกุล ผู้ขอยืนยันตัวตน",
                             labelStyle: TextStyle(
@@ -284,7 +297,9 @@ class _VerifyRestaurantPageState extends State<VerifyRestaurantPage> {
             alignment: MainAxisAlignment.center,
             children: [
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                },
                 child: Container(
                   height: 100,
                   width: 330,

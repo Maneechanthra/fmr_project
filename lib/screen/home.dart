@@ -178,70 +178,76 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      PageRouteBuilder(pageBuilder:
-                                          (context, animation1, animation2) {
-                                        return MapsPage();
-                                      }, transitionsBuilder: (context,
-                                          animation1, animation2, child) {
-                                        return FadeTransition(
-                                          opacity: animation1,
-                                          child: child,
-                                        );
-                                      }));
-                                },
-                                child: Text(
-                                  "ดูทั้งหมด",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color.fromARGB(115, 0, 0, 0)),
-                                ),
-                              ),
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     Navigator.push(
+                              //         context,
+                              //         PageRouteBuilder(pageBuilder:
+                              //             (context, animation1, animation2) {
+                              //           return MapsPage();
+                              //         }, transitionsBuilder: (context,
+                              //             animation1, animation2, child) {
+                              //           return FadeTransition(
+                              //             opacity: animation1,
+                              //             child: child,
+                              //           );
+                              //         }));
+                              //   },
+                              //   child: Text(
+                              //     "ดูทั้งหมด",
+                              //     style: TextStyle(
+                              //         fontSize: 16,
+                              //         color: Color.fromARGB(115, 0, 0, 0)),
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
                       ),
                       const RecomentedPage(),
-                      // InkWell(
-                      //   onTap: () {
-                      //     Navigator.pushReplacement(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //         builder: (context) => MapsPage(),
-                      //       ),
-                      //     );
-                      //   },
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.symmetric(horizontal: 10),
-                      //     child: Container(
-                      //       height: 40,
-                      //       decoration: BoxDecoration(
-                      //         color: Color.fromARGB(255, 14, 167, 0),
-                      //         borderRadius:
-                      //             BorderRadius.all(Radius.circular(10)),
-                      //         boxShadow: [
-                      //           BoxShadow(
-                      //             color: Color.fromARGB(255, 190, 190, 190),
-                      //             blurRadius: 5.0,
-                      //             offset: Offset(0, 2),
-                      //           )
-                      //         ],
-                      //       ),
-                      //       child: Center(
-                      //         child: Text(
-                      //           "ดูทั้งหมด",
-                      //           style: TextStyle(
-                      //             fontSize: 16,
-                      //             color: Colors.white,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              PageRouteBuilder(pageBuilder:
+                                  (context, animation1, animation2) {
+                                return MapsPage();
+                              }, transitionsBuilder:
+                                  (context, animation1, animation2, child) {
+                                return FadeTransition(
+                                  opacity: animation1,
+                                  child: child,
+                                );
+                              }));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 14, 167, 0),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color.fromARGB(255, 190, 190, 190),
+                                  blurRadius: 5.0,
+                                  offset: Offset(0, 2),
+                                )
+                              ],
+                            ),
+                            child: Center(
+                              child: Text(
+                                "ดูทั้งหมด",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

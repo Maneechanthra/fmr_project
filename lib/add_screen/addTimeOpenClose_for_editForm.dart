@@ -175,12 +175,13 @@ class _AddTimeOpenCloseEditDialogState
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => editRestaurant(
-                                selectedCategories: [],
-                              )));
+                  Navigator.pop(context);
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => editRestaurant(
+                  //               selectedCategories: [],
+                  //             )));
                 },
                 child: Container(
                   height: 100,

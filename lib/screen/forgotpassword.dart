@@ -14,10 +14,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       appBar: AppBar(
         title: Text(
           "ลืมรหัสผ่าน",
-          style: TextStyle(
-              fontFamily: 'EkkamaiNew',
-              fontWeight: FontWeight.w900,
-              fontSize: 18),
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
         ),
       ),
       body: Column(

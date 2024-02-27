@@ -35,6 +35,11 @@ class _editRestaurantState extends State<editRestaurant> {
     'วันเสาร์',
     'วันอาทิตย์'
   ];
+
+  final restaurantNameController = TextEditingController(text: "ครัวตามสั่ง");
+  final phone1NumberController = TextEditingController(text: "0630038428");
+  final phone2NumberController = TextEditingController(text: "08296075902");
+
   // List<String> timesOfDay = [];
   // List<OpeningClosingTime> openingClosingTimes = [];
   // List<OpeningClosingTime> selectedTimes = [];
@@ -272,6 +277,7 @@ class _editRestaurantState extends State<editRestaurant> {
                     child: SizedBox(
                         height: 50,
                         child: TextField(
+                          controller: restaurantNameController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
@@ -318,6 +324,7 @@ class _editRestaurantState extends State<editRestaurant> {
                     child: SizedBox(
                         height: 50,
                         child: TextField(
+                          controller: phone1NumberController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
@@ -364,6 +371,7 @@ class _editRestaurantState extends State<editRestaurant> {
                     child: SizedBox(
                         height: 50,
                         child: TextField(
+                          controller: phone2NumberController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.blue),
@@ -641,8 +649,7 @@ class _editRestaurantState extends State<editRestaurant> {
               padding: const EdgeInsets.only(top: 10.0),
               child: InkWell(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                  Navigator.pop(context);
                 },
                 child: Container(
                   width: MediaQuery.sizeOf(context).width * 0.93,

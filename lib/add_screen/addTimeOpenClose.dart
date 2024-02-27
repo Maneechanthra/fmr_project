@@ -51,7 +51,10 @@ class _AddTimeOpenCloseDialogState extends State<AddTimeOpenCloseDialog> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("ระบุวันเวลาเปิด-ปิดร้าน"),
+        title: Text(
+          "ระบุวันเวลาเปิด-ปิดร้าน",
+          style: TextStyle(fontSize: 18),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -172,12 +175,13 @@ class _AddTimeOpenCloseDialogState extends State<AddTimeOpenCloseDialog> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddResPage(
-                                selectedCategories: [],
-                              )));
+                  Navigator.pop(context);
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => AddResPage(
+                  //               selectedCategories: [],
+                  //             )));
                 },
                 child: Container(
                   height: 100,

@@ -25,7 +25,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           const Center(
             child: Text(
-              "กรอกอีเมลของคุณเพื่รีเซ็ตรหัสผ่าน",
+              "กรอกอีเมลของคุณเพื่อรีเซ็ตรหัสผ่าน",
             ),
           ),
           const SizedBox(

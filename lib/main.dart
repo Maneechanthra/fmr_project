@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: myBlue,
         fontFamily: GoogleFonts.prompt().fontFamily,
+        scaffoldBackgroundColor: Colors.white,
       ),
       home: IndexPage(),
     );

@@ -21,9 +21,9 @@ class _RecomentedPageState extends State<RecomentedPage> {
         crossAxisCount: 2,
         mainAxisSpacing: 3,
         shrinkWrap: true,
-        childAspectRatio: 0.9,
+        childAspectRatio: 0.87,
         physics: const NeverScrollableScrollPhysics(),
-        children: List.generate(allRestaurants_2.length, (index) {
+        children: List.generate(4, (index) {
           Restaurant_2 res = allRestaurants_2[index];
           return Padding(
             padding: const EdgeInsets.all(3.0),
@@ -32,8 +32,10 @@ class _RecomentedPageState extends State<RecomentedPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => DetailRestaurantPage_2()),
+                    builder: (context) => DetailRestaurantPage_2(res.id),
+                  ),
                 );
+                print(res.id);
               },
               child: SizedBox(
                 height: 300,
@@ -104,13 +106,27 @@ class _RecomentedPageState extends State<RecomentedPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              res.name,
-                              style: GoogleFonts.mitr(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment,
+                              children: [
+                                SizedBox(
+                                  width: 130,
+                                  child: Text(
+                                    res.name,
+                                    style: GoogleFonts.mitr(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                res.verified == 2
+                                    ? Icon(
+                                        Icons.verified_rounded,
+                                        color: Colors.blue,
+                                      )
+                                    : SizedBox(),
+                              ],
                             ),
                             Text(
                               res.type_restaurant,
@@ -125,7 +141,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 8.0, top: 8),
+                        padding: const EdgeInsets.only(left: 8.0, top: 5),
                         child: Row(
                           children: [
                             Container(

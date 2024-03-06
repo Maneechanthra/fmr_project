@@ -114,17 +114,17 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                         Navigator.pop(context);
                       },
                       child: Container(
-                        width: MediaQuery.of(context).size.width * 0.15,
+                        // width: MediaQuery.of(context).size.width * 0.15,
                         height: 50,
                         decoration: BoxDecoration(
                             color: Color.fromARGB(255, 255, 255, 255),
                             borderRadius: BorderRadius.circular(100),
                             boxShadow: [
-                              BoxShadow(
-                                color: const Color.fromARGB(96, 209, 209, 209),
-                                blurRadius: 0.8,
-                                offset: Offset(0, 5),
-                              ),
+                              // BoxShadow(
+                              //   color: const Color.fromARGB(96, 209, 209, 209),
+                              //   blurRadius: 0.8,
+                              //   offset: Offset(0, 5),
+                              // ),
                             ]),
                         child: Center(child: Icon(Icons.arrow_back_ios)),
                       ),
@@ -137,13 +137,13 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                         height: 50,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: const Color.fromARGB(255, 255, 255, 255),
+                          color: Color.fromARGB(148, 223, 223, 223),
                           boxShadow: [
-                            BoxShadow(
-                              color: const Color.fromARGB(96, 209, 209, 209),
-                              blurRadius: 10.0,
-                              offset: Offset(5, 10),
-                            ),
+                            // BoxShadow(
+                            //   color: const Color.fromARGB(96, 209, 209, 209),
+                            //   blurRadius: 10.0,
+                            //   offset: Offset(5, 10),
+                            // ),
                           ],
                         ),
                         child: Padding(
@@ -266,7 +266,9 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        DetailRestaurantPage_2()));
+                                        DetailRestaurantPage_2(
+                                          item.id,
+                                        )));
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 1,

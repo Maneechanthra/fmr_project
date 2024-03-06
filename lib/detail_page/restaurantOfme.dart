@@ -45,7 +45,8 @@ class _RestaurantOfMePageState extends State<RestaurantOfMePage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => DetailRestaurantPage_2()));
+                            builder: (context) =>
+                                DetailRestaurantPage_2(res.id)));
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(

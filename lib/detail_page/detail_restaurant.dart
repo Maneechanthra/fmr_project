@@ -11,20 +11,12 @@ import 'package:fmr_project/model/comment_review.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailRestaurantPage_2 extends StatefulWidget {
-  // final int id;
-  const DetailRestaurantPage_2({Key? key}) : super(key: key);
+  final int res_id;
+
+  DetailRestaurantPage_2(this.res_id, {Key? key}) : super(key: key);
 
   @override
   State<DetailRestaurantPage_2> createState() => _DetailRestaurantPage_2State();
-}
-
-void _openPhoneApp(String phoneNumber) async {
-  final url = 'tel:$phoneNumber';
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
-  }
 }
 
 class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
@@ -35,10 +27,18 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
   @override
   void initState() {
     super.initState();
+    // futureShowDetailPost = loadRestaurants();
   }
+
+  // Future<List<Restaurant_2>> loadRestaurants() async {
+  //   return await Future.delayed(Duration(seconds: 1), () {
+  //     return allRestaurants_2;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
+    int total = 0;
     return Scaffold(
       // body: NestedScrollView(
       //   headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -80,11 +80,12 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                   height: 250,
                   child: AnotherCarousel(
                     images: [
-                      AssetImage("assets/img/foods/18.jpg"),
-                      AssetImage("assets/img/restaurant/01.jpg"),
-                      AssetImage("assets/img/restaurant/02.jpg"),
-                      AssetImage("assets/img/foods/21.jpg"),
-                      AssetImage("assets/img/foods/16.jpg"),
+                      AssetImage(
+                          allRestaurants_2[widget.res_id - 1].imageUrls[0]),
+                      AssetImage(
+                          allRestaurants_2[widget.res_id - 1].imageUrls[1]),
+                      AssetImage(
+                          allRestaurants_2[widget.res_id - 1].imageUrls[2]),
                     ],
                   ),
                 ),
@@ -158,15 +159,23 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.7,
-                        child: Text(
-                          "ร้านครัวตามสั่ง",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.75,
+                            child: Text(
+                              allRestaurants_2[widget.res_id - 1].name,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
+                          // Icon(
+                          //   Icons.verified_rounded,
+                          //   color: Colors.blue,
+                          // )
+                        ],
                       ),
                       LikeButton(
                         isLiked: isFavorite,
@@ -196,41 +205,43 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                   SizedBox(
                     height: 5,
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.task_alt_outlined,
-                          size: 16,
-                          color: Colors.white,
-                        ),
-                        Text(
-                          "Official",
-                          style: TextStyle(color: Colors.white),
+                  allRestaurants_2[widget.res_id - 1].verified == 2
+                      ? Container(
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.task_alt_outlined,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                "Official",
+                                style: TextStyle(color: Colors.white),
+                              )
+                            ],
+                          ),
                         )
-                      ],
-                    ),
-                  ),
+                      : SizedBox(),
                   SizedBox(
                     height: 5,
                   ),
                   Text(
-                    "ร้านอาหารตามสั่ง",
+                    allRestaurants_2[widget.res_id - 1].type_restaurant,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Color.fromARGB(255, 145, 145, 145),
                         fontSize: 16),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   Row(
                     children: [
@@ -243,7 +254,9 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                             color: Colors.orange,
                           ),
                           Text(
-                            "4.0",
+                            allRestaurants_2[widget.res_id - 1]
+                                .rating
+                                .toString(),
                             style: TextStyle(
                               color: const Color.fromARGB(255, 0, 0, 0),
                               fontSize: 16,
@@ -253,7 +266,7 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                             width: 10,
                           ),
                           Text(
-                            "(3 รีวิว)",
+                            "(${allRestaurants_2[widget.res_id - 1].review} รีวิว)",
                             style: TextStyle(
                               color: Color.fromARGB(255, 155, 155, 155),
                               fontSize: 16,
@@ -282,10 +295,14 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                             width: 5,
                           ),
                           Text(
-                            "15 ครั้ง",
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
+                            isFavorite == true
+                                ? (allRestaurants_2[widget.res_id - 1]
+                                            .favorites +
+                                        1)
+                                    .toString()
+                                : allRestaurants_2[widget.res_id - 1]
+                                    .favorites
+                                    .toString(),
                           ),
                         ],
                       ),
@@ -311,7 +328,7 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                                 width: 5,
                               ),
                               Text(
-                                "27 ครั้ง",
+                                "${allRestaurants_2[widget.res_id - 1].views.toString()} ครั้ง",
                                 style: TextStyle(
                                   fontSize: 16,
                                 ),
@@ -333,9 +350,8 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Text("ข้อมูลร้านอาหาร"),
-                  RestaurantInfoWidget(),
-                  ReviewsWidget(),
+                  RestaurantInfoWidget(widget.res_id),
+                  ReviewsWidget(widget.res_id),
                 ],
               ),
             ),
@@ -381,7 +397,11 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 class RestaurantInfoWidget extends StatelessWidget {
-  static const LatLng _latLng = LatLng(17.27274239, 104.1265007);
+  final int res_id;
+
+  RestaurantInfoWidget(this.res_id);
+
+  LatLng _latLng = LatLng(17.27274239, 104.1265007);
   void _openPhoneApp(String phoneNumber) async {
     final url = 'tel:$phoneNumber';
     if (await canLaunch(url)) {
@@ -410,13 +430,15 @@ class RestaurantInfoWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(3.0),
                 child: GoogleMap(
                   initialCameraPosition: CameraPosition(
-                    target: _latLng,
+                    target: LatLng(allRestaurants_2[res_id - 1].latitude,
+                        allRestaurants_2[res_id - 1].longitude),
                     zoom: 15,
                   ),
                   markers: {
                     Marker(
                       markerId: MarkerId('1'),
-                      position: _latLng,
+                      position: LatLng(allRestaurants_2[res_id - 1].latitude,
+                          allRestaurants_2[res_id - 1].longitude),
                     ),
                   },
                 ),
@@ -431,7 +453,8 @@ class RestaurantInfoWidget extends StatelessWidget {
               child: SizedBox(
                 height: 40,
                 child: Text(
-                    "566/2 เชียงเครือ เมืองสกลนคร สกลนคร มหาวิทยาลัยเกษตร สกลนคร"),
+                  allRestaurants_2[res_id - 1].address,
+                ),
               ),
             ),
             Divider(),
@@ -446,7 +469,9 @@ class RestaurantInfoWidget extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("โทร: 0630038428"),
+                      Text(
+                        "โทร : ${allRestaurants_2[res_id - 1].telephone_1}",
+                      ),
                       Icon(Icons.phone),
                     ],
                   ),
@@ -454,24 +479,28 @@ class RestaurantInfoWidget extends StatelessWidget {
               ),
             ),
             Divider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: SizedBox(
-                height: 40,
-                child: InkWell(
-                  onTap: () {
-                    _openPhoneApp("0829606502");
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("โทร: 0829606502"),
-                      Icon(Icons.phone),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            allRestaurants_2[res_id - 1].telephone_2 != ""
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: SizedBox(
+                      height: 40,
+                      child: InkWell(
+                        onTap: () {
+                          _openPhoneApp("0829606502");
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "โทร : ${allRestaurants_2[res_id - 1].telephone_2}",
+                            ),
+                            Icon(Icons.phone),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                : SizedBox(),
             Divider(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
@@ -514,6 +543,9 @@ class RestaurantInfoWidget extends StatelessWidget {
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 class ReviewsWidget extends StatelessWidget {
+  final int res_id;
+
+  ReviewsWidget(this.res_id);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -526,7 +558,7 @@ class ReviewsWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "3 รีวิว",
+                  "${allRestaurants_2[res_id - 1].review.toString()} รีวิว",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -560,14 +592,14 @@ class ReviewsWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          "4.0",
+                          "${allRestaurants_2[res_id - 1].rating.toString()}",
                           style: TextStyle(
                             fontSize: 65,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "จาก 3 รีวิว",
+                          "จาก ${allRestaurants_2[res_id - 1].review.toString()} รีวิว",
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,

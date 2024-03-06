@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
+import 'package:fmr_project/dialog/disableRestaurant.dart';
 import 'package:fmr_project/model/recomented_data.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -165,7 +167,7 @@ class _MapsPageState extends State<MapsPage> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           SizedBox(
-                                            width: 180,
+                                            width: 160,
                                             child: Text(
                                               restaurant.name,
                                               style: TextStyle(
@@ -174,13 +176,24 @@ class _MapsPageState extends State<MapsPage> {
                                               ),
                                             ),
                                           ),
-                                          Text(
-                                            "เปิดอยู่",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.green,
-                                            ),
+                                          Row(
+                                            children: [
+                                              restaurant.verified == 2
+                                                  ? Icon(
+                                                      Icons.verified_rounded,
+                                                      color: Colors.blue,
+                                                    )
+                                                  : SizedBox(),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                "เปิดอยู่",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -428,11 +441,31 @@ class _MapsPageState extends State<MapsPage> {
                         restaurant.type_restaurant == selectedRestaurantType) {
                       return InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DetailRestaurantPage_2()),
-                          );
+                          if (restaurant.status == -1) {
+                            AwesomeDialog(
+                                    context: context,
+                                    animType: AnimType.topSlide,
+                                    dialogType: DialogType.warning,
+                                    title: 'ไม่สามารถเข้าดูข้อมูลร้านอาหารได้',
+                                    titleTextStyle: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                    desc:
+                                        'ไม่สามารถเข้าถึงข้อมูลร้านอาหาร เนื่องจากร้านอาหารมีการรายงานความไม่เหมาะสม',
+                                    btnOkOnPress: () {})
+                                .show();
+                            print(restaurant.id);
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    DetailRestaurantPage_2(restaurant.id),
+                              ),
+                            );
+                            print(restaurant.id);
+                          }
+
                           print(index);
                         },
                         child: Container(
@@ -475,12 +508,25 @@ class _MapsPageState extends State<MapsPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      restaurant.name,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          restaurant.name,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        restaurant.verified == 2
+                                            ? Icon(
+                                                Icons.verified_rounded,
+                                                color: Colors.blue,
+                                              )
+                                            : SizedBox(),
+                                      ],
                                     ),
                                     Text(
                                       "เปิด",
@@ -492,6 +538,15 @@ class _MapsPageState extends State<MapsPage> {
                                     ),
                                   ],
                                 ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                restaurant.status == -1
+                                    ? Text(
+                                        "ร้านอาหารถูกปิดการเข้าถึงข้อมูล",
+                                        style: TextStyle(color: Colors.red),
+                                      )
+                                    : SizedBox(),
                                 SizedBox(
                                   height: 7,
                                 ),

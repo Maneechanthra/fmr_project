@@ -199,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               // color: Color.fromARGB(255, 8, 231, 0),
                             ),
                             SizedBox(
-                              width: 15,
+                              width: 10,
                             ),
                             Text(
                               "เพิ่มข้อมูลร้านอาหาร",
@@ -241,7 +241,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: Color.fromARGB(221, 143, 143, 143),
                             ),
                             SizedBox(
-                              width: 15,
+                              width: 10,
                             ),
                             Text(
                               "ร้านอาหารของฉัน",
@@ -283,7 +283,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: Color.fromARGB(221, 143, 143, 143),
                             ),
                             SizedBox(
-                              width: 15,
+                              width: 10,
                             ),
                             Text(
                               "ร้านอาหารที่ฉันชื่นชอบ",
@@ -317,18 +317,18 @@ class _ProfilePageState extends State<ProfilePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        width: 200,
+                        width: 313,
                         child: Row(
                           children: [
                             Icon(
-                              Icons.notifications_active_outlined,
+                              Icons.report_gmailerrorred,
                               color: Color.fromARGB(221, 143, 143, 143),
                             ),
                             SizedBox(
-                              width: 15,
+                              width: 10,
                             ),
                             Text(
-                              "แจ้งเตือนของฉัน",
+                              "รายงานความไม่เหมาะสมร้านอาหารของฉัน",
                               style: TextStyle(fontSize: 16),
                             ),
                           ],
@@ -377,7 +377,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: Color.fromARGB(221, 143, 143, 143),
                             ),
                             SizedBox(
-                              width: 15,
+                              width: 10,
                             ),
                             Text(
                               "เปลี่ยนรหัสผ่าน",
@@ -416,7 +416,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             color: Colors.blue,
                           ),
                           SizedBox(
-                            width: 15,
+                            width: 10,
                           ),
                           Text(
                             "เข้าสู่ระบบ",
@@ -462,7 +462,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         color: Colors.red,
                       ),
                       SizedBox(
-                        width: 15,
+                        width: 10,
                       ),
                       Text(
                         "ออกจากระบบ",
@@ -478,7 +478,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: InkWell(
                   onTap: () {},
                   child: Container(
-                    height: 40,
+                    height: 50,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.red,

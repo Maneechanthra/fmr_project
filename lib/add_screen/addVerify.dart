@@ -78,7 +78,7 @@ class _VerifyRestaurantPageState extends State<VerifyRestaurantPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "ยืนยันตัวตน",
+          "คำร้องขอสถานะรับรองร้านอาหาร",
           style: TextStyle(
             fontSize: 18,
           ),

@@ -13,11 +13,11 @@ class _NotificationPageState extends State<NotificationPage> {
     return Scaffold(
       appBar: AppBar(
           title: Text(
-        "แจ้งเตือนของฉัน",
+        "รายงานความไม่เหมาะสมร้านอาหารของฉัน",
         style: TextStyle(fontSize: 18),
       )),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(10),
         child: ListView.custom(
           childrenDelegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
@@ -25,7 +25,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.8,
-                  height: 100,
+                  height: 130,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Color.fromARGB(255, 255, 255, 255),
@@ -65,6 +65,24 @@ class _NotificationPageState extends State<NotificationPage> {
                                       fontSize: 12,
                                       fontWeight: FontWeight.w300),
                                 ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                height: 2,
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(66, 189, 189, 189),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "จำนวนครั้งที่ถูกรายงาน : 1/3 ครั้ง",
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w300),
                               ),
                             ],
                           ),

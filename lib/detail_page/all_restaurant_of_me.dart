@@ -38,7 +38,9 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => DetailRestaurantPage_2()));
+                            builder: (context) =>
+                                DetailRestaurantPage_2(item.id)));
+                    print(item.id);
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.5,
@@ -76,12 +78,25 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                item.name,
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    item.name,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  item.verified == 2
+                                      ? Icon(
+                                          Icons.verified_rounded,
+                                          color: Colors.blue,
+                                        )
+                                      : SizedBox(),
+                                ],
                               ),
                               Row(
                                 children: [

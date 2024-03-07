@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/add_screen/addRestuarant.dart';
+import 'package:fmr_project/add/addRestuarant.dart';
 import 'package:fmr_project/detail_page/all_favorites.dart';
 import 'package:fmr_project/detail_page/all_restaurant_of_me.dart';
-import 'package:fmr_project/detail_page/notification.dart';
-import 'package:fmr_project/edit_screen/changepassword.dart';
-import 'package:fmr_project/edit_screen/editemail.dart';
-import 'package:fmr_project/edit_screen/editname.dart';
+import 'package:fmr_project/screen/notification.dart';
+import 'package:fmr_project/update/changepassword.dart';
+import 'package:fmr_project/update/editemail.dart';
+import 'package:fmr_project/update/editname.dart';
 import 'package:fmr_project/screen/home.dart';
 import 'package:fmr_project/screen/login.dart';
 

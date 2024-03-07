@@ -4,8 +4,7 @@ import 'dart:math';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
-import 'package:fmr_project/dialog/disableRestaurant.dart';
-import 'package:fmr_project/model/recomented_data.dart';
+import 'package:fmr_project/model/restaurant_info.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:slider_controller/slider_controller.dart';
@@ -87,7 +86,7 @@ class _MapsPageState extends State<MapsPage> {
         _isLoading = false;
 
         List<Restaurant_2> restaurantsInCircle = getRestaurantsInCircle(
-            allRestaurants_2, LatLng(latitude, longitude));
+            allRestaurants_2, LatLng(latitude, longitude), circleRadius);
 
         List<Marker> restaurantMarkers = restaurantsInCircle.map((restaurant) {
           return Marker(
@@ -336,15 +335,15 @@ class _MapsPageState extends State<MapsPage> {
     return degree * (pi / 180);
   }
 
-  List<Restaurant_2> getRestaurantsInCircle(
-      List<Restaurant_2> allRestaurants, LatLng userLocation) {
+  List<Restaurant_2> getRestaurantsInCircle(List<Restaurant_2> allRestaurants,
+      LatLng userLocation, double circleRadius) {
     List<Restaurant_2> restaurantsInCircle = [];
 
     for (Restaurant_2 restaurant in allRestaurants) {
       double distance = calculateDistance(userLocation.latitude,
           userLocation.longitude, restaurant.latitude, restaurant.longitude);
 
-      if (distance <= 4.0) {
+      if (distance <= circleRadius) {
         restaurantsInCircle.add(restaurant);
       }
     }
@@ -756,34 +755,34 @@ class _MapsPageState extends State<MapsPage> {
               ),
             ),
           ),
-          Positioned(
-            right: MediaQuery.of(context).size.width * 0.25,
-            top: MediaQuery.of(context).size.height * 0.17,
-            left: MediaQuery.of(context).size.width * 0.19,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                elevation: 5,
-              ),
-              child: const Row(
-                children: [
-                  Icon(Icons.search),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "ค้นหาบริเวณที่เลือก",
-                    style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          // Positioned(
+          //   right: MediaQuery.of(context).size.width * 0.25,
+          //   top: MediaQuery.of(context).size.height * 0.17,
+          //   left: MediaQuery.of(context).size.width * 0.19,
+          //   child: ElevatedButton(
+          //     onPressed: () {},
+          //     style: ElevatedButton.styleFrom(
+          //       backgroundColor: Colors.green,
+          //       foregroundColor: Colors.white,
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(100),
+          //       ),
+          //       elevation: 5,
+          //     ),
+          //     child: const Row(
+          //       children: [
+          //         Icon(Icons.search),
+          //         SizedBox(
+          //           width: 10,
+          //         ),
+          //         Text(
+          //           "ค้นหาบริเวณที่เลือก",
+          //           style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

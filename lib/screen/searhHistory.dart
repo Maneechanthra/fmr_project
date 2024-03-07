@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
-import 'package:fmr_project/model/recomented_data.dart';
+import 'package:fmr_project/model/restaurant_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchHistoryPage extends StatefulWidget {

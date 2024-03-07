@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/detail_page/searhHistory.dart';
+import 'package:fmr_project/screen/searhHistory.dart';
 import 'package:fmr_project/recomented/recomented.dart';
 import 'package:fmr_project/screen/map.dart';
 import 'package:fmr_project/screen/profile.dart';

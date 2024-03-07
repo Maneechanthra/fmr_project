@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/add_screen/addRestuarant.dart';
+import 'package:fmr_project/add/addRestuarant.dart';
 
 class AddTimeOpenCloseDialog extends StatefulWidget {
   const AddTimeOpenCloseDialog({Key? key}) : super(key: key);
@@ -175,13 +175,13 @@ class _AddTimeOpenCloseDialogState extends State<AddTimeOpenCloseDialog> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.pop(context);
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => AddResPage(
-                  //               selectedCategories: [],
-                  //             )));
+                  // Navigator.pop(context);
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddResPage(
+                                selectedCategories: [],
+                              )));
                 },
                 child: Container(
                   height: 100,

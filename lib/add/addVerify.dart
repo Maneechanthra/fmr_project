@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/add_screen/addRestuarant.dart';
-import 'package:fmr_project/detail_page/all_restaurant_of_me.dart';
-import 'package:fmr_project/detail_page/detail_restaurant.dart';
-import 'package:fmr_project/detail_page/restaurantOfme.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 

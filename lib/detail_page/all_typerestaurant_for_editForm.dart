@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/add_screen/addRestuarant.dart';
-import 'package:fmr_project/edit_screen/editRestaurant.dart';
+import 'package:fmr_project/add/addRestuarant.dart';
+import 'package:fmr_project/update/editRestaurant.dart';
+import 'package:fmr_project/model/restaurant_info.dart';
 
 class TypeRestaurantEditPage extends StatefulWidget {
   const TypeRestaurantEditPage({
     Key? key,
     required this.selectedCategories,
+    required this.res_id,
   }) : super(key: key);
 
   final List<Map<String, dynamic>> selectedCategories;
+  final res_id;
 
   @override
   State<TypeRestaurantEditPage> createState() => _TypeRestaurantEditPageState();
@@ -27,6 +30,8 @@ List<Map<String, dynamic>> selectedCategories = [];
 
 class _TypeRestaurantEditPageState extends State<TypeRestaurantEditPage> {
   List<Map<String, dynamic>> selectedCategories = [];
+
+  late Future<List<Restaurant_2>> futureTypeRestaurant;
 
   @override
   Widget build(BuildContext context) {
@@ -133,9 +138,11 @@ class _TypeRestaurantEditPageState extends State<TypeRestaurantEditPage> {
                     MaterialPageRoute(
                       builder: (context) => editRestaurant(
                         selectedCategories: selectedCategories,
+                        res_id: allRestaurants_2[widget.res_id - 1].id,
                       ),
                     ),
                   );
+                  print(allRestaurants_2[widget.res_id - 1].id);
                 },
                 child: Container(
                   height: 100,

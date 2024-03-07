@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
 
-import 'package:fmr_project/model/recomented_data.dart';
+import 'package:fmr_project/model/restaurant_info.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/model/comment_review.dart';
+import 'package:fmr_project/model/review_info.dart';
 
 class AllReivewsPage extends StatefulWidget {
   const AllReivewsPage({super.key});

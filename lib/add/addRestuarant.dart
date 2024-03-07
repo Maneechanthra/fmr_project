@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/add_screen/addAddress_on_map.dart';
-import 'package:fmr_project/add_screen/addTimeOpenClose.dart';
+import 'package:fmr_project/add/addAddress_on_map.dart';
+import 'package:fmr_project/add/addTimeOpenClose.dart';
 import 'package:fmr_project/detail_page/all_typerestaurant.dart';
 import 'package:fmr_project/screen/profile.dart';
 

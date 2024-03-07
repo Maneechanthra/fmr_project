@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 
-class EditEmailPage extends StatefulWidget {
-  const EditEmailPage({super.key});
+class EditNamePage extends StatefulWidget {
+  const EditNamePage({super.key});
 
   @override
-  State<EditEmailPage> createState() => _EditEmailPageState();
+  State<EditNamePage> createState() => _EditNamePageState();
 }
 
-class _EditEmailPageState extends State<EditEmailPage> {
+class _EditNamePageState extends State<EditNamePage> {
+  final nameController = TextEditingController(text: "นายสุเมธ มณีจันทรา");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "แก้ไขอีเมล",
+          "แก้ไขชื่อ-นามสกุล",
           style: TextStyle(fontSize: 18),
         ),
       ),
@@ -28,11 +29,12 @@ class _EditEmailPageState extends State<EditEmailPage> {
               width: 330,
               height: 50,
               child: TextFormField(
+                controller: nameController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
-                  labelText: "อีเมล",
+                  labelText: "ชื่อ-นามสกุล",
                 ),
               ),
             ),

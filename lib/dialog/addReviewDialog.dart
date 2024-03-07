@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:fmr_project/add_screen/addReviewPage.dart';
-import 'package:fmr_project/add_screen/addTimeOpenClose.dart';
+import 'package:fmr_project/add/addReviewPage.dart';
+import 'package:fmr_project/add/addTimeOpenClose.dart';
 
 import 'package:image_picker/image_picker.dart';
 

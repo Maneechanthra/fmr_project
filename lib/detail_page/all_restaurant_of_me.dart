@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/add_screen/addVerify.dart';
+import 'package:fmr_project/add/addVerify.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
-import 'package:fmr_project/edit_screen/editRestaurant.dart';
-import 'package:fmr_project/model/recomented_data.dart';
+import 'package:fmr_project/update/editRestaurant.dart';
+import 'package:fmr_project/model/restaurant_info.dart';
 
 class AllRestaurantOfme extends StatefulWidget {
   const AllRestaurantOfme({super.key});
@@ -44,7 +44,13 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.5,
-                    height: 500,
+                    height: item.verified == 2
+                        ? 430
+                        : item.status == -1
+                            ? 460
+                            : item.verified == 1
+                                ? 430
+                                : 480,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.white,
@@ -214,10 +220,15 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                                             )
                                 ],
                               ),
-                              Divider(),
+                              Divider(
+                                color: const Color.fromARGB(255, 161, 161, 161),
+                              ),
                               // SizedBox(
                               //   height: 10,
                               // ),
+                              SizedBox(
+                                height: 8,
+                              ),
                               Row(
                                 children: [
                                   GestureDetector(
@@ -228,6 +239,7 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                                               builder: (context) =>
                                                   editRestaurant(
                                                     selectedCategories: [],
+                                                    res_id: item.id,
                                                   )));
                                     },
                                     child: Container(
@@ -278,32 +290,45 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                               SizedBox(
                                 height: 10,
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              VerifyRestaurantPage()));
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width * 1,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Color.fromARGB(255, 16, 180, 1),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "ยืนยันตัวตนร้านอาหาร",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              item.verified == 2
+                                  ? SizedBox()
+                                  : item.status == -1
+                                      ? SizedBox(
+                                          height: 10,
+                                        )
+                                      : item.verified == 1
+                                          ? SizedBox()
+                                          : GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            VerifyRestaurantPage()));
+                                              },
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    1,
+                                                height: 45,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Color.fromARGB(
+                                                      255, 16, 180, 1),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    "ยืนยันตัวตนร้านอาหาร",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
                             ],
                           ),
                         ),

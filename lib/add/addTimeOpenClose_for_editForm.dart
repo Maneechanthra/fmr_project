@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/add_screen/addRestuarant.dart';
-import 'package:fmr_project/edit_screen/editRestaurant.dart';
+import 'package:fmr_project/add/addRestuarant.dart';
+import 'package:fmr_project/update/editRestaurant.dart';
 
 class AddTimeOpenCloseEditDialog extends StatefulWidget {
   const AddTimeOpenCloseEditDialog({Key? key}) : super(key: key);

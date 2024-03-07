@@ -4,10 +4,10 @@ import 'package:fmr_project/detail_page/all_review.dart';
 import 'package:fmr_project/dialog/addReportDialog.dart';
 import 'package:fmr_project/dialog/addReviewDialog.dart';
 import 'package:fmr_project/dialog/detailMoreDialog.dart';
-import 'package:fmr_project/model/recomented_data.dart';
+import 'package:fmr_project/model/restaurant_info.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:like_button/like_button.dart';
-import 'package:fmr_project/model/comment_review.dart';
+import 'package:fmr_project/model/review_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailRestaurantPage_2 extends StatefulWidget {
@@ -38,7 +38,6 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
 
   @override
   Widget build(BuildContext context) {
-    int total = 0;
     return Scaffold(
       // body: NestedScrollView(
       //   headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {

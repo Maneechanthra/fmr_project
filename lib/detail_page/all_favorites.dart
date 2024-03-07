@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
-import 'package:fmr_project/model/recomented_data.dart';
+import 'package:fmr_project/model/restaurant_info.dart';
 
 class AllFavoriesPage extends StatefulWidget {
   const AllFavoriesPage({super.key});

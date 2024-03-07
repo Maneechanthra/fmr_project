@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/add_screen/addRestuarant.dart';
+import 'package:fmr_project/add/addRestuarant.dart';
 
 class TypeRestaurantPage extends StatefulWidget {
   const TypeRestaurantPage({
@@ -127,7 +127,7 @@ class _TypeRestaurantPageState extends State<TypeRestaurantPage> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => AddResPage(

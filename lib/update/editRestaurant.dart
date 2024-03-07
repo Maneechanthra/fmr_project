@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/add_screen/addAddress_on_map.dart';
-import 'package:fmr_project/add_screen/addAddress_on_map_for_editForm.dart';
-import 'package:fmr_project/add_screen/addTimeOpenClose.dart';
-import 'package:fmr_project/add_screen/addTimeOpenClose_for_editForm.dart';
+import 'package:fmr_project/add/addAddress_on_map.dart';
+import 'package:fmr_project/add/addAddress_on_map_for_editForm.dart';
+import 'package:fmr_project/add/addTimeOpenClose.dart';
+import 'package:fmr_project/add/addTimeOpenClose_for_editForm.dart';
 import 'package:fmr_project/detail_page/all_typerestaurant.dart';
 import 'package:fmr_project/detail_page/all_typerestaurant_for_editForm.dart';
+import 'package:fmr_project/model/restaurant_info.dart';
 import 'package:fmr_project/screen/profile.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,10 +13,10 @@ import 'dart:io';
 
 class editRestaurant extends StatefulWidget {
   final List<Map<String, dynamic>> selectedCategories;
-  const editRestaurant({
-    Key? key,
-    required this.selectedCategories,
-  }) : super(key: key);
+  final int res_id;
+  const editRestaurant(
+      {Key? key, required this.selectedCategories, required this.res_id})
+      : super(key: key);
 
   @override
   State<editRestaurant> createState() => _editRestaurantState();
@@ -35,168 +36,40 @@ class _editRestaurantState extends State<editRestaurant> {
     'วันเสาร์',
     'วันอาทิตย์'
   ];
+  late TextEditingController restaurantNameController;
+  late TextEditingController phone1NumberController;
+  late TextEditingController phone2NumberController;
+  late TextEditingController type_restaurant_nameController;
 
-  final restaurantNameController = TextEditingController(text: "ครัวตามสั่ง");
-  final phone1NumberController = TextEditingController(text: "0630038428");
-  final phone2NumberController = TextEditingController(text: "08296075902");
+  // final nameController = TextEditingController();
+  // final phone1NumberController = TextEditingController(text: "0630038428");
+  // final phone2NumberController = TextEditingController(text: "08296075902");
 
-  // List<String> timesOfDay = [];
-  // List<OpeningClosingTime> openingClosingTimes = [];
-  // List<OpeningClosingTime> selectedTimes = [];
+  late Future<List<Restaurant_2>> futureEditRestaurant;
+
   List<File> selectedImages = [];
 
-  // @override
-  // void initState() {
-  //   super.initState();
+  List<Map<String, dynamic>> selectedCategories = [];
 
-  //   for (int hour = 0; hour <= 19; hour++) {
-  //     for (int minute = 0; minute < 60; minute += 30) {
-  //       String time =
-  //           '${hour.toString().padLeft(2, '0')}.${minute.toString().padLeft(2, '0')}';
-  //       timesOfDay.add(time);
-  //     }
-  //   }
-  //   openingTime = timesOfDay.first;
-  //   closingTime = timesOfDay.last;
-  // }
+  late TextEditingController _controller;
 
-  // Future<void> _selectDayAndTime(BuildContext context) async {
-  //   String selectedDayTemp = selectedDay;
-  //   String openingTimeTemp = openingTime;
-  //   String closingTimeTemp = closingTime;
-
-  //   List<OpeningClosingTime> selectedTimes = [];
-
-  //   await showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(
-  //         builder: (context, setState) {
-  //           return AlertDialog(
-  //             title: const Text('เลือกวันเวลาเปิดปิดร้าน'),
-  //             content: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 DropdownButton<String>(
-  //                   value: selectedDayTemp,
-  //                   onChanged: (String? newValue) {
-  //                     setState(() {
-  //                       selectedDayTemp = newValue!;
-  //                       openingTimeTemp = timesOfDay.first;
-  //                       closingTimeTemp = timesOfDay.last;
-  //                     });
-  //                   },
-  //                   items: daysOfWeek
-  //                       .map<DropdownMenuItem<String>>((String value) {
-  //                     return DropdownMenuItem<String>(
-  //                       value: value,
-  //                       child: Text(value),
-  //                     );
-  //                   }).toList(),
-  //                 ),
-  //                 const SizedBox(height: 16.0),
-  //                 Row(
-  //                   children: [
-  //                     Expanded(
-  //                       child: DropdownButton<String>(
-  //                         value: openingTimeTemp,
-  //                         onChanged: (String? newValue) {
-  //                           setState(() {
-  //                             openingTimeTemp = newValue!;
-  //                           });
-  //                         },
-  //                         items: timesOfDay
-  //                             .map<DropdownMenuItem<String>>((String value) {
-  //                           return DropdownMenuItem<String>(
-  //                             value: value,
-  //                             child: Text(value),
-  //                           );
-  //                         }).toList(),
-  //                       ),
-  //                     ),
-  //                     const SizedBox(width: 8.0),
-  //                     Expanded(
-  //                       child: DropdownButton<String>(
-  //                         value: closingTimeTemp,
-  //                         onChanged: (String? newValue) {
-  //                           setState(() {
-  //                             closingTimeTemp = newValue!;
-  //                           });
-  //                         },
-  //                         items: timesOfDay
-  //                             .map<DropdownMenuItem<String>>((String value) {
-  //                           return DropdownMenuItem<String>(
-  //                             value: value,
-  //                             child: Text(value),
-  //                           );
-  //                         }).toList(),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //                 const SizedBox(height: 16.0),
-  //                 ElevatedButton(
-  //                   onPressed: () {
-  //                     OpeningClosingTime newTime = OpeningClosingTime(
-  //                       day: selectedDayTemp,
-  //                       openingTime: openingTimeTemp,
-  //                       closingTime: closingTimeTemp,
-  //                     );
-  //                     setState(() {
-  //                       selectedTimes.add(newTime);
-  //                     });
-  //                     selectedDayTemp = 'ทุกวัน';
-  //                     openingTimeTemp = timesOfDay.first;
-  //                     closingTimeTemp = timesOfDay.last;
-  //                   },
-  //                   child: const Text('Add'),
-  //                 ),
-  //                 const SizedBox(height: 16.0),
-  //                 if (selectedTimes.isNotEmpty)
-  //                   Text(
-  //                     'วันเปิดทำการ: ${selectedTimes.last.day}, เวลาเปิด: ${selectedTimes.last.openingTime}, เวลาปิด: ${selectedTimes.last.closingTime}',
-  //                     style: const TextStyle(fontSize: 16),
-  //                   ),
-  //               ],
-  //             ),
-  //             actions: [
-  //               ElevatedButton(
-  //                 onPressed: () {
-  //                   Navigator.of(context).pop();
-  //                 },
-  //                 child: const Text('Cancel'),
-  //               ),
-  //               ElevatedButton(
-  //                 onPressed: () {
-  //                   setState(() {
-  //                     selectedDay = selectedDayTemp;
-  //                     openingTime = openingTimeTemp;
-  //                     closingTime = closingTimeTemp;
-
-  //                     OpeningClosingTime newTime = OpeningClosingTime(
-  //                       day: selectedDay,
-  //                       openingTime: openingTime,
-  //                       closingTime: closingTime,
-  //                     );
-  //                     openingClosingTimes.add(newTime);
-  //                   });
-
-  //                   print('Selected Day: $selectedDay');
-  //                   print('Selected Opening Time: $openingTime');
-  //                   print('Selected Closing Time: $closingTime');
-
-  //                   Navigator.of(context).pop();
-  //                 },
-  //                 child: const Text('OK'),
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.selectedCategories
+          .map((category) => category["name"])
+          .join(", "),
+    );
+    restaurantNameController =
+        TextEditingController(text: allRestaurants_2[widget.res_id - 1].name);
+    phone1NumberController = TextEditingController(
+        text: allRestaurants_2[widget.res_id - 1].telephone_1);
+    phone2NumberController = TextEditingController(
+        text: allRestaurants_2[widget.res_id - 1].telephone_2);
+    type_restaurant_nameController = TextEditingController(
+        text: allRestaurants_2[widget.res_id - 1].type_restaurant);
+  }
 
   Future<void> _pickImages() async {
     List<XFile>? images = await ImagePicker().pickMultiImage(
@@ -230,20 +103,6 @@ class _editRestaurantState extends State<editRestaurant> {
         });
       }
     }
-  }
-
-  List<Map<String, dynamic>> selectedCategories = [];
-
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(
-      text: widget.selectedCategories
-          .map((category) => category["name"])
-          .join(", "),
-    );
   }
 
   @override
@@ -424,6 +283,8 @@ class _editRestaurantState extends State<editRestaurant> {
                               MaterialPageRoute(
                                 builder: (context) => TypeRestaurantEditPage(
                                   selectedCategories: [],
+                                  res_id:
+                                      allRestaurants_2[widget.res_id - 1].id,
                                 ),
                               ),
                             );
@@ -438,7 +299,9 @@ class _editRestaurantState extends State<editRestaurant> {
                           },
                           child: TextField(
                             enabled: false,
-                            controller: _controller,
+                            controller: _controller != null
+                                ? _controller
+                                : type_restaurant_nameController,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.blue),

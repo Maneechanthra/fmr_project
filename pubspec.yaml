@@ -99,6 +99,7 @@ flutter:
     - assets/img/icons/person.png
     - assets/img/icons/restaurant_re.png
     - assets/img/foods/01.jpg
+    - assets/img/logo/logo_3.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -25,26 +25,57 @@ class _NotificationPageState extends State<NotificationPage> {
               report item = getReport[index];
               return Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+                child: Column(
                   children: [
-                    Icon(Icons.notifications_active_outlined),
-                    Column(
+                    Row(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        ClipRRect(
+                          child: SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: Image.asset("assets/img/logo/logo_3.png")),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          height: 100,
+                          width: MediaQuery.of(context).size.width * 0.65,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(item.title),
+                              Text(
+                                item.title,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              // SizedBox(height: 5),
+                              Text(
+                                "ชื่อร้าน: ${item.restaurantId == 1 ? "ครัวตามสั่ง" : item.restaurantId == 2 ? "บาร์บีคิว" : ""}",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              SizedBox(
+                                child: Text(
+                                  "คำอธิบาย: ${item.description}",
+                                  style: TextStyle(fontSize: 12),
+                                  // maxLines: 1,
+                                  // overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                "จำนวนครั้งที่ถูกการรายงาน: ${item.countReport}/3",
+                              ),
                             ],
                           ),
                         ),
-                        Divider(
-                          color: Colors.black,
-                        )
                       ],
+                    ),
+                    Divider(
+                      color: Color.fromARGB(255, 184, 184, 184),
                     ),
                   ],
                 ),

@@ -17,14 +17,15 @@ List<report> getReport = [
   report(
     id: 1,
     title: "ภาพไม่เหมาะสม",
-    description: "ภาพที่นำมาใช้เป็นภาพจากร้านอื่น",
-    countReport: 2,
+    description:
+        "ภาพที่นำมาใช้เป็นภาพจากร้านอื่น มีการนำภาพจากร้านบาร์บีคิวมาใช้งานโดยไม่ได้ขออนุญาตก่อน",
+    countReport: 1,
     restaurantId: 1,
   ),
   report(
     id: 2,
-    title: "ภาพไม่เหมาะสม",
-    description: "ตำแหน่งร้านอาหารไม่ถูกต้อง",
+    title: "ตำแหน่งร้านอาหารไม่ถูกต้อง",
+    description: "ตำแหน่งร้านอาหารไม่ถูกต้อง ไปแล้วหลงทาง",
     countReport: 1,
     restaurantId: 2,
   ),

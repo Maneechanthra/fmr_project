@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:fmr_project/api/register_api.dart';
 import 'package:fmr_project/screen/login.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import '/globals.dart' as globals;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -24,6 +29,40 @@ class _RegisterPageState extends State<RegisterPage> {
     nameController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<Register> register() async {
+    final body = {
+      'name': nameController.text,
+      'email': emailController.text,
+      'password': passwordController.text
+    };
+
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/api/register'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': '*/*',
+        'connection': 'keep-alive',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic>? data = jsonDecode(response.body);
+      if (data != null) {
+        return Register.fromJson(data);
+      } else {
+        throw Exception('failed to decode json data');
+      }
+    } else {
+      throw Exception('failed to register');
+    }
   }
 
   @override
@@ -180,10 +219,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 10,
                     ),
                     InkWell(
-                      onTap: () {
-                        if (_registerForm.currentState!.validate()) {
-                          if (passwordController.text ==
-                              confirmPasswordController.text) {
+                      onTap: () async {
+                        if (passwordController.text ==
+                            confirmPasswordController.text) {
+                          print("รหัสผ่านตรงกัน");
+                          if (_registerForm.currentState!.validate()) {
+                            print("Register Progress");
+                            Register data = await register();
+                            print("register successfully");
                             AwesomeDialog(
                               context: context,
                               animType: AnimType.topSlide,
@@ -211,7 +254,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content:
-                                  Text("กรอกข้อมูลไม่ถูกครบถ้วนหรือไม่ถูกต้อง"),
+                                  Text("กรอกข้อมูลไม่ครบถ้วนหรือไม่ถูกต้อง"),
                             ),
                           );
                         }

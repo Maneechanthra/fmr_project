@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:fmr_project/model/restaurant_info.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class VerifyRestaurantPage extends StatefulWidget {
-  const VerifyRestaurantPage({super.key});
+  final int res_id;
+
+  VerifyRestaurantPage(this.res_id, {Key? key}) : super(key: key);
 
   @override
   State<VerifyRestaurantPage> createState() => _VerifyRestaurantPageState();
 }
 
 class _VerifyRestaurantPageState extends State<VerifyRestaurantPage> {
-  final nameController = TextEditingController(text: "สุเมธ มณีจันทรา");
-  final restaurantNameController = TextEditingController(text: "ครัวตามสั่ง");
-  final tagrestaurantController =
-      TextEditingController(text: "อาหารจีน , อาหารไทย");
   String selectedDay = 'ทุกวัน';
   String openingTime = '';
   String closingTime = '';
@@ -27,6 +26,19 @@ class _VerifyRestaurantPageState extends State<VerifyRestaurantPage> {
     'วันเสาร์',
     'วันอาทิตย์'
   ];
+
+  late TextEditingController nameController;
+  late TextEditingController restaurantNameController;
+  late TextEditingController tagrestaurantController;
+
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: "สุเมธ มณีจันทรา");
+    restaurantNameController =
+        TextEditingController(text: allRestaurants_2[widget.res_id - 1].name);
+    tagrestaurantController = TextEditingController(
+        text: allRestaurants_2[widget.res_id - 1].type_restaurant);
+  }
 
   // List<String> tagrestaurant = [
   //   'อาหารจีน',

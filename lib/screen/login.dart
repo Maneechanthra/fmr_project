@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:fmr_project/api/login_api.dart';
 import 'package:fmr_project/screen/forgotpassword.dart';
 import 'package:fmr_project/screen/home.dart';
 import 'package:fmr_project/screen/register.dart';
+import 'package:http/http.dart' as http;
+import '/globals.dart' as globals;
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,6 +22,42 @@ class _LoginPageState extends State<LoginPage> {
   final _loginForm = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+  Future<LoginResponse> verifyLogin() async {
+    final body = {
+      'email': emailController.text,
+      'password': passwordController.text
+    };
+
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/api/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': '*/*',
+        'connection': 'keep-alive',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic>? data = jsonDecode(response.body);
+      if (data != null) {
+        return LoginResponse.fromJson(data);
+      } else {
+        throw Exception('failed to decode json data');
+      }
+    } else {
+      throw Exception('failed to login');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,8 +143,9 @@ class _LoginPageState extends State<LoginPage> {
                 height: 10,
               ),
               InkWell(
-                onTap: () {
+                onTap: () async {
                   if (_loginForm.currentState!.validate()) {
+                    LoginResponse response = await verifyLogin();
                     AwesomeDialog(
                       context: context,
                       animType: AnimType.topSlide,
@@ -122,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                     ).show();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("กรอกข้อมูลไม่ถูกครบถ้วนหรือไม่ถูกต้อง"),
+                      content: Text("กรอกข้อมูลไม่ครบถ้วนหรือไม่ถูกต้อง"),
                     ));
                   }
                 },

@@ -60,6 +60,7 @@ dependencies:
   geocoding: ^2.1.1
   shared_preferences: ^2.2.2
   awesome_dialog: ^3.2.0
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +83,7 @@ flutter_launcher_icons:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
+
 flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

@@ -304,7 +304,8 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            VerifyRestaurantPage()));
+                                                            VerifyRestaurantPage(
+                                                                item.id)));
                                               },
                                               child: Container(
                                                 width: MediaQuery.of(context)

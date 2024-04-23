@@ -11,10 +11,10 @@ import 'dart:io';
 
 class AddResPage extends StatefulWidget {
   final List<Map<String, dynamic>> selectedCategories;
-  const AddResPage({
-    Key? key,
-    required this.selectedCategories,
-  }) : super(key: key);
+  final userId;
+  const AddResPage(
+      {Key? key, required this.selectedCategories, required this.userId})
+      : super(key: key);
 
   @override
   State<AddResPage> createState() => _AddResPageState();
@@ -639,8 +639,10 @@ class _AddResPageState extends State<AddResPage> {
               padding: const EdgeInsets.only(top: 10.0),
               child: InkWell(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProfilePage(widget.userId)));
                 },
                 child: Container(
                   width: MediaQuery.sizeOf(context).width * 0.93,

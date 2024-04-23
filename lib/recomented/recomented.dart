@@ -43,9 +43,9 @@ class _RecomentedPageState extends State<RecomentedPage> {
               physics: const NeverScrollableScrollPhysics(),
               children: List.generate(snapshot.data!.length, (index) {
                 RecommendedModel item = snapshot.data![index];
-                Restaurant_2 res = allRestaurants_2[index];
+                // Restaurant_2 res = allRestaurants_2[index];
                 final String imageUrl =
-                    'http://10.0.2.2:8000/api/public/${snapshot.data![index].path}';
+                    'http://10.0.2.2:8000/api/public/${snapshot.data![index].image_path}';
                 return Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: InkWell(
@@ -53,7 +53,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailRestaurantPage_2(res.id),
+                          builder: (context) => DetailRestaurantPage_2(item.id),
                         ),
                       );
                     },
@@ -111,10 +111,10 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                             size: 14,
                                             color: Colors.orangeAccent,
                                           ),
-                                          Text(
-                                            res.rating.toString(),
-                                            style: TextStyle(fontSize: 12),
-                                          ),
+                                          // Text(
+                                          //   res.rating.toString(),
+                                          //   style: TextStyle(fontSize: 12),
+                                          // ),
                                         ],
                                       ),
                                     ),
@@ -128,7 +128,6 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    // mainAxisAlignment: MainAxisAlignment,
                                     children: [
                                       SizedBox(
                                         width: 130,
@@ -141,7 +140,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      res.verified == 2
+                                      item.verified == 2
                                           ? Icon(
                                               Icons.verified_rounded,
                                               color: Colors.blue,
@@ -150,7 +149,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                     ],
                                   ),
                                   Text(
-                                    res.type_restaurant,
+                                    item.category_title,
                                     style: GoogleFonts.mitr(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,
@@ -163,54 +162,54 @@ class _RecomentedPageState extends State<RecomentedPage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0, top: 5),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 50,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Color.fromARGB(255, 212, 14, 0)),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(0.8),
-                                        child: Text(
-                                          res.kilomate.toString() + " กม.",
-                                          style: GoogleFonts.mitr(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color.fromARGB(
-                                                  255, 255, 255, 255)),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 3,
-                                  ),
-                                  Container(
-                                    width: 50,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Color.fromARGB(162, 14, 12, 9),
-                                    ),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(0.8),
-                                        child: Text(
-                                          res.review.toString() + " รีวิว",
-                                          style: GoogleFonts.mitr(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color.fromARGB(
-                                                  255, 255, 255, 255)),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              // child: Row(
+                              //   children: [
+                              //     Container(
+                              //       width: 50,
+                              //       height: 20,
+                              //       decoration: BoxDecoration(
+                              //           borderRadius: BorderRadius.circular(5),
+                              //           color: Color.fromARGB(255, 212, 14, 0)),
+                              //       child: Center(
+                              //         child: Padding(
+                              //           padding: const EdgeInsets.all(0.8),
+                              //           child: Text(
+                              //             res.kilomate.toString() + " กม.",
+                              //             style: GoogleFonts.mitr(
+                              //                 fontSize: 10,
+                              //                 fontWeight: FontWeight.normal,
+                              //                 color: Color.fromARGB(
+                              //                     255, 255, 255, 255)),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ),
+                              //     const SizedBox(
+                              //       width: 3,
+                              //     ),
+                              //     Container(
+                              //       width: 50,
+                              //       height: 20,
+                              //       decoration: BoxDecoration(
+                              //         borderRadius: BorderRadius.circular(5),
+                              //         color: Color.fromARGB(162, 14, 12, 9),
+                              //       ),
+                              //       child: Center(
+                              //         child: Padding(
+                              //           padding: const EdgeInsets.all(0.8),
+                              //           child: Text(
+                              //             res.review.toString() + " รีวิว",
+                              //             style: GoogleFonts.mitr(
+                              //                 fontSize: 10,
+                              //                 fontWeight: FontWeight.normal,
+                              //                 color: Color.fromARGB(
+                              //                     255, 255, 255, 255)),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
                             ),
                           ],
                         ),

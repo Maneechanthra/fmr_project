@@ -1,10 +1,6 @@
-// To parse this JSON data, do
-//
-//     final loginResponse = loginResponseFromJson(jsonString);
-
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import '/globals.dart' as globals;
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
+// import '/globals.dart' as globals;
 
 class LoginResponse {
   final String email;
@@ -25,7 +21,7 @@ class LoginResponse {
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
         email: json["email"],
-        userId: json["user_id"],
+        userId: json["userId"],
         jwtToken: json["jwt_token"],
         name: json["name"],
         message: json["message"],

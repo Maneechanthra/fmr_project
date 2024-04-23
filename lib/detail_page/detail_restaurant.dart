@@ -1,5 +1,6 @@
 import 'package:another_carousel_pro/another_carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:fmr_project/api/restaurantById_api.dart';
 import 'package:fmr_project/detail_page/all_review.dart';
 import 'package:fmr_project/dialog/addReportDialog.dart';
 import 'package:fmr_project/dialog/addReviewDialog.dart';
@@ -11,9 +12,9 @@ import 'package:fmr_project/model/review_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailRestaurantPage_2 extends StatefulWidget {
-  final int res_id;
+  final int restaurantId;
 
-  DetailRestaurantPage_2(this.res_id, {Key? key}) : super(key: key);
+  DetailRestaurantPage_2(this.restaurantId, {Key? key}) : super(key: key);
 
   @override
   State<DetailRestaurantPage_2> createState() => _DetailRestaurantPage_2State();
@@ -21,20 +22,16 @@ class DetailRestaurantPage_2 extends StatefulWidget {
 
 class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
   bool isFavorite = false;
-  late Future<List<Restaurant_2>> futureShowDetailPost;
+  // late Future<List<RestaurantById>> futureRestaurants;
+  late Future<RestaurantById> futureRestaurants;
   int current = 0;
 
   @override
   void initState() {
     super.initState();
-    // futureShowDetailPost = loadRestaurants();
+    futureRestaurants = getRestaurantById(widget.restaurantId);
+    print("restaurantId : " + widget.restaurantId.toString());
   }
-
-  // Future<List<Restaurant_2>> loadRestaurants() async {
-  //   return await Future.delayed(Duration(seconds: 1), () {
-  //     return allRestaurants_2;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -69,293 +66,310 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
       //     ];
       //   },
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  height: 250,
-                  child: AnotherCarousel(
-                    images: [
-                      AssetImage(
-                          allRestaurants_2[widget.res_id - 1].imageUrls[0]),
-                      AssetImage(
-                          allRestaurants_2[widget.res_id - 1].imageUrls[1]),
-                      AssetImage(
-                          allRestaurants_2[widget.res_id - 1].imageUrls[2]),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      const Color.fromARGB(221, 189, 189, 189),
-                                  offset: Offset(0, 2),
-                                  blurRadius: 2,
-                                ),
-                              ]),
-                          child: Center(
-                            child: Icon(
-                              Icons.arrow_back_ios,
-                            ),
+        child: FutureBuilder(
+            future: futureRestaurants,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                final data = snapshot.data!;
+                print(data.address);
+                final List<String> imageUrls = data.imagePaths.map((path) {
+                  return 'http://10.0.2.2:8000/api/public/$path';
+                }).toList();
+
+                print(imageUrls);
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          height: 250,
+                          child: AnotherCarousel(
+                            images: imageUrls.map((url) {
+                              return Image.network(
+                                url,
+                                fit: BoxFit.cover,
+                              );
+                            }).toList(),
                           ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => ReportDialogPage());
-                        },
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      const Color.fromARGB(221, 189, 189, 189),
-                                  offset: Offset(0, 2),
-                                  blurRadius: 2,
-                                ),
-                              ]),
-                          child: Center(
-                            child: Icon(
-                              Icons.report,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.75,
-                            child: Text(
-                              allRestaurants_2[widget.res_id - 1].name,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          // Icon(
-                          //   Icons.verified_rounded,
-                          //   color: Colors.blue,
-                          // )
-                        ],
-                      ),
-                      LikeButton(
-                        isLiked: isFavorite,
-                        onTap: (bool isLiked) {
-                          setState(() {
-                            isFavorite = !isLiked;
-                          });
-                          return Future.value(!isLiked);
-                        },
-                        size: 30,
-                        circleColor: const CircleColor(
-                            start: Colors.pink, end: Colors.red),
-                        bubblesColor: const BubblesColor(
-                          dotPrimaryColor: Colors.pink,
-                          dotSecondaryColor: Colors.red,
-                        ),
-                        likeBuilder: (bool isLiked) {
-                          return Icon(
-                            isLiked ? Icons.favorite : Icons.favorite_border,
-                            color: isLiked ? Colors.pink : Colors.grey,
-                            size: 30,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  allRestaurants_2[widget.res_id - 1].verified == 2
-                      ? Container(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 50),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(
-                                Icons.task_alt_outlined,
-                                size: 16,
-                                color: Colors.white,
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color.fromARGB(
+                                              221, 189, 189, 189),
+                                          offset: Offset(0, 2),
+                                          blurRadius: 2,
+                                        ),
+                                      ]),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.arrow_back_ios,
+                                    ),
+                                  ),
+                                ),
                               ),
-                              Text(
-                                "Official",
-                                style: TextStyle(color: Colors.white),
-                              )
+                              InkWell(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => ReportDialogPage());
+                                },
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color.fromARGB(
+                                              221, 189, 189, 189),
+                                          offset: Offset(0, 2),
+                                          blurRadius: 2,
+                                        ),
+                                      ]),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.report,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
-                        )
-                      : SizedBox(),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    allRestaurants_2[widget.res_id - 1].type_restaurant,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Color.fromARGB(255, 145, 145, 145),
-                        fontSize: 16),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(
-                            Icons.star,
-                            size: 18,
-                            color: Colors.orange,
-                          ),
-                          Text(
-                            allRestaurants_2[widget.res_id - 1]
-                                .rating
-                                .toString(),
-                            style: TextStyle(
-                              color: const Color.fromARGB(255, 0, 0, 0),
-                              fontSize: 16,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "(${allRestaurants_2[widget.res_id - 1].review} รีวิว)",
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 155, 155, 155),
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                            size: 16,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            isFavorite == true
-                                ? (allRestaurants_2[widget.res_id - 1]
-                                            .favorites +
-                                        1)
-                                    .toString()
-                                : allRestaurants_2[widget.res_id - 1]
-                                    .favorites
-                                    .toString(),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          child: Container(
-                            height: 20,
-                            width: 2,
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 219, 219, 219),
-                            ),
-                          )),
-                      Row(
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(
-                                Icons.visibility,
-                                color: const Color.fromARGB(255, 153, 153, 153),
-                                size: 18,
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.75,
+                                    child: Text(
+                                      data.restaurantName,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  // Icon(
+                                  //   Icons.verified_rounded,
+                                  //   color: Colors.blue,
+                                  // )
+                                ],
+                              ),
+                              LikeButton(
+                                isLiked: isFavorite,
+                                onTap: (bool isLiked) {
+                                  setState(() {
+                                    isFavorite = !isLiked;
+                                  });
+                                  return Future.value(!isLiked);
+                                },
+                                size: 30,
+                                circleColor: const CircleColor(
+                                    start: Colors.pink, end: Colors.red),
+                                bubblesColor: const BubblesColor(
+                                  dotPrimaryColor: Colors.pink,
+                                  dotSecondaryColor: Colors.red,
+                                ),
+                                likeBuilder: (bool isLiked) {
+                                  return Icon(
+                                    isLiked
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: isLiked ? Colors.pink : Colors.grey,
+                                    size: 30,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          data.verified == 2
+                              ? Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.25,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.task_alt_outlined,
+                                        size: 16,
+                                        color: Colors.white,
+                                      ),
+                                      Text(
+                                        "Official",
+                                        style: TextStyle(color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : SizedBox(),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            data.categoryTitle,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Color.fromARGB(255, 145, 145, 145),
+                                fontSize: 16),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    size: 18,
+                                    color: Colors.orange,
+                                  ),
+                                  Text(
+                                    data.averageRating.toString(),
+                                    style: TextStyle(
+                                      color: const Color.fromARGB(255, 0, 0, 0),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "(${data.reviewCount} รีวิว)",
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 155, 155, 155),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
                               ),
                               SizedBox(
                                 width: 5,
                               ),
-                              Text(
-                                "${allRestaurants_2[widget.res_id - 1].views.toString()} ครั้ง",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                    size: 16,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    isFavorite == true
+                                        ? (data.favoritesCount + 1).toString()
+                                        : data.favoritesCount.toString(),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  child: Container(
+                                    height: 20,
+                                    width: 2,
+                                    decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 219, 219, 219),
+                                    ),
+                                  )),
+                              Row(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.visibility,
+                                        color: const Color.fromARGB(
+                                            255, 153, 153, 153),
+                                        size: 18,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        "${data.viewCount.toString()} ครั้ง",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+                          SizedBox(
+                            height: 10,
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RestaurantInfoWidget(widget.res_id),
-                  ReviewsWidget(widget.res_id),
-                ],
-              ),
-            ),
-          ],
-        ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RestaurantInfoWidget(snapshot.data!),
+                          ReviewsWidget(snapshot.data!),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+            }),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
 
@@ -396,145 +410,137 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 class RestaurantInfoWidget extends StatelessWidget {
-  final int res_id;
+  final RestaurantById restaurantId;
 
-  RestaurantInfoWidget(this.res_id);
+  RestaurantInfoWidget(this.restaurantId);
 
-  LatLng _latLng = LatLng(17.27274239, 104.1265007);
-  void _openPhoneApp(String phoneNumber) async {
-    final url = 'tel:$phoneNumber';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // LatLng _latLng = LatLng(17.27274239, 104.1265007);
+  // void _openPhoneApp(String phoneNumber) async {
+  //   final url = 'tel:$phoneNumber';
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Builder(builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: MediaQuery.sizeOf(context).width * 1.0,
-              height: 200,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                      color: const Color.fromARGB(221, 216, 216, 216))),
-              child: Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(allRestaurants_2[res_id - 1].latitude,
-                        allRestaurants_2[res_id - 1].longitude),
-                    zoom: 15,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: MediaQuery.sizeOf(context).width * 1.0,
+            height: 200,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                    color: const Color.fromARGB(221, 216, 216, 216))),
+            child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(restaurantId.latitude, restaurantId.longitude),
+                  zoom: 15,
+                ),
+                markers: {
+                  Marker(
+                    markerId: MarkerId('1'),
+                    position:
+                        LatLng(restaurantId.latitude, restaurantId.longitude),
                   ),
-                  markers: {
-                    Marker(
-                      markerId: MarkerId('1'),
-                      position: LatLng(allRestaurants_2[res_id - 1].latitude,
-                          allRestaurants_2[res_id - 1].longitude),
-                    ),
-                  },
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: SizedBox(
-                height: 40,
-                child: Text(
-                  allRestaurants_2[res_id - 1].address,
-                ),
-              ),
-            ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: SizedBox(
-                height: 40,
-                child: InkWell(
-                  onTap: () {
-                    _openPhoneApp("0630038428");
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "โทร : ${allRestaurants_2[res_id - 1].telephone_1}",
-                      ),
-                      Icon(Icons.phone),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Divider(),
-            allRestaurants_2[res_id - 1].telephone_2 != ""
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: SizedBox(
-                      height: 40,
-                      child: InkWell(
-                        onTap: () {
-                          _openPhoneApp("0829606502");
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "โทร : ${allRestaurants_2[res_id - 1].telephone_2}",
-                            ),
-                            Icon(Icons.phone),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                : SizedBox(),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: InkWell(
-                onTap: () {
-                  showDialog(
-                      context: context, builder: (context) => MoreDialogPage());
                 },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: SizedBox(
+              height: 40,
+              child: Text(
+                restaurantId.address,
+              ),
+            ),
+          ),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: SizedBox(
+              height: 20,
+              child: InkWell(
+                onTap: () {},
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "ข้อมูลเพิ่มเติม",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w500),
-                        ),
-                        Icon(Icons.more),
-                      ],
-                    ),
                     Text(
-                      "เวลาเปิดปิด...",
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                      "โทร : ${restaurantId.telephone1}",
                     ),
+                    Icon(Icons.phone),
                   ],
                 ),
               ),
             ),
-            Divider(),
-          ],
-        );
-      }),
+          ),
+          Divider(),
+          restaurantId.telephone2 == ""
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: SizedBox(
+                    height: 20,
+                    child: InkWell(
+                      onTap: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "โทร : ${restaurantId.telephone2}",
+                          ),
+                          Icon(Icons.phone),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : SizedBox(),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: InkWell(
+              onTap: () {
+                showDialog(
+                    context: context, builder: (context) => MoreDialogPage());
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "ข้อมูลเพิ่มเติม",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
+                      Icon(Icons.more),
+                    ],
+                  ),
+                  Text(
+                    "เวลาเปิดปิด...",
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Divider(),
+        ],
+      ),
     );
   }
 }
@@ -542,9 +548,9 @@ class RestaurantInfoWidget extends StatelessWidget {
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 class ReviewsWidget extends StatelessWidget {
-  final int res_id;
+  final RestaurantById restaurantId;
 
-  ReviewsWidget(this.res_id);
+  ReviewsWidget(this.restaurantId);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -557,7 +563,7 @@ class ReviewsWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "${allRestaurants_2[res_id - 1].review.toString()} รีวิว",
+                  "${restaurantId.reviewCount.toString()} รีวิว",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -591,14 +597,14 @@ class ReviewsWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          "${allRestaurants_2[res_id - 1].rating.toString()}",
+                          "${restaurantId.averageRating.toString()}",
                           style: TextStyle(
                             fontSize: 65,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "จาก ${allRestaurants_2[res_id - 1].review.toString()} รีวิว",
+                          "จาก ${restaurantId.reviewCount.toString()} รีวิว",
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -795,7 +801,9 @@ class ReviewsWidget extends StatelessWidget {
               ),
             ),
             Divider(),
-            _CommentWidget(),
+            restaurantId.reviewCount == 0
+                ? SizedBox()
+                : _CommentWidget(restaurantId),
             GestureDetector(
               onTap: () {
                 Navigator.push(context,
@@ -830,138 +838,126 @@ class ReviewsWidget extends StatelessWidget {
 }
 
 //----------------------------------------------------------------
-Widget _CommentWidget() {
+Widget _CommentWidget(RestaurantById restaurantId) {
   return ListView.builder(
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
+    // กำหนด itemCount เป็น 2 เพื่อแสดงเพียง 2 รีวิว
     itemCount: 2,
     itemBuilder: (BuildContext context, int index) {
-      Comments comment = Comment[index];
-      return Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      // ป้องกันไม่ให้ดัชนีเกินขอบเขตของ restaurantId.reviews
+      if (index >= restaurantId.reviews.length) {
+        return Container(); // คืนค่า Container เปล่าเพื่อหลีกเลี่ยงข้อผิดพลาด
+      }
+
+      final review = restaurantId.reviews[index];
+      final List<String> imageUrlsReview = review.imagePathsReview.map((path) {
+        return 'http://10.0.2.2:8000/api/public/$path';
+      }).toList();
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 30,
+                child: Image.asset("assets/img/icons/user.png"),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                review.name,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 30,
-                  child: Image.asset("assets/img/icons/user.png"),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  comment.name,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                Row(
+                  children: List.generate(
+                    5,
+                    (index) {
+                      Color starColor;
+                      if (index < 5) {
+                        starColor = const Color.fromARGB(255, 255, 165, 0);
+                      } else {
+                        starColor = const Color.fromARGB(255, 199, 199, 199);
+                      }
+                      return Icon(
+                        Icons.star,
+                        color: starColor,
+                        size: 14,
+                      );
+                    },
                   ),
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                (comment.id == 1)
-                    ? Row(
-                        children: List.generate(
-                          5,
-                          (index) {
-                            Color starColor;
-                            if (index < 5) {
-                              starColor =
-                                  const Color.fromARGB(255, 255, 165, 0);
-                            } else {
-                              starColor =
-                                  const Color.fromARGB(255, 199, 199, 199);
-                            }
-                            return Icon(
-                              Icons.star,
-                              color: starColor,
-                              size: 14,
-                            );
-                          },
-                        ),
-                      )
-                    : Row(
-                        children: List.generate(
-                          5,
-                          (index) {
-                            Color starColor;
-                            if (index < 3.5) {
-                              starColor =
-                                  const Color.fromARGB(255, 255, 165, 0);
-                            } else {
-                              starColor =
-                                  const Color.fromARGB(255, 199, 199, 199);
-                            }
-                            return Icon(
-                              Icons.star,
-                              color: starColor,
-                              size: 14,
-                            );
-                          },
-                        ),
-                      ),
                 Text(
-                  "วันที่: ${comment.dateReview}",
+                  review.created_at,
                   style: TextStyle(
                     fontSize: 12,
                   ),
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
+          ),
+          Text(
+            review.title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
-            Text(
-              comment.title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            review.content,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
-            SizedBox(
-              height: 5,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            height: 100,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: imageUrlsReview.length,
+              itemBuilder: (context, index) {
+                if (index >= imageUrlsReview.length) {
+                  return Container();
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Image.network(
+                    imageUrlsReview[index],
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
             ),
-            Text(
-              comment.content,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: comment.imageUrls.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
-                    child: Image.asset(
-                      comment.imageUrls[index],
-                    ),
-                  );
-                },
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Divider(),
-            SizedBox(
-              height: 10,
-            ),
-          ],
-        ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Divider(),
+          SizedBox(
+            height: 10,
+          ),
+        ],
       );
     },
   );

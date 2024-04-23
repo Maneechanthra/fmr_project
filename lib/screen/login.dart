@@ -12,7 +12,8 @@ import '/globals.dart' as globals;
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final int userId;
+  const LoginPage(this.userId, {Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -46,15 +47,16 @@ class _LoginPageState extends State<LoginPage> {
       body: jsonEncode(body),
     );
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
+    if (response.statusCode == 200) {
       final Map<String, dynamic>? data = jsonDecode(response.body);
+
       if (data != null) {
         return LoginResponse.fromJson(data);
       } else {
-        throw Exception('failed to decode json data');
+        throw Exception('Failed to decode JSON data');
       }
     } else {
-      throw Exception('failed to login');
+      throw Exception('Failed to Login.');
     }
   }
 
@@ -146,6 +148,9 @@ class _LoginPageState extends State<LoginPage> {
                 onTap: () async {
                   if (_loginForm.currentState!.validate()) {
                     LoginResponse response = await verifyLogin();
+                    print(response.email);
+                    print(response.userId);
+                    print(response.name);
                     AwesomeDialog(
                       context: context,
                       animType: AnimType.topSlide,
@@ -159,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const HomePage()));
+                                builder: (context) => HomePage()));
                       },
                     ).show();
                   } else {

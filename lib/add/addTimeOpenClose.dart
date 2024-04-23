@@ -40,7 +40,6 @@ class _AddTimeOpenCloseDialogState extends State<AddTimeOpenCloseDialog> {
   void initState() {
     super.initState();
 
-    // Initialize controllers for each day
     for (var day in daysOfWeek) {
       openingTimeControllers[day] = TimeOfDay.now();
       closingTimeControllers[day] = TimeOfDay.now();
@@ -176,11 +175,26 @@ class _AddTimeOpenCloseDialogState extends State<AddTimeOpenCloseDialog> {
               InkWell(
                 onTap: () {
                   // Navigator.pop(context);
+                  //function for opening and closing print
+
+                  print('Selected Opening-Closing Times:');
+                  for (var day in selectedDays) {
+                    var openingTime =
+                        openingTimeControllers[day]?.format(context) ??
+                            'Not selected';
+                    var closingTime =
+                        closingTimeControllers[day]?.format(context) ??
+                            'Not selected';
+                    print(
+                        'Day: $day, Opening Time: $openingTime, Closing Time: $closingTime');
+                  }
+
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) => AddResPage(
                                 selectedCategories: [],
+                                userId: null,
                               )));
                 },
                 child: Container(

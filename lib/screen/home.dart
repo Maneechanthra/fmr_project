@@ -9,7 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final userId;
+  const HomePage({super.key, this.userId});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -52,14 +53,14 @@ class _HomePageState extends State<HomePage> {
     return await Geolocator.getCurrentPosition();
   }
 
-  final List<String> categories = [
-    "ทั้งหมด",
-    "อาหารอีสาน",
-    "อาหารจีน",
-    "อาหารไทย",
-    "ชาบู/หมูกระทะ",
-    "คาเฟ่",
-  ];
+  // final List<String> categories = [
+  //   "ทั้งหมด",
+  //   "อาหารอีสาน",
+  //   "อาหารจีน",
+  //   "อาหารไทย",
+  //   "ชาบู/หมูกระทะ",
+  //   "คาเฟ่",
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               MapsPage(),
-              const ProfilePage(),
+              // ProfilePage(),
             ],
           ),
         ),

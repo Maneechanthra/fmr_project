@@ -6,17 +6,21 @@ class RecommendedModel {
   final int id;
   final String restaurantName;
   final String title;
-  final String path;
+  final String image_path;
   final dynamic averageRating;
   final int reviewCount;
+  final int verified;
+  final String category_title;
 
   RecommendedModel({
     required this.id,
     required this.restaurantName,
     required this.title,
-    required this.path,
+    required this.image_path,
     required this.averageRating,
     required this.reviewCount,
+    required this.verified,
+    required this.category_title,
   });
 
   factory RecommendedModel.fromJson(Map<String, dynamic> json) =>
@@ -24,9 +28,11 @@ class RecommendedModel {
         id: json["id"],
         restaurantName: json["restaurant_name"],
         title: json["title"],
-        path: json["path"],
+        image_path: json["image_path"],
         averageRating: json["average_rating"],
         reviewCount: json["review_count"],
+        verified: json["verified"],
+        category_title: json["category_title"],
       );
 }
 

@@ -132,6 +132,7 @@ class _TypeRestaurantPageState extends State<TypeRestaurantPage> {
                     MaterialPageRoute(
                       builder: (context) => AddResPage(
                         selectedCategories: selectedCategories,
+                        userId: null,
                       ),
                     ),
                   );

@@ -235,12 +235,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               titleTextStyle: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 20),
                               btnOkOnPress: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LoginPage(),
-                                  ),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => LoginPage(),
+                                //   ),
+                                // );
                               },
                             ).show();
                           } else {
@@ -293,12 +293,12 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) {
-                                      return const LoginPage();
-                                    }),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(builder: (context) {
+                                  //     return LoginPage();
+                                  //   }),
+                                  // );
                                 },
                                 child: Text(
                                   "เข้าสู่ระบบ",

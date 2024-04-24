@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class HomePage extends StatefulWidget {
-  final userId;
+  final int? userId;
   const HomePage({super.key, this.userId});
 
   @override
@@ -18,6 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+
   late PageController _pageController = PageController();
 
   @override
@@ -255,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               MapsPage(),
-              // ProfilePage(),
+              ProfilePage(widget.userId ?? 0)
             ],
           ),
         ),

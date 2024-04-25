@@ -7,7 +7,8 @@ import 'package:fmr_project/model/restaurant_info.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class RecomentedPage extends StatefulWidget {
-  const RecomentedPage({Key? key}) : super(key: key);
+  final userId;
+  const RecomentedPage(this.userId, {Key? key}) : super(key: key);
 
   @override
   State<RecomentedPage> createState() => _RecomentedPageState();
@@ -53,7 +54,10 @@ class _RecomentedPageState extends State<RecomentedPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailRestaurantPage_2(item.id),
+                          builder: (context) => DetailRestaurantPage_2(
+                            item.id,
+                            widget.userId,
+                          ),
                         ),
                       );
                     },

@@ -11,7 +11,8 @@ import 'package:slider_controller/slider_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MapsPage extends StatefulWidget {
-  const MapsPage({super.key});
+  final int userId;
+  const MapsPage(this.userId, {super.key});
 
   @override
   State<MapsPage> createState() => _MapsPageState();
@@ -458,8 +459,10 @@ class _MapsPageState extends State<MapsPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailRestaurantPage_2(restaurant.id),
+                                builder: (context) => DetailRestaurantPage_2(
+                                  restaurant.id,
+                                  widget.userId,
+                                ),
                               ),
                             );
                             print(restaurant.id);

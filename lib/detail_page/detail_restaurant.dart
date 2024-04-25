@@ -13,8 +13,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class DetailRestaurantPage_2 extends StatefulWidget {
   final int restaurantId;
+  final int? userId;
 
-  DetailRestaurantPage_2(this.restaurantId, {Key? key}) : super(key: key);
+  DetailRestaurantPage_2(this.restaurantId, this.userId, {Key? key})
+      : super(key: key);
 
   @override
   State<DetailRestaurantPage_2> createState() => _DetailRestaurantPage_2State();
@@ -31,6 +33,7 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
     super.initState();
     futureRestaurants = getRestaurantById(widget.restaurantId);
     print("restaurantId : " + widget.restaurantId.toString());
+    print("userId : " + widget.userId.toString());
   }
 
   @override
@@ -133,7 +136,9 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                                 onTap: () {
                                   showDialog(
                                       context: context,
-                                      builder: (context) => ReportDialogPage());
+                                      builder: (context) => ReportDialogPage(
+                                          widget.userId ?? 0,
+                                          widget.restaurantId));
                                 },
                                 child: Container(
                                   width: 50,
@@ -375,7 +380,10 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
 
       floatingActionButton: InkWell(
         onTap: () {
-          showDialog(context: context, builder: (context) => AddReviewDialog());
+          showDialog(
+              context: context,
+              builder: (context) =>
+                  AddReviewDialog(widget.restaurantId, widget.userId ?? 0));
         },
         child: Container(
           height: 45,
@@ -597,7 +605,7 @@ class ReviewsWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          "${restaurantId.averageRating.toString()}",
+                          "${restaurantId.averageRating.toInt()}",
                           style: TextStyle(
                             fontSize: 65,
                             fontWeight: FontWeight.bold,
@@ -911,7 +919,7 @@ Widget _CommentWidget(RestaurantById restaurantId) {
             ),
           ),
           Text(
-            review.title,
+            review.title ?? "",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,

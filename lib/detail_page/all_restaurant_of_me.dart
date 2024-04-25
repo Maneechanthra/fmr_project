@@ -5,7 +5,8 @@ import 'package:fmr_project/update/editRestaurant.dart';
 import 'package:fmr_project/model/restaurant_info.dart';
 
 class AllRestaurantOfme extends StatefulWidget {
-  const AllRestaurantOfme({super.key});
+  final int userId;
+  const AllRestaurantOfme(this.userId, {super.key});
 
   @override
   State<AllRestaurantOfme> createState() => _AllRestaurantOfmeState();
@@ -38,8 +39,8 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                DetailRestaurantPage_2(item.id)));
+                            builder: (context) => DetailRestaurantPage_2(
+                                item.id, widget.userId)));
                     print(item.id);
                   },
                   child: Container(

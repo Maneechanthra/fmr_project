@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
 
 class EditNamePage extends StatefulWidget {
-  const EditNamePage({super.key});
+  final int userId;
+  final String name;
+  const EditNamePage(this.userId, this.name, {super.key});
 
   @override
   State<EditNamePage> createState() => _EditNamePageState();
 }
 
 class _EditNamePageState extends State<EditNamePage> {
-  final nameController = TextEditingController(text: "นายสุเมธ มณีจันทรา");
+  late TextEditingController nameController;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.name);
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

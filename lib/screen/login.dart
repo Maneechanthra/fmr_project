@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fmr_project/api/login_api.dart';
 import 'package:fmr_project/screen/forgotpassword.dart';
 import 'package:fmr_project/screen/home.dart';
+import 'package:fmr_project/screen/profile.dart';
 import 'package:fmr_project/screen/register.dart';
 import 'package:http/http.dart' as http;
 import '/globals.dart' as globals;
@@ -12,8 +13,8 @@ import '/globals.dart' as globals;
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
-  final int userId;
-  const LoginPage(this.userId, {Key? key}) : super(key: key);
+  // final int userId;
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -41,11 +42,15 @@ class _LoginPageState extends State<LoginPage> {
       Uri.parse('http://10.0.2.2:8000/api/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': '*/*',
+        'Accept': "*/*",
         'connection': 'keep-alive',
+        'Authorization': 'Bearer ' + globals.jwtToken,
       },
       body: jsonEncode(body),
     );
+
+    print(response.body);
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       final Map<String, dynamic>? data = jsonDecode(response.body);
@@ -148,9 +153,6 @@ class _LoginPageState extends State<LoginPage> {
                 onTap: () async {
                   if (_loginForm.currentState!.validate()) {
                     LoginResponse response = await verifyLogin();
-                    print(response.email);
-                    print(response.userId);
-                    print(response.name);
                     AwesomeDialog(
                       context: context,
                       animType: AnimType.topSlide,
@@ -164,9 +166,14 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => HomePage()));
+                                builder: (context) =>
+                                    HomePage(response.userId)));
                       },
                     ).show();
+                    globals.isLoggedIn = true;
+                    globals.jwtToken = response.jwtToken;
+                    print(response.userId);
+                    print(response.jwtToken);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("กรอกข้อมูลไม่ครบถ้วนหรือไม่ถูกต้อง"),

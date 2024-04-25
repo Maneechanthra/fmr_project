@@ -6,6 +6,10 @@ import 'dart:convert';
 
 import 'dart:convert';
 
+import 'dart:convert';
+
+import 'dart:convert';
+
 class RestaurantById {
   final int id;
   final String restaurantName;
@@ -62,13 +66,13 @@ class RestaurantById {
 }
 
 class Review {
-  final String title;
+  final String? title;
   final String content;
   final int id;
   final double rating;
   final String name;
-  final List<String> imagePathsReview;
   final String created_at;
+  final List<dynamic> imagePathsReview;
 
   Review({
     required this.title,
@@ -76,8 +80,8 @@ class Review {
     required this.id,
     required this.rating,
     required this.name,
-    required this.imagePathsReview,
     required this.created_at,
+    required this.imagePathsReview,
   });
 
   factory Review.fromJson(Map<String, dynamic> json) => Review(
@@ -88,7 +92,7 @@ class Review {
         name: json["name"],
         created_at: json["created_at"],
         imagePathsReview:
-            List<String>.from(json["image_paths_review"].map((x) => x)),
+            List<dynamic>.from(json["image_paths_review"].map((x) => x)),
       );
 }
 
@@ -109,7 +113,6 @@ Future<RestaurantById> getRestaurantById(int restaurantId) async {
       final data = json.decode(response.body);
 
       if (data is Map && data.containsKey('restaurant')) {
-        // ดึงข้อมูลของร้านอาหารเดี่ยว
         final restaurantData = data['restaurant'];
 
         if (restaurantData == null) {

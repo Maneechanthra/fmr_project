@@ -19,8 +19,8 @@ class _IndexPageState extends State<IndexPage>
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomePage(0)));
     });
   }
 

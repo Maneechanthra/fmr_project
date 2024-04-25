@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
 
 class EditEmailPage extends StatefulWidget {
-  const EditEmailPage({super.key});
+  final int userId;
+  final String email;
+  const EditEmailPage(this.userId, this.email, {super.key});
 
   @override
   State<EditEmailPage> createState() => _EditEmailPageState();
 }
 
 class _EditEmailPageState extends State<EditEmailPage> {
-  final emailController = TextEditingController(text: "sumet.ma@ku.th");
+  late TextEditingController emailController;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController = TextEditingController(text: widget.email);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

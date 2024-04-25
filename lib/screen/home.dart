@@ -10,7 +10,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 
 class HomePage extends StatefulWidget {
   final int? userId;
-  const HomePage({super.key, this.userId});
+  const HomePage(this.userId, {super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _pageController = PageController();
     _loadUserLocation();
+    print("userId: " + widget.userId.toString());
   }
 
   @override
@@ -118,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const SearchHistoryPage()));
+                                      SearchHistoryPage(widget.userId ?? 0)));
                         },
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -207,14 +208,14 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      const RecomentedPage(),
+                      RecomentedPage(widget.userId),
                       InkWell(
                         onTap: () {
                           Navigator.push(
                               context,
                               PageRouteBuilder(pageBuilder:
                                   (context, animation1, animation2) {
-                                return MapsPage();
+                                return MapsPage(widget.userId ?? 0);
                               }, transitionsBuilder:
                                   (context, animation1, animation2, child) {
                                 return FadeTransition(
@@ -255,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              MapsPage(),
+              MapsPage(widget.userId ?? 0),
               ProfilePage(widget.userId ?? 0)
             ],
           ),

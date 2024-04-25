@@ -4,7 +4,8 @@ import 'package:fmr_project/model/restaurant_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchHistoryPage extends StatefulWidget {
-  const SearchHistoryPage({super.key});
+  final userId;
+  const SearchHistoryPage(this.userId, {super.key});
 
   @override
   State<SearchHistoryPage> createState() => _SearchHistoryPageState();
@@ -267,8 +268,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         DetailRestaurantPage_2(
-                                          item.id,
-                                        )));
+                                            item.id, widget.userId)));
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 1,

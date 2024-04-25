@@ -3,9 +3,13 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/register_api.dart';
+import 'package:fmr_project/screen/home.dart';
 import 'package:fmr_project/screen/login.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:panara_dialogs/panara_dialogs.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '/globals.dart' as globals;
 
 class RegisterPage extends StatefulWidget {
@@ -227,22 +231,50 @@ class _RegisterPageState extends State<RegisterPage> {
                             print("Register Progress");
                             Register data = await register();
                             print("register successfully");
-                            AwesomeDialog(
+                            QuickAlert.show(
                               context: context,
-                              animType: AnimType.topSlide,
-                              dialogType: DialogType.success,
-                              title: 'สมัครสมาชิกสำเร็จ',
-                              titleTextStyle: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                              btnOkOnPress: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => LoginPage(),
-                                //   ),
-                                // );
+                              type: QuickAlertType.success,
+                              text: 'สมัครสมาชิกสำเร็จ!',
+                              confirmBtnText: 'ตกลง',
+                              confirmBtnColor: Color.fromARGB(255, 0, 113, 219),
+                              onConfirmBtnTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (contxt) => LoginPage()));
                               },
-                            ).show();
+                            );
+                            // PanaraInfoDialog.showAnimatedGrow(
+                            //   context,
+                            //   title: "สมัครสมาชิกสำเร็จ",
+                            //   message: "กดตกลง เพื่อกลับไปยังหน้าแรก",
+                            //   buttonText: "ตกลง",
+                            //   onTapDismiss: () {
+                            //     Navigator.push(
+                            //         context,
+                            //         MaterialPageRoute(
+                            //             builder: (contxt) => LoginPage()));
+                            //   },
+                            //   panaraDialogType: PanaraDialogType.normal,
+                            //   barrierDismissible:
+                            //       false, // optional parameter (default is true)
+                            // );
+                            // AwesomeDialog(
+                            //   context: context,
+                            //   animType: AnimType.topSlide,
+                            //   dialogType: DialogType.success,
+                            //   title: 'สมัครสมาชิกสำเร็จ',
+                            //   titleTextStyle: TextStyle(
+                            //       fontWeight: FontWeight.bold, fontSize: 20),
+                            //   btnOkOnPress: () {
+                            //     // Navigator.push(
+                            //     //   context,
+                            //     //   MaterialPageRoute(
+                            //     //     builder: (context) => LoginPage(),
+                            //     //   ),
+                            //     // );
+                            //   },
+                            // ).show();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

@@ -3,7 +3,8 @@ import 'package:fmr_project/detail_page/detail_restaurant.dart';
 import 'package:fmr_project/model/restaurant_info.dart';
 
 class AllFavoriesPage extends StatefulWidget {
-  const AllFavoriesPage({super.key});
+  final int userId;
+  const AllFavoriesPage(this.userId, {super.key});
 
   @override
   State<AllFavoriesPage> createState() => _AllFavoriesPageState();
@@ -36,7 +37,7 @@ class _AllFavoriesPageState extends State<AllFavoriesPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              DetailRestaurantPage_2(item.id)));
+                              DetailRestaurantPage_2(item.id, widget.userId)));
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 1,

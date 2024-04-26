@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
     _pageController = PageController();
     _loadUserLocation();
     print("userId: " + widget.userId.toString());
+    print("_pageController: " + _pageController.toString());
   }
 
   @override
@@ -182,28 +183,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     Navigator.push(
-                              //         context,
-                              //         PageRouteBuilder(pageBuilder:
-                              //             (context, animation1, animation2) {
-                              //           return MapsPage();
-                              //         }, transitionsBuilder: (context,
-                              //             animation1, animation2, child) {
-                              //           return FadeTransition(
-                              //             opacity: animation1,
-                              //             child: child,
-                              //           );
-                              //         }));
-                              //   },
-                              //   child: Text(
-                              //     "ดูทั้งหมด",
-                              //     style: TextStyle(
-                              //         fontSize: 16,
-                              //         color: Color.fromARGB(115, 0, 0, 0)),
-                              //   ),
-                              // ),
                             ],
                           ),
                         ),

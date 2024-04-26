@@ -45,7 +45,7 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
     print("userId of report : " + widget.userId.toString());
   }
 
-  Future<ReportRestaurant> reportRestaurant() async {
+  Future<ReportRestaurant?> reportRestaurant() async {
     final body = {
       'title': currentOptionReport,
       'descriptions': descriptionController.text,
@@ -225,40 +225,41 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
                                     );
                                   },
                                 ).show();
-                              }
-                              if (_reportForm.currentState!.validate()) {
-                                print("Progress");
-                                ReportRestaurant report =
-                                    await reportRestaurant();
-                                print("report successfully");
-                                QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.success,
-                                  text: 'บันทึกข้อมูลสำเร็จ!',
-                                  confirmBtnText: 'ตกลง',
-                                  confirmBtnColor:
-                                      Color.fromARGB(255, 0, 113, 219),
-                                  onConfirmBtnTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                );
-                                // AwesomeDialog(
-                                //   context: context,
-                                //   animType: AnimType.topSlide,
-                                //   dialogType: DialogType.success,
-                                //   title: 'บันทึกข้อมูลสำเร็จ',
-                                //   titleTextStyle: TextStyle(
-                                //       fontWeight: FontWeight.bold,
-                                //       fontSize: 20),
-                                //   btnOkOnPress: () {
-                                //     // Navigator.push(
-                                //     //   context,
-                                //     //   MaterialPageRoute(
-                                //     //     builder: (context) => LoginPage(),
-                                //     //   ),
-                                //     // );
-                                //   },
-                                // ).show();
+                              } else {
+                                if (_reportForm.currentState!.validate()) {
+                                  print("Progress");
+                                  ReportRestaurant? report =
+                                      await reportRestaurant();
+                                  print("report successfully");
+                                  QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.success,
+                                    text: 'บันทึกข้อมูลสำเร็จ!',
+                                    confirmBtnText: 'ตกลง',
+                                    confirmBtnColor:
+                                        Color.fromARGB(255, 0, 113, 219),
+                                    onConfirmBtnTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                  // AwesomeDialog(
+                                  //   context: context,
+                                  //   animType: AnimType.topSlide,
+                                  //   dialogType: DialogType.success,
+                                  //   title: 'บันทึกข้อมูลสำเร็จ',
+                                  //   titleTextStyle: TextStyle(
+                                  //       fontWeight: FontWeight.bold,
+                                  //       fontSize: 20),
+                                  //   btnOkOnPress: () {
+                                  //     // Navigator.push(
+                                  //     //   context,
+                                  //     //   MaterialPageRoute(
+                                  //     //     builder: (context) => LoginPage(),
+                                  //     //   ),
+                                  //     // );
+                                  //   },
+                                  // ).show();
+                                }
                               }
                             },
                             child: Container(

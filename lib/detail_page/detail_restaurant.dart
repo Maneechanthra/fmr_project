@@ -1,15 +1,23 @@
+import 'dart:convert';
+
 import 'package:another_carousel_pro/another_carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:fmr_project/api/favorite_api.dart';
 import 'package:fmr_project/api/restaurantById_api.dart';
 import 'package:fmr_project/detail_page/all_review.dart';
 import 'package:fmr_project/dialog/addReportDialog.dart';
 import 'package:fmr_project/dialog/addReviewDialog.dart';
 import 'package:fmr_project/dialog/detailMoreDialog.dart';
 import 'package:fmr_project/model/restaurant_info.dart';
+import 'package:fmr_project/screen/login.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:fmr_project/model/review_info.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '/globals.dart' as globals;
+import 'package:http/http.dart' as http;
 
 class DetailRestaurantPage_2 extends StatefulWidget {
   final int restaurantId;
@@ -34,6 +42,31 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
     futureRestaurants = getRestaurantById(widget.restaurantId);
     print("restaurantId : " + widget.restaurantId.toString());
     print("userId : " + widget.userId.toString());
+  }
+
+  Future<FavoritesModel> insertFavorite(int userId, int restaurantId) async {
+    final body = {
+      'restaurant_id': widget.restaurantId.toString(),
+      'favorite_by': widget.userId.toString(),
+    };
+
+    final response = await http.post(
+      Uri.parse("http://10.0.2.2:8000/api/favorites/insert"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': "*/*",
+        'connection': 'keep-alive',
+        'Authorization': 'Bearer ' + globals.jwtToken,
+      },
+      body: jsonEncode(body),
+    );
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return FavoritesModel.fromJson(data);
+    } else {
+      throw Exception(
+          'Failed to insert favorite. Status code: ${response.statusCode}');
+    }
   }
 
   @override
@@ -174,6 +207,7 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              // Row แสดงชื่อร้านอาหารและไอคอนตรวจสอบ
                               Row(
                                 children: [
                                   SizedBox(
@@ -181,30 +215,66 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                                         0.75,
                                     child: Text(
                                       data.restaurantName,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
+                                  // ไอคอนตรวจสอบสถานะ
+                                  // หากต้องการใช้งานอีกครั้ง สามารถเปิดความคิดเห็น
                                   // Icon(
                                   //   Icons.verified_rounded,
                                   //   color: Colors.blue,
                                   // )
                                 ],
                               ),
+                              // ตรวจสอบว่า userId เป็น null หรือ 0 และเลือก Widget ตามเงื่อนไข
                               LikeButton(
                                 isLiked: isFavorite,
-                                onTap: (bool isLiked) {
-                                  setState(() {
-                                    isFavorite = !isLiked;
-                                  });
-                                  return Future.value(!isLiked);
+                                onTap: (bool isLiked) async {
+                                  if (widget.userId == null ||
+                                      widget.userId == 0) {
+                                    QuickAlert.show(
+                                      context: context,
+                                      type: QuickAlertType.warning,
+                                      text:
+                                          'กรุณาเข้าสู่ระบบเพื่อใช้ฟังก์ชันนี้',
+                                      confirmBtnText: 'ตกลง',
+                                      confirmBtnColor:
+                                          Color.fromARGB(255, 0, 113, 219),
+                                    );
+
+                                    return Future.value(isLiked);
+                                  } else {
+                                    try {
+                                      // ลองทำการเพิ่มรายการโปรด
+                                      final favorite = await insertFavorite(
+                                          widget.restaurantId, widget.userId!);
+
+                                      setState(() {
+                                        isFavorite = !isLiked;
+                                      });
+
+                                      return Future.value(!isLiked);
+                                    } catch (e) {
+                                      QuickAlert.show(
+                                        context: context,
+                                        type: QuickAlertType.error,
+                                        text: 'เกิดข้อผิดพลาด: $e',
+                                        confirmBtnText: 'ตกลง',
+                                        confirmBtnColor: Colors.red,
+                                      );
+                                      return Future.value(isLiked);
+                                    }
+                                  }
                                 },
                                 size: 30,
-                                circleColor: const CircleColor(
-                                    start: Colors.pink, end: Colors.red),
-                                bubblesColor: const BubblesColor(
+                                circleColor: CircleColor(
+                                  start: Colors.pink,
+                                  end: Colors.red,
+                                ),
+                                bubblesColor: BubblesColor(
                                   dotPrimaryColor: Colors.pink,
                                   dotSecondaryColor: Colors.red,
                                 ),

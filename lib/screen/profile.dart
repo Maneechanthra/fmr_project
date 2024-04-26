@@ -6,7 +6,7 @@ import 'package:fmr_project/add/addRestuarant.dart';
 import 'package:fmr_project/api/profile_api.dart';
 import 'package:fmr_project/detail_page/all_favorites.dart';
 import 'package:fmr_project/detail_page/all_restaurant_of_me.dart';
-import 'package:fmr_project/screen/notification.dart';
+import 'package:fmr_project/detail_page/notification.dart';
 import 'package:fmr_project/update/changepassword.dart';
 import 'package:fmr_project/update/editemail.dart';
 import 'package:fmr_project/update/editname.dart';
@@ -24,12 +24,17 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late Future<ProfileModel> futureProfile;
+  late Future<ProfileModel?> futureProfile;
 
   @override
   void initState() {
     super.initState();
-    futureProfile = fetchProfile(widget.userId);
+    if (widget != null || widget.userId != 0) {
+      futureProfile = fetchProfile(widget.userId);
+    } else {
+      print("not userID");
+    }
+
     // checkLoginStatus();
   }
 
@@ -105,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: widget.userId == null || widget.userId == 0
+      body: widget.userId == 0
           ? _notlogin(context)
           : SafeArea(
               child: SingleChildScrollView(
@@ -433,7 +438,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const NotificationPage()),
+                                          NotificationPage(userData.id)),
                                 );
                               },
                               child: const SizedBox(
@@ -945,7 +950,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const NotificationPage()),
+                    builder: (context) => NotificationPage(widget.userId ?? 0)),
               );
             },
             child: const SizedBox(

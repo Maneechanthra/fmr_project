@@ -80,7 +80,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
     print("restaurantId : " + widget.restaurantId.toString());
   }
 
-  Future<ReviewRestaurant> _reviewRestaurant() async {
+  Future<ReviewRestaurant?> _reviewRestaurant() async {
     final Uri url = Uri.parse('http://10.0.2.2:8000/api/review/insert');
 
     // สร้าง MultipartRequest เพื่อส่งข้อมูล
@@ -373,13 +373,14 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                                                     LoginPage()));
                                       },
                                     );
+                                  } else {
+                                    if (_reviewForm.currentState!.validate()) {
+                                      print("progress");
+                                      ReviewRestaurant? review =
+                                          await _reviewRestaurant();
+                                    }
+                                    print("review successfuly");
                                   }
-                                  if (_reviewForm.currentState!.validate()) {
-                                    print("progress");
-                                    ReviewRestaurant review =
-                                        await _reviewRestaurant();
-                                  }
-                                  print("review successfuly");
                                 },
                                 child: Container(
                                   width: 145,

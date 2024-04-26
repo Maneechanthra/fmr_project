@@ -115,10 +115,10 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                             size: 14,
                                             color: Colors.orangeAccent,
                                           ),
-                                          // Text(
-                                          //   res.rating.toString(),
-                                          //   style: TextStyle(fontSize: 12),
-                                          // ),
+                                          Text(
+                                            item.averageRating.toString(),
+                                            style: TextStyle(fontSize: 12),
+                                          ),
                                         ],
                                       ),
                                     ),

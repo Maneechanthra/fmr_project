@@ -11,7 +11,7 @@ import 'package:slider_controller/slider_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MapsPage extends StatefulWidget {
-  final int userId;
+  final int? userId;
   const MapsPage(this.userId, {super.key});
 
   @override

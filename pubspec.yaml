@@ -63,6 +63,7 @@ dependencies:
   http: ^1.1.0
   panara_dialogs: ^0.1.4
   quickalert: ^1.1.0
+  provider: ^6.0.0
 
 dev_dependencies:
   flutter_test:

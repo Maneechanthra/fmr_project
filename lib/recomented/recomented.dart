@@ -1,14 +1,21 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/recommentded_api.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
 
 import 'package:fmr_project/model/restaurant_info.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
 class RecomentedPage extends StatefulWidget {
-  final userId;
-  const RecomentedPage(this.userId, {Key? key}) : super(key: key);
+  final int? userId;
+  final double latitude;
+  final double longitude;
+
+  const RecomentedPage(this.userId, this.latitude, this.longitude, {Key? key})
+      : super(key: key);
 
   @override
   State<RecomentedPage> createState() => _RecomentedPageState();
@@ -21,6 +28,26 @@ class _RecomentedPageState extends State<RecomentedPage> {
   void initState() {
     super.initState();
     futureRestaurants = fetchRestaurants();
+    print(widget.latitude.toString());
+    print(widget.longitude.toString());
+  }
+
+  double _calculateDistance(
+      double lat1, double lon1, double lat2, double lon2) {
+    const R = 6371;
+    var dLat = _degToRad(lat2 - lat1);
+    var dLon = _degToRad(lon2 - lon1);
+    var a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_degToRad(lat1)) *
+            cos(_degToRad(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
+    var c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return R * c;
+  }
+
+  double _degToRad(double degrees) {
+    return degrees * (pi / 180);
   }
 
   @override
@@ -34,6 +61,24 @@ class _RecomentedPageState extends State<RecomentedPage> {
             child: CircularProgressIndicator(),
           );
         } else if (snapshot.hasData) {
+          var restaurant_info = snapshot.data!;
+          var userLatitude = widget.latitude;
+          var userLongitude = widget.longitude;
+
+          restaurant_info = restaurant_info.map((restaurant) {
+            var distance = _calculateDistance(
+              userLatitude,
+              userLongitude,
+              restaurant.latitude,
+              restaurant.longitude,
+            );
+
+            restaurant.distance = distance;
+
+            return restaurant;
+          }).toList();
+
+          restaurant_info.sort((a, b) => a.distance!.compareTo(b.distance!));
           return Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
             child: GridView.count(
@@ -42,11 +87,11 @@ class _RecomentedPageState extends State<RecomentedPage> {
               shrinkWrap: true,
               childAspectRatio: 0.87,
               physics: const NeverScrollableScrollPhysics(),
-              children: List.generate(snapshot.data!.length, (index) {
-                RecommendedModel item = snapshot.data![index];
-                // Restaurant_2 res = allRestaurants_2[index];
+              children: List.generate(snapshot.data!.length = 4, (index) {
+                RecommendedModel item = restaurant_info[index];
+
                 final String imageUrl =
-                    'http://10.0.2.2:8000/api/public/${snapshot.data![index].image_path}';
+                    'http://10.0.2.2:8000/api/public/${restaurant_info[index].image_path}';
                 return Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: InkWell(
@@ -115,10 +160,17 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                             size: 14,
                                             color: Colors.orangeAccent,
                                           ),
-                                          Text(
-                                            item.averageRating.toString(),
-                                            style: TextStyle(fontSize: 12),
-                                          ),
+                                          item.averageRating != null
+                                              ? Text(
+                                                  item.averageRating.toString(),
+                                                  style:
+                                                      TextStyle(fontSize: 12),
+                                                )
+                                              : Text(
+                                                  "0",
+                                                  style:
+                                                      TextStyle(fontSize: 12),
+                                                )
                                         ],
                                       ),
                                     ),
@@ -166,54 +218,55 @@ class _RecomentedPageState extends State<RecomentedPage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0, top: 5),
-                              // child: Row(
-                              //   children: [
-                              //     Container(
-                              //       width: 50,
-                              //       height: 20,
-                              //       decoration: BoxDecoration(
-                              //           borderRadius: BorderRadius.circular(5),
-                              //           color: Color.fromARGB(255, 212, 14, 0)),
-                              //       child: Center(
-                              //         child: Padding(
-                              //           padding: const EdgeInsets.all(0.8),
-                              //           child: Text(
-                              //             res.kilomate.toString() + " กม.",
-                              //             style: GoogleFonts.mitr(
-                              //                 fontSize: 10,
-                              //                 fontWeight: FontWeight.normal,
-                              //                 color: Color.fromARGB(
-                              //                     255, 255, 255, 255)),
-                              //           ),
-                              //         ),
-                              //       ),
-                              //     ),
-                              //     const SizedBox(
-                              //       width: 3,
-                              //     ),
-                              //     Container(
-                              //       width: 50,
-                              //       height: 20,
-                              //       decoration: BoxDecoration(
-                              //         borderRadius: BorderRadius.circular(5),
-                              //         color: Color.fromARGB(162, 14, 12, 9),
-                              //       ),
-                              //       child: Center(
-                              //         child: Padding(
-                              //           padding: const EdgeInsets.all(0.8),
-                              //           child: Text(
-                              //             res.review.toString() + " รีวิว",
-                              //             style: GoogleFonts.mitr(
-                              //                 fontSize: 10,
-                              //                 fontWeight: FontWeight.normal,
-                              //                 color: Color.fromARGB(
-                              //                     255, 255, 255, 255)),
-                              //           ),
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 50,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Color.fromARGB(255, 212, 14, 0)),
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(0.8),
+                                        child: Text(
+                                          "${item.distance?.toStringAsFixed(2)} km",
+                                          style: GoogleFonts.mitr(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.normal,
+                                              color: Color.fromARGB(
+                                                  255, 255, 255, 255)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 3,
+                                  ),
+                                  Container(
+                                    width: 50,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Color.fromARGB(162, 14, 12, 9),
+                                    ),
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(0.8),
+                                        child: Text(
+                                          item.reviewCount.toString() +
+                                              " รีวิว",
+                                          style: GoogleFonts.mitr(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.normal,
+                                              color: Color.fromARGB(
+                                                  255, 255, 255, 255)),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

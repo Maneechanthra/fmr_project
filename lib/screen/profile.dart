@@ -31,10 +31,10 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     if (widget != null || widget.userId != 0) {
       futureProfile = fetchProfile(widget.userId);
+      print("userId in profile : " + widget.userId.toString());
     } else {
       print("not userID");
     }
-
     // checkLoginStatus();
   }
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/reportRestaurantByuserId_api.dart';
-import 'package:fmr_project/api/restaurantById_api.dart';
-import 'package:fmr_project/model/report_info.dart';
 
 class NotificationPage extends StatefulWidget {
   final int? userId;
@@ -17,8 +15,12 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
     super.initState();
-    _futureReportRestaurantByuserId =
-        fetchReportRestaurantByuserId(widget.userId);
+    if (widget.userId != null || widget.userId != 0) {
+      _futureReportRestaurantByuserId =
+          fetchReportRestaurantByuserId(widget.userId);
+    } else {
+      print("dont load reportRestaurantByuserId");
+    }
   }
 
   @override

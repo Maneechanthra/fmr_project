@@ -11,6 +11,9 @@ class RecommendedModel {
   final int reviewCount;
   final int verified;
   final String category_title;
+  final double latitude;
+  final double longitude;
+  double? distance; // This field stores the calculated distance
 
   RecommendedModel({
     required this.id,
@@ -21,6 +24,9 @@ class RecommendedModel {
     required this.reviewCount,
     required this.verified,
     required this.category_title,
+    required this.latitude,
+    required this.longitude,
+    this.distance, // Initialize to null or a default value
   });
 
   factory RecommendedModel.fromJson(Map<String, dynamic> json) =>
@@ -33,6 +39,9 @@ class RecommendedModel {
         reviewCount: json["review_count"],
         verified: json["verified"],
         category_title: json["category_title"],
+        latitude: json["latitude"],
+        longitude: json["longitude"],
+        distance: json["distance"],
       );
 }
 

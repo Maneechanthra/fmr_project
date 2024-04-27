@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:fmr_project/api/login_api.dart';
 import 'package:fmr_project/screen/forgotpassword.dart';
 import 'package:fmr_project/screen/home.dart';
-import 'package:fmr_project/screen/profile.dart';
 import 'package:fmr_project/screen/register.dart';
 import 'package:http/http.dart' as http;
 import '/globals.dart' as globals;

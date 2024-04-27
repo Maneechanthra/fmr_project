@@ -20,6 +20,8 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   late PageController _pageController = PageController();
+  double? userLatitude;
+  double? userLongitude;
 
   @override
   void initState() {
@@ -28,6 +30,8 @@ class _HomePageState extends State<HomePage> {
     _loadUserLocation();
     print("userId: " + widget.userId.toString());
     print("_pageController: " + _pageController.toString());
+    print("latitude : " + userLatitude.toString());
+    print("longtitude : " + userLongitude.toString());
   }
 
   @override
@@ -39,9 +43,12 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadUserLocation() async {
     try {
       Position userPosition = await getUserCurrentLocation();
-      // _updateMap(userPosition.latitude, userPosition.longitude);
       print(
           'ตำแหน่งปัจจุบัน : ${userPosition.latitude}, ${userPosition.longitude}');
+      setState(() {
+        userLatitude = userPosition.latitude;
+        userLongitude = userPosition.longitude;
+      });
     } catch (e) {
       print("Error fetching user location: $e");
     }
@@ -55,15 +62,6 @@ class _HomePageState extends State<HomePage> {
     });
     return await Geolocator.getCurrentPosition();
   }
-
-  // final List<String> categories = [
-  //   "ทั้งหมด",
-  //   "อาหารอีสาน",
-  //   "อาหารจีน",
-  //   "อาหารไทย",
-  //   "ชาบู/หมูกระทะ",
-  //   "คาเฟ่",
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +185,9 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      RecomentedPage(widget.userId),
+                      if (userLatitude != null && userLongitude != null)
+                        RecomentedPage(
+                            widget.userId!, userLatitude!, userLongitude!),
                       InkWell(
                         onTap: () {
                           Navigator.push(
@@ -235,7 +235,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              MapsPage(widget.userId ?? 0),
+              MapsPage(widget.userId),
+              // MapsPage(),
               ProfilePage(widget.userId ?? 0)
             ],
           ),
@@ -261,7 +262,10 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
           onTabChange: (index) {
-            _pageController.jumpToPage(index);
+            _pageController.jumpToPage(index); // กระโดดไปยังหน้าที่เลือก
+            print(
+                'PageController: $_pageController'); // แสดงรายละเอียดของ PageController
+            print('Selected Index: $index'); // แสดงดัชนีที่เลือก
           },
         ));
   }

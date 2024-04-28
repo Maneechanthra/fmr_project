@@ -652,7 +652,8 @@ class ReviewsWidget extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AllReivewsPage()));
+                            builder: (context) =>
+                                AllReivewsPage(restaurantId.id)));
                   },
                   child: Text(
                     "ดูทั้งหมด",
@@ -884,8 +885,10 @@ class ReviewsWidget extends StatelessWidget {
                 : _CommentWidget(restaurantId),
             GestureDetector(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AllReivewsPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AllReivewsPage(restaurantId.id)));
               },
               child: Container(
                 width: double.infinity,

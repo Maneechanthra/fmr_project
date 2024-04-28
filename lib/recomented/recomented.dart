@@ -3,10 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/recommentded_api.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
-
-import 'package:fmr_project/model/restaurant_info.dart';
-import 'package:geolocator/geolocator.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 
 class RecomentedPage extends StatefulWidget {
@@ -27,9 +23,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
   @override
   void initState() {
     super.initState();
-    futureRestaurants = fetchRestaurants();
-    print(widget.latitude.toString());
-    print(widget.longitude.toString());
+    futureRestaurants = fetchSortedRestaurants(); // ทำงานหนักภายนอก UI
   }
 
   double _calculateDistance(
@@ -50,6 +44,67 @@ class _RecomentedPageState extends State<RecomentedPage> {
     return degrees * (pi / 180);
   }
 
+  double _calculateScore(
+    double? distance,
+    int? reviewCount,
+    dynamic averageRating,
+    int? favoritesCount,
+  ) {
+    double score = 0;
+
+    if (distance != null) {
+      score += (100 / distance) * 0.25;
+    }
+
+    if (reviewCount != null) {
+      score += reviewCount * 0.25;
+    }
+
+    // ตรวจสอบประเภทข้อมูลก่อนการใช้งาน
+    if (averageRating is double) {
+      score += averageRating * 0.25;
+    } else if (averageRating is int) {
+      score += averageRating.toDouble() * 0.25;
+    }
+
+    if (favoritesCount != null) {
+      score += favoritesCount * 0.25;
+    }
+
+    return score;
+  }
+
+  Future<List<RecommendedModel>> fetchSortedRestaurants() async {
+    var restaurantInfo = await fetchRestaurants();
+
+    restaurantInfo = restaurantInfo.map((restaurant) {
+      // คำนวณระยะทาง
+      var distance = _calculateDistance(
+        widget.latitude,
+        widget.longitude,
+        restaurant.latitude,
+        restaurant.longitude,
+      );
+      restaurant.distance = distance;
+
+      // คำนวณคะแนน
+      var score = _calculateScore(
+        distance,
+        restaurant.reviewCount ?? 0,
+        restaurant.averageRating ?? 0,
+        restaurant.favoritesCount ?? 0,
+      );
+      restaurant.score = score;
+
+      return restaurant;
+    }).toList();
+
+    // จัดเรียงตามคะแนน
+    restaurantInfo.sort((a, b) => b.score!.compareTo(a.score!));
+
+    return restaurantInfo;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<RecommendedModel>>(
@@ -62,36 +117,30 @@ class _RecomentedPageState extends State<RecomentedPage> {
           );
         } else if (snapshot.hasData) {
           var restaurant_info = snapshot.data!;
-          var userLatitude = widget.latitude;
-          var userLongitude = widget.longitude;
+          var topRestaurants = restaurant_info.take(4).toList();
+          restaurant_info.forEach((restaurant) {
+            print("Restaurant Name: ${restaurant.restaurantName}");
+            print("Distance: ${restaurant.distance?.toStringAsFixed(2)} km");
+            print("Review Count: ${restaurant.reviewCount}");
+            print("Average Rating: ${restaurant.averageRating}");
+            print("Favorites Count: ${restaurant.favoritesCount}");
+            print("Total Score: ${restaurant.score}");
+            print("----------------------------");
+          });
 
-          restaurant_info = restaurant_info.map((restaurant) {
-            var distance = _calculateDistance(
-              userLatitude,
-              userLongitude,
-              restaurant.latitude,
-              restaurant.longitude,
-            );
-
-            restaurant.distance = distance;
-
-            return restaurant;
-          }).toList();
-
-          restaurant_info.sort((a, b) => a.distance!.compareTo(b.distance!));
           return Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
             child: GridView.count(
               crossAxisCount: 2,
               mainAxisSpacing: 3,
               shrinkWrap: true,
-              childAspectRatio: 0.87,
+              childAspectRatio: 1,
               physics: const NeverScrollableScrollPhysics(),
-              children: List.generate(snapshot.data!.length = 4, (index) {
-                RecommendedModel item = restaurant_info[index];
-
+              children: List.generate(topRestaurants.length = 4, (index) {
+                // RecommendedModel item = restaurant_info[index];
+                var item = topRestaurants[index];
                 final String imageUrl =
-                    'http://10.0.2.2:8000/api/public/${restaurant_info[index].image_path}';
+                    'http://10.0.2.2:8000/api/public/${restaurant_info[index].imagePath}';
                 return Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: InkWell(
@@ -184,9 +233,11 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       SizedBox(
-                                        width: 130,
+                                        width: 145,
                                         child: Text(
                                           item.restaurantName,
                                           style: GoogleFonts.mitr(
@@ -197,15 +248,19 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                         ),
                                       ),
                                       item.verified == 2
-                                          ? Icon(
-                                              Icons.verified_rounded,
-                                              color: Colors.blue,
+                                          ? Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 10),
+                                              child: Icon(
+                                                Icons.verified_rounded,
+                                                color: Colors.blue,
+                                              ),
                                             )
                                           : SizedBox(),
                                     ],
                                   ),
                                   Text(
-                                    item.category_title,
+                                    item.categoryTitle,
                                     style: GoogleFonts.mitr(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400,

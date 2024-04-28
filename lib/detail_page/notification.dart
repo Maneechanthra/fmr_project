@@ -49,11 +49,31 @@ class _NotificationPageState extends State<NotificationPage> {
               );
             } else if (snapshot.hasData) {
               final reportList = snapshot.data as ReportRestaurantByuserIdList;
-
               if (reportList.reports.isEmpty) {
                 // ตรวจสอบว่ามีข้อมูลหรือไม่
                 return Center(
-                  child: Text("ดีใจด้วย! ร้านของคุณไม่มีรายงานความไม่เหมาะสม"),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          'assets/img/icons/good_not_report.png',
+                          width: 600, // ความกว้างของรูปภาพ
+                          height: 250,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "ดีใจด้วย! ร้านของคุณไม่มีรายงานความไม่เหมาะสม",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ],
+                  ),
                 );
               }
 

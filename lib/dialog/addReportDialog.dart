@@ -208,23 +208,23 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
                           InkWell(
                             onTap: () async {
                               if (widget.userId == null || widget.userId == 0) {
-                                AwesomeDialog(
-                                  context: context,
-                                  animType: AnimType.topSlide,
-                                  dialogType: DialogType.warning,
-                                  title: 'กรุณาเข้าสู่ระบบ!',
-                                  titleTextStyle: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                  btnOkOnPress: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => LoginPage(),
-                                      ),
-                                    );
-                                  },
-                                ).show();
+                                if (widget.userId == 0) {
+                                  QuickAlert.show(
+                                    context: context,
+                                    type: QuickAlertType.warning,
+                                    text: 'กรุณาเข้าสู่ระบบเพื่อใช้ฟังก์ชันนี้',
+                                    confirmBtnText: 'ตกลง',
+                                    confirmBtnColor:
+                                        Color.fromARGB(255, 0, 113, 219),
+                                    // onConfirmBtnTap: () {
+                                    //   Navigator.push(
+                                    //       context,
+                                    //       MaterialPageRoute(
+                                    //           builder: (context) =>
+                                    //               LoginPage()));
+                                    // },
+                                  );
+                                }
                               } else {
                                 if (_reportForm.currentState!.validate()) {
                                   print("Progress");

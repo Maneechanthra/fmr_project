@@ -7,6 +7,7 @@ import 'package:fmr_project/screen/forgotpassword.dart';
 import 'package:fmr_project/screen/home.dart';
 import 'package:fmr_project/screen/register.dart';
 import 'package:http/http.dart' as http;
+import 'package:quickalert/quickalert.dart';
 import '/globals.dart' as globals;
 
 import 'package:google_fonts/google_fonts.dart';
@@ -73,12 +74,12 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.black,
         ),
         elevation: 0,
-        title: Text(
-          "เข้าสู่ระบบ",
-          style: TextStyle(
-              fontWeight: FontWeight.w900, fontSize: 18, color: Colors.black),
-        ),
-        centerTitle: true,
+        // title: Text(
+        //   "เข้าสู่ระบบ",
+        //   style: TextStyle(
+        //       fontWeight: FontWeight.w900, fontSize: 18, color: Colors.black),
+        // ),
+        // centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -90,24 +91,56 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(
                 height: 50,
               ),
-              Center(
-                child: Image.asset(
-                  "assets/img/logo/logo.png",
-                  width: 100,
+              // Center(
+              //   child: Image.asset(
+              //     "assets/img/logo/logo.png",
+              //     width: 100,
+              //   ),
+              // ),
+              // Text(
+              //   "FMRestaurant",
+              //   style: GoogleFonts.mitr(
+              //       fontSize: 30,
+              //       fontWeight: FontWeight.bold,
+              //       color: Colors.blue),
+              // ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      "assets/img/logo/logo.png",
+                      width: 100,
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "เข้าสู่ระบบ",
+                        style: TextStyle(
+                          fontSize: 40,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "กรุณาเข้าสู่ระบบหรือสมัครสมาชิกเพื่อเข้าใช้งานแอปพลิเคชัน",
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Text(
-                "FMRestaurant",
-                style: GoogleFonts.mitr(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue),
-              ),
               const SizedBox(
-                height: 10,
+                height: 30,
               ),
               SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.9,
+                width: MediaQuery.sizeOf(context).width * 0.85,
+                // height: 30,
                 child: TextFormField(
                   controller: emailController,
                   onChanged: (String value) {},
@@ -117,58 +150,87 @@ class _LoginPageState extends State<LoginPage> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(50),
+                      borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: "Email",
-                    prefixIcon: Icon(Icons.email),
+                    labelText: "อีเมล",
+                    labelStyle: TextStyle(fontSize: 14),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                    helperText: "ex. user@gmail.com",
+                    // prefixIcon: Icon(Icons.email),
                   ),
                 ),
               ),
               const SizedBox(
-                height: 10,
+                height: 20,
               ),
               SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.9,
+                width: MediaQuery.sizeOf(context).width * 0.85,
                 child: TextFormField(
                   controller: passwordController,
                   onChanged: (String value) {},
                   validator: (value) {
                     return value!.isEmpty ? "กรุณากรอกรหัสผ่าน" : null;
                   },
+                  obscureText: true,
                   keyboardType: TextInputType.visiblePassword,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(50),
+                      borderSide: BorderSide(color: Colors.white),
                     ),
-                    labelText: "Password",
-                    prefixIcon: Icon(Icons.password_rounded),
+                    labelText: "รหัสผ่าน",
+                    labelStyle: TextStyle(fontSize: 14),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15),
+
+                    // prefixIcon: Icon(Icons.password_rounded),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 10,
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width * 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      width: 200,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ForgotPasswordPage()));
+                      },
+                      child: Text(
+                        "ลืมรหัสผ่าน?",
+                        style: GoogleFonts.prompt(color: Colors.black45),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
               InkWell(
                 onTap: () async {
                   if (_loginForm.currentState!.validate()) {
                     LoginResponse response = await verifyLogin();
-                    AwesomeDialog(
+                    QuickAlert.show(
                       context: context,
-                      animType: AnimType.topSlide,
-                      dialogType: DialogType.success,
-                      title: "เข้าสู่ระบบสำเร็จ",
-                      titleTextStyle: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      btnOkOnPress: () {
+                      type: QuickAlertType.success,
+                      text: 'เข้าสู่ระบบสำเร็จ!',
+                      confirmBtnText: 'ตกลง',
+                      confirmBtnColor: Color.fromARGB(255, 0, 113, 219),
+                      onConfirmBtnTap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
+                                builder: (contxt) =>
                                     HomePage(response.userId)));
                       },
-                    ).show();
+                    );
                     globals.isLoggedIn = true;
                     globals.jwtToken = response.jwtToken;
                     print(response.userId);
@@ -180,60 +242,43 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 child: Container(
-                  width: MediaQuery.sizeOf(context).width * 0.9,
-                  height: 60,
+                  width: MediaQuery.sizeOf(context).width * 0.85,
+                  height: 50,
                   decoration: const BoxDecoration(
                     color: Colors.blue,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
                   ),
                   child: const Center(
                       child: Text(
                     "เข้าสู่ระบบ",
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 14, color: Colors.white),
                   )),
                 ),
               ),
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.95,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "ยังไม่มีบัญชีผู้ใช้?",
+                    style: GoogleFonts.prompt(color: Colors.black45),
+                  ),
+                  TextButton(
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ForgotPasswordPage()));
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return RegisterPage();
+                          }),
+                        );
                       },
                       child: Text(
-                        "ลืมรหัสผ่าน",
-                        style: GoogleFonts.mitr(color: Colors.black45),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "ยังไม่มีบัญชีผู้ใช้?",
-                          style: GoogleFonts.mitr(color: Colors.black45),
-                        ),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) {
-                                  return RegisterPage();
-                                }),
-                              );
-                            },
-                            child: Text(
-                              "สมัครสมาชิก",
-                              style: GoogleFonts.mitr(color: Colors.blue),
-                            ))
-                      ],
-                    ),
-                  ],
-                ),
-              )
+                        "สมัครสมาชิก",
+                        style: GoogleFonts.prompt(color: Colors.blue),
+                      ))
+                ],
+              ),
             ],
           ),
         ),

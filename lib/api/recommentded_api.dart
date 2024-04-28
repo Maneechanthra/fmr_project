@@ -6,27 +6,31 @@ class RecommendedModel {
   final int id;
   final String restaurantName;
   final String title;
-  final String image_path;
-  final dynamic averageRating;
-  final int reviewCount;
   final int verified;
-  final String category_title;
   final double latitude;
   final double longitude;
+  final String categoryTitle;
+  final String imagePath;
+  final dynamic averageRating;
+  final int? reviewCount;
+  final int? favoritesCount;
+  double? score;
   double? distance; // This field stores the calculated distance
 
   RecommendedModel({
     required this.id,
     required this.restaurantName,
     required this.title,
-    required this.image_path,
+    required this.imagePath,
     required this.averageRating,
     required this.reviewCount,
     required this.verified,
-    required this.category_title,
+    required this.categoryTitle,
     required this.latitude,
     required this.longitude,
-    this.distance, // Initialize to null or a default value
+    required this.favoritesCount,
+    this.distance,
+    this.score,
   });
 
   factory RecommendedModel.fromJson(Map<String, dynamic> json) =>
@@ -34,14 +38,16 @@ class RecommendedModel {
         id: json["id"],
         restaurantName: json["restaurant_name"],
         title: json["title"],
-        image_path: json["image_path"],
+        imagePath: json["image_path"],
         averageRating: json["average_rating"],
         reviewCount: json["review_count"],
         verified: json["verified"],
-        category_title: json["category_title"],
+        categoryTitle: json["category_title"],
         latitude: json["latitude"],
         longitude: json["longitude"],
+        favoritesCount: json["favorites_count"],
         distance: json["distance"],
+        score: json["score"],
       );
 }
 

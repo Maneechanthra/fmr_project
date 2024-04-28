@@ -34,7 +34,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  google_maps_flutter: 2.5.3
+  google_maps_flutter: ^2.1.7
   flutter_map: ^6.1.0
   google_nav_bar: ^5.0.6
   google_fonts: ^6.1.0
@@ -107,6 +107,7 @@ flutter:
     - assets/img/foods/01.jpg
     - assets/img/logo/logo_3.png
     - assets/img/logo/not_login.png
+    - assets/img/icons/good_not_report.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

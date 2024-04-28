@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fmr_project/api/getRestaurantSearch_api.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
 import 'package:fmr_project/model/restaurant_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,17 +13,23 @@ class SearchHistoryPage extends StatefulWidget {
 }
 
 class _SearchHistoryPageState extends State<SearchHistoryPage> {
+  late Future<List<GetRestaurantsSearchByName>>
+      futureGetRestaurantSearchByName; // ประกาศตัวแปรประเภทใหม่
   late TextEditingController _searchController;
   late List<String> _searchHistory;
-  late List<Restaurant_2> _searchResult;
+  late List<GetRestaurantsSearchByName> _searchResult; // แก้ไขตัวแปรประเภทใหม่
+  late List<GetRestaurantsSearchByName> allRestaurantsByName;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    _searchHistory = [];
     _searchResult = [];
-    _loadSearchHistory();
+    _searchHistory = [];
+    futureGetRestaurantSearchByName = fetchRestaurantSearch();
+    futureGetRestaurantSearchByName.then((restaurants) {
+      allRestaurantsByName = restaurants; // เก็บข้อมูลร้านอาหารในตัวแปร
+    });
   }
 
   @override
@@ -34,14 +41,10 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
   // Future<void> _loadSearchHistory() async {
   //   final SharedPreferences prefs = await SharedPreferences.getInstance();
   //   final List<String>? searchHistory = prefs.getStringList('search_history');
+
   //   if (searchHistory != null) {
-  //     final now = DateTime.now();
-  //     final filteredSearchHistory = searchHistory.where((query) {
-  //       final queryDate = DateTime.parse(query.split(' | ')[1]);
-  //       return now.difference(queryDate).inDays <= 30;
-  //     }).toList();
   //     setState(() {
-  //       _searchHistory = filteredSearchHistory;
+  //       _searchHistory = searchHistory; // ตรวจสอบว่าข้อมูลถูกโหลดและถูกเพิ่ม
   //     });
   //   }
   // }
@@ -72,6 +75,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
     setState(() {
       _searchHistory = updatedSearchHistory;
     });
+    _loadSearchHistory();
   }
 
   Future<void> _saveSearchHistory(String query) async {
@@ -89,8 +93,10 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
   void searchRestaurant(String query) {
     _searchResult.clear();
 
-    for (Restaurant_2 restaurant in allRestaurants_2) {
-      if (restaurant.name.contains(query)) {
+    for (GetRestaurantsSearchByName restaurant in allRestaurantsByName) {
+      // เปลี่ยนตัวแปร
+      if (restaurant.restaurantName.contains(query)) {
+        // ค้นหาตามชื่อ
         _searchResult.add(restaurant);
       }
     }
@@ -211,9 +217,12 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: _searchHistory.map((queryWithDate) {
+                      // final query = queryWithDate;
                       final query = queryWithDate.split('|').first;
                       return GestureDetector(
                         onTap: () {
+                          // _searchController.text = query;
+                          // _removeSearchHistory(queryWithDate);
                           _searchController.text = query;
                           _removeSearchHistory(queryWithDate);
                         },
@@ -259,6 +268,8 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                     itemCount: _searchResult.length,
                     itemBuilder: (context, index) {
                       final item = _searchResult[index];
+                      final String imageUrl =
+                          'http://10.0.2.2:8000/api/public/${item.imagePath}';
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: InkWell(
@@ -287,8 +298,8 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
-                                  child: Image.asset(
-                                    item.imageUrls[0],
+                                  child: Image.network(
+                                    imageUrl,
                                     width: 100,
                                   ),
                                 ),
@@ -303,14 +314,14 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        item.name,
+                                        item.restaurantName,
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                       Text(
-                                        item.type_restaurant,
+                                        item.categoryTitle,
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
@@ -326,10 +337,10 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                                           Row(
                                             children: [
                                               Text(
-                                                "${item.rating.toString()}",
+                                                "${item.averageRating.toString()}",
                                               ),
                                               Text(
-                                                " (${item.review.toString()} รีวิว)",
+                                                " (${item.reviewCount.toString()} รีวิว)",
                                                 style: TextStyle(
                                                     color: Color.fromARGB(
                                                         90, 0, 0, 0)),

@@ -13,6 +13,7 @@ import 'package:fmr_project/update/editname.dart';
 import 'package:fmr_project/screen/home.dart';
 import 'package:fmr_project/screen/login.dart';
 import 'package:http/http.dart' as http;
+import 'package:quickalert/quickalert.dart';
 import '/globals.dart' as globals;
 
 class ProfilePage extends StatefulWidget {
@@ -344,11 +345,31 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             InkWell(
                               onTap: () {
+                                // if (widget.userId == 0) {
+                                //   AwesomeDialog(
+                                //     context: context,
+                                //     animType: AnimType.topSlide,
+                                //     dialogType: DialogType.warning,
+                                //     title: 'กรุณาเข้าสู่ระบบ!',
+                                //     titleTextStyle: TextStyle(
+                                //         fontWeight: FontWeight.bold,
+                                //         fontSize: 20),
+                                //     btnOkOnPress: () {
+                                //       Navigator.push(
+                                //         context,
+                                //         MaterialPageRoute(
+                                //           builder: (context) => LoginPage(),
+                                //         ),
+                                //       );
+                                //     },
+                                //   ).show();
+                                // }
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          AllRestaurantOfme(widget.userId)),
+                                    builder: (context) =>
+                                        AllRestaurantOfme(userData.id),
+                                  ),
                                 );
                               },
                               child: const SizedBox(
@@ -389,6 +410,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             InkWell(
                               onTap: () {
+                                if (widget.userId == 0) {
+                                  print("object");
+                                }
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -863,11 +887,24 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AllRestaurantOfme(widget.userId)),
-              );
+              if (widget.userId == 0) {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.warning,
+                  text: 'กรุณาเข้าสู่ระบบเพื่อใช้ฟังก์ชันนี้',
+                  confirmBtnText: 'ตกลง',
+                  confirmBtnColor: Color.fromARGB(255, 0, 113, 219),
+                  onConfirmBtnTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+                );
+              }
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => AllRestaurantOfme(widget.userId)),
+              // );
             },
             child: const SizedBox(
               height: 50,
@@ -905,11 +942,24 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AllFavoriesPage(widget.userId)),
-              );
+              if (widget.userId == 0) {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.warning,
+                  text: 'กรุณาเข้าสู่ระบบเพื่อใช้ฟังก์ชันนี้',
+                  confirmBtnText: 'ตกลง',
+                  confirmBtnColor: Color.fromARGB(255, 0, 113, 219),
+                  onConfirmBtnTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+                );
+              }
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => AllFavoriesPage(widget.userId)),
+              // );
             },
             child: const SizedBox(
               height: 50,
@@ -947,11 +997,24 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => NotificationPage(widget.userId ?? 0)),
-              );
+              if (widget.userId == 0) {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.warning,
+                  text: 'กรุณาเข้าสู่ระบบเพื่อใช้ฟังก์ชันนี้',
+                  confirmBtnText: 'ตกลง',
+                  confirmBtnColor: Color.fromARGB(255, 0, 113, 219),
+                  onConfirmBtnTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+                );
+              }
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => NotificationPage(widget.userId ?? 0)),
+              // );
             },
             child: const SizedBox(
               height: 50,

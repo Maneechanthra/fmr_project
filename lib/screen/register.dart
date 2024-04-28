@@ -78,12 +78,12 @@ class _RegisterPageState extends State<RegisterPage> {
           color: Colors.black,
         ),
         elevation: 0,
-        title: Text(
-          "สมัครสมาชิก",
-          style: TextStyle(
-              fontWeight: FontWeight.w900, fontSize: 18, color: Colors.black),
-        ),
-        centerTitle: true,
+        // title: Text(
+        //   "สมัครสมาชิก",
+        //   style: TextStyle(
+        //       fontWeight: FontWeight.w900, fontSize: 18, color: Colors.black),
+        // ),
+        // centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -91,21 +91,56 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(
               height: 20,
             ),
-            Center(
-              child: Image.asset(
-                "assets/img/logo/logo.png",
-                width: 100,
+            // Center(
+            //   child: Image.asset(
+            //     "assets/img/logo/logo.png",
+            //     width: 100,
+            //   ),
+            // ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    "assets/img/logo/logo.png",
+                    width: 100,
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "สมัครสมาชิก",
+                      style: TextStyle(
+                        fontSize: 40,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "กรุณาเข้าสู่ระบบหรือสมัครสมาชิกเพื่อเข้าใช้งานแอปพลิเคชัน",
+                      style: TextStyle(
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
               ),
+            ),
+            const SizedBox(
+              height: 15,
             ),
             Padding(
               padding: EdgeInsets.all(15),
               child: Form(
                 key: _registerForm,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.85,
                       child: TextFormField(
                         controller: nameController,
                         keyboardType: TextInputType.text,
@@ -117,25 +152,28 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
                             borderSide: BorderSide(
                               color: Colors.grey,
                               width: 1,
                             ),
                           ),
                           labelText: "ชื่อ-นามสกุล",
-                          prefixIcon: Icon(
-                            Icons.person,
-                            color: Colors.grey,
-                          ),
+                          labelStyle: TextStyle(fontSize: 14),
+                          alignLabelWithHint: true,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                          // prefixIcon: Icon(
+                          //   Icons.person,
+                          //   color: Colors.grey,
+                          // ),
                         ),
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 1,
+                      width: MediaQuery.of(context).size.width * 0.85,
                       child: TextFormField(
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
@@ -145,25 +183,29 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
                             borderSide: BorderSide(
                               color: Colors.grey,
                               width: 1,
                             ),
                           ),
                           labelText: "อีเมล",
-                          prefixIcon: Icon(
-                            Icons.email,
-                            color: Colors.grey,
-                          ),
+                          labelStyle: TextStyle(fontSize: 14),
+                          alignLabelWithHint: true,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                          helperText: "ex. user@gmail.com",
+                          // prefixIcon: Icon(
+                          //   Icons.email,
+                          //   color: Colors.grey,
+                          // ),
                         ),
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 1,
+                      width: MediaQuery.of(context).size.width * 0.85,
                       child: TextFormField(
                         controller: passwordController,
                         obscureText: true,
@@ -174,25 +216,25 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
                             borderSide: BorderSide(
                               color: Colors.grey,
                               width: 1,
                             ),
                           ),
                           labelText: "รหัสผ่าน",
-                          prefixIcon: Icon(
-                            Icons.key,
-                            color: Colors.grey,
-                          ),
+                          labelStyle: TextStyle(fontSize: 14),
+                          alignLabelWithHint: true,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                          // helperText: "กรุณาตั้งรหัสผ่านอย่างน้อย 8 ตัวอักษร",
                         ),
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width * 1,
+                      width: MediaQuery.of(context).size.width * 0.85,
                       child: TextFormField(
                         controller: confirmPasswordController,
                         obscureText: true,
@@ -205,22 +247,21 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
                             borderSide: BorderSide(
                               color: Colors.grey,
                               width: 1,
                             ),
                           ),
                           labelText: "ยืนยันรหัสผ่าน",
-                          prefixIcon: Icon(
-                            Icons.key_rounded,
-                            color: Colors.grey,
-                          ),
+                          labelStyle: TextStyle(fontSize: 14),
+                          alignLabelWithHint: true,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 15),
                         ),
                       ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 25,
                     ),
                     InkWell(
                       onTap: () async {
@@ -244,37 +285,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                         builder: (contxt) => LoginPage()));
                               },
                             );
-                            // PanaraInfoDialog.showAnimatedGrow(
-                            //   context,
-                            //   title: "สมัครสมาชิกสำเร็จ",
-                            //   message: "กดตกลง เพื่อกลับไปยังหน้าแรก",
-                            //   buttonText: "ตกลง",
-                            //   onTapDismiss: () {
-                            //     Navigator.push(
-                            //         context,
-                            //         MaterialPageRoute(
-                            //             builder: (contxt) => LoginPage()));
-                            //   },
-                            //   panaraDialogType: PanaraDialogType.normal,
-                            //   barrierDismissible:
-                            //       false, // optional parameter (default is true)
-                            // );
-                            // AwesomeDialog(
-                            //   context: context,
-                            //   animType: AnimType.topSlide,
-                            //   dialogType: DialogType.success,
-                            //   title: 'สมัครสมาชิกสำเร็จ',
-                            //   titleTextStyle: TextStyle(
-                            //       fontWeight: FontWeight.bold, fontSize: 20),
-                            //   btnOkOnPress: () {
-                            //     // Navigator.push(
-                            //     //   context,
-                            //     //   MaterialPageRoute(
-                            //     //     builder: (context) => LoginPage(),
-                            //     //   ),
-                            //     // );
-                            //   },
-                            // ).show();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -292,11 +302,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
                       },
                       child: Container(
-                        width: MediaQuery.sizeOf(context).width * 1,
-                        height: 60,
+                        width: MediaQuery.sizeOf(context).width * 0.85,
+                        height: 50,
                         decoration: BoxDecoration(
                           color: Colors.blue,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(50),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.grey.withOpacity(0.5),
@@ -308,36 +318,36 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: const Center(
                             child: Text(
                           "สมัครสมาชิก",
-                          style: TextStyle(color: Colors.white, fontSize: 18),
+                          style: TextStyle(color: Colors.white, fontSize: 14),
                         )),
                       ),
                     ),
                     SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
                       width: MediaQuery.sizeOf(context).width * 1,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 1, right: 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              "มีบัญชีผู้ใช้แล้ว",
-                              style: GoogleFonts.mitr(color: Colors.black45),
-                            ),
-                            TextButton(
-                                onPressed: () {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(builder: (context) {
-                                  //     return LoginPage();
-                                  //   }),
-                                  // );
-                                },
-                                child: Text(
-                                  "เข้าสู่ระบบ",
-                                  style: GoogleFonts.mitr(color: Colors.blue),
-                                ))
-                          ],
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "มีบัญชีผู้ใช้แล้ว? ",
+                            style: GoogleFonts.mitr(color: Colors.black45),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) {
+                                //     return LoginPage();
+                                //   }),
+                                // );
+                              },
+                              child: Text(
+                                "เข้าสู่ระบบ",
+                                style: GoogleFonts.mitr(color: Colors.blue),
+                              ))
+                        ],
                       ),
                     )
                   ],

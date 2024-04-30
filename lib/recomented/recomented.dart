@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/recommentded_api.dart';
 import 'package:fmr_project/detail_page/detail_restaurant.dart';
@@ -139,6 +140,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
               children: List.generate(topRestaurants.length = 4, (index) {
                 // RecommendedModel item = restaurant_info[index];
                 var item = topRestaurants[index];
+                // final category =
                 final String imageUrl =
                     'http://10.0.2.2:8000/api/public/${restaurant_info[index].imagePath}';
                 return Padding(
@@ -187,8 +189,9 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                   ),
                                 ),
                                 Positioned(
-                                  top: 5,
-                                  left: MediaQuery.of(context).size.width * 0.3,
+                                  top: 8,
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.325,
                                   child: Container(
                                     width: 50,
                                     height: 20,
@@ -238,35 +241,41 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                     children: [
                                       SizedBox(
                                         width: 145,
-                                        child: Text(
-                                          item.restaurantName,
-                                          style: GoogleFonts.mitr(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                        child: Text(item.restaurantName,
+                                            style: GoogleFonts.prompt(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1),
                                       ),
-                                      item.verified == 2
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 10),
-                                              child: Icon(
-                                                Icons.verified_rounded,
-                                                color: Colors.blue,
-                                              ),
-                                            )
-                                          : SizedBox(),
+                                      if (item.verified == 2)
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 10),
+                                          child: Icon(
+                                            Icons.verified_rounded,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
                                     ],
                                   ),
-                                  Text(
-                                    item.categoryTitle,
-                                    style: GoogleFonts.mitr(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: Color.fromARGB(255, 168, 168, 168),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 0),
+                                    child: SizedBox(
+                                      width: 281,
+                                      child: Text(
+                                        item.restaurantCategory.join("/"),
+                                        style: GoogleFonts.prompt(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: Color.fromARGB(
+                                              255, 168, 168, 168),
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
                                     ),
-                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
@@ -286,7 +295,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                         padding: const EdgeInsets.all(0.8),
                                         child: Text(
                                           "${item.distance?.toStringAsFixed(2)} km",
-                                          style: GoogleFonts.mitr(
+                                          style: GoogleFonts.prompt(
                                               fontSize: 10,
                                               fontWeight: FontWeight.normal,
                                               color: Color.fromARGB(
@@ -311,7 +320,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                         child: Text(
                                           item.reviewCount.toString() +
                                               " รีวิว",
-                                          style: GoogleFonts.mitr(
+                                          style: GoogleFonts.prompt(
                                               fontSize: 10,
                                               fontWeight: FontWeight.normal,
                                               color: Color.fromARGB(

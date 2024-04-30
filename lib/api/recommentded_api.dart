@@ -2,33 +2,82 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '/globals.dart' as globals;
 
+// class RecommendedModel {
+//   final int id;
+//   final String restaurantName;
+//   final String title;
+//   final int verified;
+//   final double latitude;
+//   final double longitude;
+//   final String categoryTitle;
+//   final String? imagePath;
+//   final dynamic averageRating;
+//   final int? reviewCount;
+//   final int? favoritesCount;
+//   double? score;
+//   double? distance;
+
+//   RecommendedModel({
+//     required this.id,
+//     required this.restaurantName,
+//     required this.title,
+//     required this.imagePath,
+//     required this.averageRating,
+//     required this.reviewCount,
+//     required this.verified,
+//     required this.categoryTitle,
+//     required this.latitude,
+//     required this.longitude,
+//     required this.favoritesCount,
+//     this.distance,
+//     this.score,
+//   });
+
+//   factory RecommendedModel.fromJson(Map<String, dynamic> json) =>
+//       RecommendedModel(
+//         id: json["id"],
+//         restaurantName: json["restaurant_name"],
+//         title: json["title"],
+//         imagePath: json["image_path"],
+//         averageRating: json["average_rating"],
+//         reviewCount: json["review_count"],
+//         verified: json["verified"],
+//         categoryTitle: json["category_title"],
+//         latitude: json["latitude"],
+//         longitude: json["longitude"],
+//         favoritesCount: json["favorites_count"],
+//         distance: json["distance"],
+//         score: json["score"],
+//       );
+// }
+
+import 'dart:convert';
+
 class RecommendedModel {
   final int id;
   final String restaurantName;
-  final String title;
   final int verified;
   final double latitude;
   final double longitude;
-  final String categoryTitle;
   final String imagePath;
-  final dynamic averageRating;
-  final int? reviewCount;
-  final int? favoritesCount;
+  final double? averageRating;
+  final int reviewCount;
+  final int favoritesCount;
+  final List<String> restaurantCategory;
   double? score;
-  double? distance; // This field stores the calculated distance
+  double? distance;
 
   RecommendedModel({
     required this.id,
     required this.restaurantName,
-    required this.title,
+    required this.verified,
+    required this.latitude,
+    required this.longitude,
     required this.imagePath,
     required this.averageRating,
     required this.reviewCount,
-    required this.verified,
-    required this.categoryTitle,
-    required this.latitude,
-    required this.longitude,
     required this.favoritesCount,
+    required this.restaurantCategory,
     this.distance,
     this.score,
   });
@@ -37,15 +86,15 @@ class RecommendedModel {
       RecommendedModel(
         id: json["id"],
         restaurantName: json["restaurant_name"],
-        title: json["title"],
-        imagePath: json["image_path"],
-        averageRating: json["average_rating"],
-        reviewCount: json["review_count"],
         verified: json["verified"],
-        categoryTitle: json["category_title"],
-        latitude: json["latitude"],
-        longitude: json["longitude"],
+        latitude: json["latitude"]?.toDouble(),
+        longitude: json["longitude"]?.toDouble(),
+        imagePath: json["image_path"],
+        averageRating: json["average_rating"]?.toDouble(),
+        reviewCount: json["review_count"],
         favoritesCount: json["favorites_count"],
+        restaurantCategory:
+            List<String>.from(json["restaurant_category"].map((x) => x)),
         distance: json["distance"],
         score: json["score"],
       );

@@ -403,61 +403,61 @@ class _AddResPageState extends State<AddResPage> {
                     ),
                   ),
                   SizedBox(width: 20),
-                  Expanded(
-                    child: SizedBox(
-                      height: 60,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: InkWell(
-                          onTap: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TypeRestaurantPage(
-                                  selectedCategories: [],
-                                ),
-                              ),
-                            );
+                  // Expanded(
+                  //   child: SizedBox(
+                  //     height: 60,
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  //       child: InkWell(
+                  //         onTap: () async {
+                  //           final result = await Navigator.push(
+                  //             context,
+                  //             MaterialPageRoute(
+                  //               builder: (context) => TypeRestaurantPage(
+                  //                 selectedCategories: [],
+                  //               ),
+                  //             ),
+                  //           );
 
-                            if (result != null) {
-                              setState(() {
-                                _controller.text = result
-                                    .map((category) => category["name"])
-                                    .join(", ");
-                              });
-                            }
-                          },
-                          child: TextField(
-                            enabled: false,
-                            controller: _controller,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.blue),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Colors.grey),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color:
-                                      const Color.fromARGB(255, 214, 214, 214),
-                                ),
-                              ),
-                              labelText: "ประเภทร้านอาหาร",
-                              labelStyle: TextStyle(
-                                color: Color.fromARGB(255, 190, 190, 190),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  //           if (result != null) {
+                  //             setState(() {
+                  //               _controller.text = result
+                  //                   .map((category) => category["name"])
+                  //                   .join(", ");
+                  //             });
+                  //           }
+                  //         },
+                  //         child: TextField(
+                  //           enabled: false,
+                  //           controller: _controller,
+                  //           decoration: InputDecoration(
+                  //             border: OutlineInputBorder(
+                  //               borderSide: BorderSide(color: Colors.blue),
+                  //               borderRadius: BorderRadius.all(
+                  //                 Radius.circular(10),
+                  //               ),
+                  //             ),
+                  //             focusedBorder: OutlineInputBorder(
+                  //               borderRadius: BorderRadius.circular(10),
+                  //               borderSide: BorderSide(color: Colors.grey),
+                  //             ),
+                  //             enabledBorder: OutlineInputBorder(
+                  //               borderRadius: BorderRadius.circular(10),
+                  //               borderSide: BorderSide(
+                  //                 color:
+                  //                     const Color.fromARGB(255, 214, 214, 214),
+                  //               ),
+                  //             ),
+                  //             labelText: "ประเภทร้านอาหาร",
+                  //             labelStyle: TextStyle(
+                  //               color: Color.fromARGB(255, 190, 190, 190),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

@@ -2,57 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '/globals.dart' as globals;
 
-// class RecommendedModel {
-//   final int id;
-//   final String restaurantName;
-//   final String title;
-//   final int verified;
-//   final double latitude;
-//   final double longitude;
-//   final String categoryTitle;
-//   final String? imagePath;
-//   final dynamic averageRating;
-//   final int? reviewCount;
-//   final int? favoritesCount;
-//   double? score;
-//   double? distance;
-
-//   RecommendedModel({
-//     required this.id,
-//     required this.restaurantName,
-//     required this.title,
-//     required this.imagePath,
-//     required this.averageRating,
-//     required this.reviewCount,
-//     required this.verified,
-//     required this.categoryTitle,
-//     required this.latitude,
-//     required this.longitude,
-//     required this.favoritesCount,
-//     this.distance,
-//     this.score,
-//   });
-
-//   factory RecommendedModel.fromJson(Map<String, dynamic> json) =>
-//       RecommendedModel(
-//         id: json["id"],
-//         restaurantName: json["restaurant_name"],
-//         title: json["title"],
-//         imagePath: json["image_path"],
-//         averageRating: json["average_rating"],
-//         reviewCount: json["review_count"],
-//         verified: json["verified"],
-//         categoryTitle: json["category_title"],
-//         latitude: json["latitude"],
-//         longitude: json["longitude"],
-//         favoritesCount: json["favorites_count"],
-//         distance: json["distance"],
-//         score: json["score"],
-//       );
-// }
-
-import 'dart:convert';
-
 class RecommendedModel {
   final int id;
   final String restaurantName;
@@ -109,7 +58,7 @@ Future<List<RecommendedModel>> fetchRestaurants() async {
       'connection': 'keep-alive',
       // 'Authorization': 'Bearer ' + globals.jwtToken,
     },
-  );
+  ).timeout(const Duration(minutes: 5));
 
   print(response.statusCode);
   print(response.body);

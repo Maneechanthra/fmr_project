@@ -2,48 +2,64 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '/globals.dart' as globals;
 
+import 'dart:convert';
+
 class MyRestaurantModel {
   final int id;
   final String restaurantName;
-  final String title;
+  final String categories;
   final int verified;
   final int status;
-  final String categoryTitle;
   final String imagePath;
-  final double? averageRating;
+  final dynamic averageRating;
   final int reviewCount;
   final int favoritesCount;
-  final int view_count;
+  final int viewCount;
 
   MyRestaurantModel({
     required this.id,
     required this.restaurantName,
-    required this.title,
+    required this.categories,
     required this.verified,
     required this.status,
-    required this.categoryTitle,
     required this.imagePath,
     required this.averageRating,
     required this.reviewCount,
     required this.favoritesCount,
-    required this.view_count,
+    required this.viewCount,
   });
 
-  factory MyRestaurantModel.fromJson(Map<String, dynamic> json) {
-    return MyRestaurantModel(
-      id: json["id"],
-      restaurantName: json["restaurant_name"],
-      title: json["title"],
-      verified: json["verified"],
-      status: json["status"],
-      categoryTitle: json["category_title"],
-      imagePath: json["image_path"],
-      averageRating: json["average_rating"]?.toDouble(),
-      reviewCount: json["review_count"],
-      favoritesCount: json["favorites_count"],
-      view_count: json["view_count"],
-    );
-  }
+  factory MyRestaurantModel.fromRawJson(String str) =>
+      MyRestaurantModel.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory MyRestaurantModel.fromJson(Map<String, dynamic> json) =>
+      MyRestaurantModel(
+        id: json["id"],
+        restaurantName: json["restaurant_name"],
+        categories: json["categories"],
+        verified: json["verified"],
+        status: json["status"],
+        imagePath: json["image_path"],
+        averageRating: json["average_rating"],
+        reviewCount: json["review_count"],
+        favoritesCount: json["favorites_count"],
+        viewCount: json["view_count"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "restaurant_name": restaurantName,
+        "categories": categories,
+        "verified": verified,
+        "status": status,
+        "image_path": imagePath,
+        "average_rating": averageRating,
+        "review_count": reviewCount,
+        "favorites_count": favoritesCount,
+        "view_count": viewCount,
+      };
 }
 
 Future<List<MyRestaurantModel>> fetchMyRestaurants(int? userId) async {

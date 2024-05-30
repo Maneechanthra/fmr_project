@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fmr_project/screen/index.dart';
+import 'package:fmr_project/add_new/add_restaurant_new.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
+import 'package:fmr_project/category/category.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
+import 'package:fmr_project/login/login_new.dart';
+import 'package:fmr_project/profile/profile_screen.dart';
+import 'package:fmr_project/recomented/recommended_new.dart';
+import 'package:fmr_project/screen/splash_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -29,10 +36,10 @@ class MyApp extends StatelessWidget {
       title: 'FMReataurant',
       theme: ThemeData(
         primarySwatch: myBlue,
-        fontFamily: GoogleFonts.prompt().fontFamily,
+        fontFamily: GoogleFonts.mitr().fontFamily,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: IndexPage(),
+      home: DetailRestaurantScreen(restaurantId: 48, userId: 26),
     );
   }
 }

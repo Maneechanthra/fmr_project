@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/myFavorite_api.dart';
-import 'package:fmr_project/detail_page/detail_restaurant.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant.dart';
 import 'package:fmr_project/model/restaurant_info.dart';
 
 class AllFavoriesPage extends StatefulWidget {
@@ -35,7 +35,7 @@ class _AllFavoriesPageState extends State<AllFavoriesPage> {
           ),
         ),
         body: FutureBuilder<List<MyFavoriteModel>>(
-          future: getMyFavorites, // การเรียก Future ที่คุณต้องการ
+          future: getMyFavorites,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -49,8 +49,19 @@ class _AllFavoriesPageState extends State<AllFavoriesPage> {
               final myFavorites = snapshot.data as List<MyFavoriteModel>;
               // final List<MyFavoriteModel> myFavorites = snapshot.data ?? [];
               if (myFavorites.isEmpty) {
-                return Center(
-                  child: Text("No favorites found"),
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      child: Image.asset("assets/img/not_data.png"),
+                    ),
+                    Text(
+                      "ไม่พบข้อมูล",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
                 );
               } else {
                 return Padding(
@@ -91,7 +102,7 @@ class _AllFavoriesPageState extends State<AllFavoriesPage> {
                                   child: Image.network(
                                     imageUrl,
                                     width: 100,
-                                    height: 100, // กำหนดขนาดให้เหมาะสม
+                                    height: 100,
                                   ),
                                 ),
                                 SizedBox(
@@ -120,11 +131,13 @@ class _AllFavoriesPageState extends State<AllFavoriesPage> {
                                             : SizedBox(), // ไม่แสดงอะไรถ้าไม่ได้ยืนยัน
                                       ],
                                     ),
-                                    Text(
-                                      item.categoryTitle,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
+                                    SizedBox(
+                                      child: Text(
+                                        item.restaurantCategory.join("/"),
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
                                     Row(

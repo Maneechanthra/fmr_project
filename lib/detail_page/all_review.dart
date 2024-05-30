@@ -132,7 +132,7 @@ Widget _allReviewsPage(BuildContext context,
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        review.title,
+                        review.title ?? "",
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

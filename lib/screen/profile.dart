@@ -1,12 +1,16 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/add/addRestuarant.dart';
+import 'package:fmr_project/add_new/add_restaurant_new.dart';
 import 'package:fmr_project/api/profile_api.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator.dart';
+import 'package:fmr_project/color/colors.dart';
 import 'package:fmr_project/detail_page/all_favorites.dart';
 import 'package:fmr_project/detail_page/all_restaurant_of_me.dart';
-import 'package:fmr_project/detail_page/notification.dart';
+import 'package:fmr_project/detail_page/all_my_report.dart';
 import 'package:fmr_project/update/changepassword.dart';
 import 'package:fmr_project/update/editemail.dart';
 import 'package:fmr_project/update/editname.dart';
@@ -17,7 +21,7 @@ import 'package:quickalert/quickalert.dart';
 import '/globals.dart' as globals;
 
 class ProfilePage extends StatefulWidget {
-  final int userId;
+  final int? userId;
   const ProfilePage(this.userId, {Key? key}) : super(key: key);
 
   @override
@@ -26,18 +30,40 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<ProfileModel?> futureProfile;
+  late Timer timer;
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    if (widget != null || widget.userId != 0) {
-      futureProfile = fetchProfile(widget.userId);
-      print("userId in profile : " + widget.userId.toString());
-    } else {
-      print("not userID");
+    if (mounted) {
+      if (widget.userId != null && widget.userId != 0) {
+        futureProfile = fetchProfile(widget.userId);
+        print("userId in profile : ${widget.userId}");
+      } else {
+        print("not userID");
+      }
+      timer =
+          Timer.periodic(Duration(seconds: 60), (Timer t) => setState(() {}));
     }
-    // checkLoginStatus();
   }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  // Future<void> _delayedLoadUserLocation() async {
+  //   await Future.delayed(Duration(seconds: 1));
+  //   await _loadUserLocation();
+  // }
 
   Future<void> deleteUserAndCheckLogout(int user_id) async {
     try {
@@ -111,6 +137,16 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryColor,
+        title: Text(
+          "โปรไฟล์",
+          style: TextStyle(
+              fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        leading: SizedBox(),
+      ),
       body: widget.userId == 0
           ? _notlogin(context)
           : SafeArea(
@@ -138,19 +174,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Center(
-                              child: const Text(
-                                "โปรไฟล์",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            Center(
-                              child: Divider(),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
                             const Row(
                               children: [
                                 Icon(Icons.person),
@@ -300,9 +323,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => AddResPage(
+                                      builder: (context) => AddRestaurantScreen(
                                             selectedCategories: [],
-                                            userId: null,
+                                            userId: widget.userId ?? 0,
+                                            // selectedTimes: [],
                                           )),
                                 );
                               },
@@ -417,7 +441,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          AllFavoriesPage(widget.userId)),
+                                          AllFavoriesPage(widget.userId ?? 0)),
                                 );
                               },
                               child: const SizedBox(
@@ -483,9 +507,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                           SizedBox(
                                             width: 10,
                                           ),
-                                          Text(
-                                            "รายงานความไม่เหมาะสมร้านอาหารของฉัน",
-                                            style: TextStyle(fontSize: 16),
+                                          SizedBox(
+                                            width: 260,
+                                            child: Text(
+                                              "รายงานความไม่เหมาะสมร้านอาหารของฉัน",
+                                              style: TextStyle(fontSize: 16),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -572,7 +601,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  HomePage(0)));
+                                                  BottomNavigatorPage(
+                                                    indexPage: 0,
+                                                  )));
                                     }).show();
                                 // Navigator.push(
                                 //     context,
@@ -652,24 +683,12 @@ class _ProfilePageState extends State<ProfilePage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Center(
-          //   child: const Text(
-          //     "โปรไฟล์",
-          //     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-          //   ),
-          // ),
-          Center(
-            child: Divider(),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset(
-                "assets/img/logo/not_login.png",
+                "assets/img/logo/pls_login.png",
                 scale: 2,
               ),
               Center(
@@ -685,7 +704,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       width: MediaQuery.of(context).size.width * 0.6,
                       height: MediaQuery.of(context).size.height * 0.05,
                       decoration: BoxDecoration(
-                        color: Colors.blue,
+                        color: AppColors.primaryColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(
@@ -702,127 +721,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
-          // const Row(
-          //   children: [
-          //     Icon(Icons.person),
-          //     SizedBox(
-          //       width: 5,
-          //     ),
-          //     Text(
-          //       "ข้อมูลส่วนตัว",
-          //       style: TextStyle(
-          //         fontSize: 18,
-          //         fontWeight: FontWeight.w400,
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          // const SizedBox(
-          //   height: 15,
-          // ),
-          // InkWell(
-          //   onTap: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => const EditNamePage()),
-          //     );
-          //   },
-          //   child: Container(
-          //     width: 380,
-          //     height: 80,
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.circular(10),
-          //       border: Border.all(
-          //         color: const Color.fromARGB(255, 240, 240, 240),
-          //         width: 1,
-          //       ),
-          //       boxShadow: const [
-          //         BoxShadow(
-          //             color: Color.fromARGB(22, 41, 41, 41),
-          //             blurRadius: 10,
-          //             offset: Offset(0, 2))
-          //       ],
-          //     ),
-          //     child: Padding(
-          //       padding: EdgeInsets.all(13.0),
-          //       child: Column(
-          //         mainAxisAlignment: MainAxisAlignment.start,
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: [
-          //           Row(
-          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //             children: [
-          //               Text(
-          //                 "ชื่อ-นามสกุล",
-          //                 style: TextStyle(fontSize: 14),
-          //               ),
-          //               Icon(Icons.edit),
-          //             ],
-          //           ),
-          //           Text(
-          //             "ชื่อนามสกุล",
-          //             style:
-          //                 TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          // const SizedBox(
-          //   height: 10,
-          // ),
-          // InkWell(
-          //   onTap: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => const EditEmailPage()),
-          //     );
-          //   },
-          //   child: Container(
-          //     width: 380,
-          //     height: 80,
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.circular(10),
-          //       border: Border.all(
-          //         color: const Color.fromARGB(255, 240, 240, 240),
-          //         width: 1,
-          //       ),
-          //       boxShadow: const [
-          //         BoxShadow(
-          //             color: Color.fromARGB(22, 41, 41, 41),
-          //             blurRadius: 10,
-          //             offset: Offset(0, 2))
-          //       ],
-          //     ),
-          //     child: const Padding(
-          //       padding: EdgeInsets.all(13.0),
-          //       child: Column(
-          //         mainAxisAlignment: MainAxisAlignment.start,
-          //         crossAxisAlignment: CrossAxisAlignment.start,
-          //         children: [
-          //           Row(
-          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //             children: [
-          //               Text(
-          //                 "อีเมล",
-          //                 style: TextStyle(fontSize: 14),
-          //               ),
-          //               Icon(Icons.edit),
-          //             ],
-          //           ),
-          //           Text(
-          //             "sumet.ma@ku.th",
-          //             style:
-          //                 TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          // ),
           const SizedBox(
             height: 25,
           ),
@@ -844,9 +742,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   : Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddResPage(
+                          builder: (context) => AddRestaurantScreen(
                                 selectedCategories: [],
-                                userId: null,
+                                userId: widget.userId ?? 0,
+                                // selectedTimes: [],
                               )),
                     );
             },
@@ -1032,9 +931,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          "รายงานความไม่เหมาะสมร้านอาหารของฉัน",
-                          style: TextStyle(fontSize: 16),
+                        SizedBox(
+                          width: 260,
+                          child: Text(
+                            "รายงานความไม่เหมาะสมร้านอาหารของฉัน",
+                            style: TextStyle(fontSize: 16),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
                         ),
                       ],
                     ),
@@ -1047,157 +951,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-          // const SizedBox(
-          //   height: 25,
-          // ),
-          // Text(
-          //   "ตั้งค่า",
-          //   style: TextStyle(
-          //     fontSize: 16,
-          //     color: Color.fromARGB(221, 143, 143, 143),
-          //   ),
-          // ),
-          // const SizedBox(
-          //   height: 10,
-          // ),
-          // InkWell(
-          //   onTap: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //           builder: (context) => const ChangePasswordPage()),
-          //     );
-          //   },
-          //   child: const SizedBox(
-          //     height: 50,
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //       children: [
-          //         SizedBox(
-          //           width: 200,
-          //           child: Row(
-          //             children: [
-          //               Icon(
-          //                 Icons.key,
-          //                 color: Color.fromARGB(221, 143, 143, 143),
-          //               ),
-          //               SizedBox(
-          //                 width: 10,
-          //               ),
-          //               Text(
-          //                 "เปลี่ยนรหัสผ่าน",
-          //                 style: TextStyle(fontSize: 16),
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //         Icon(
-          //           Icons.arrow_forward_ios_rounded,
-          //           size: 17,
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // const SizedBox(
-          //   height: 5,
-          // ),
-          // InkWell(
-          //   onTap: () {
-          //     // Navigator.push(
-          //     //   context,
-          //     //   MaterialPageRoute(
-          //     //       builder: (context) => LoginPage()),
-          //     // );
-          //   },
-          //   child: const SizedBox(
-          //     height: 50,
-          //     child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //       children: [
-          //         Row(
-          //           children: [
-          //             Icon(
-          //               Icons.login_rounded,
-          //               color: Colors.blue,
-          //             ),
-          //             SizedBox(
-          //               width: 10,
-          //             ),
-          //             Text(
-          //               "เข้าสู่ระบบ",
-          //               style: TextStyle(
-          //                 fontSize: 16,
-          //                 color: Colors.blue,
-          //               ),
-          //             ),
-          //           ],
-          //         ),
-          //         Icon(
-          //           Icons.arrow_forward_ios_rounded,
-          //           size: 17,
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // const SizedBox(
-          //   height: 5,
-          // ),
-          // InkWell(
-          //   onTap: () {
-          //     Navigator.push(
-          //         context,
-          //         PageRouteBuilder(
-          //             pageBuilder: (context, animation1, animation2) {
-          //           return HomePage();
-          //         }, transitionsBuilder:
-          //                 (context, animation1, animation2, child) {
-          //           return FadeTransition(
-          //             opacity: animation1,
-          //             child: child,
-          //           );
-          //         }));
-          //   },
-          //   child: const SizedBox(
-          //     height: 50,
-          //     child: Row(
-          //       children: [
-          //         Icon(
-          //           Icons.logout_rounded,
-          //           color: Colors.red,
-          //         ),
-          //         SizedBox(
-          //           width: 10,
-          //         ),
-          //         Text(
-          //           "ออกจากระบบ",
-          //           style: TextStyle(fontSize: 16, color: Colors.red),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // Divider(),
-          // SizedBox(height: 20),
-          // Center(
-          //   child: InkWell(
-          //     onTap: () {},
-          //     child: Container(
-          //       height: 50,
-          //       decoration: BoxDecoration(
-          //         borderRadius: BorderRadius.circular(10),
-          //         color: Colors.red,
-          //       ),
-          //       child: Center(
-          //         child: Text(
-          //           "ลบบัญชีผู้ใช้",
-          //           style: TextStyle(fontSize: 16, color: Colors.white),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     )));

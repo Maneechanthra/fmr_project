@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/recommentded_api.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant.dart';
 import 'package:fmr_project/screen/searhHistory.dart';
 import 'package:fmr_project/recomented/recomented.dart';
 import 'package:fmr_project/screen/map.dart';
@@ -7,10 +9,12 @@ import 'package:fmr_project/screen/profile.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:lottie/lottie.dart';
+import '/globals.dart' as globals;
 
 class HomePage extends StatefulWidget {
   final int? userId;
-  const HomePage(this.userId, {super.key});
+  const HomePage(this.userId, {Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -22,22 +26,29 @@ class _HomePageState extends State<HomePage> {
   late PageController _pageController = PageController();
   double? userLatitude;
   double? userLongitude;
+  bool isLoadingLocation = true;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-    _loadUserLocation();
+    _delayedLoadUserLocation();
     print("userId: " + widget.userId.toString());
     print("_pageController: " + _pageController.toString());
     print("latitude : " + userLatitude.toString());
     print("longtitude : " + userLongitude.toString());
+    print("jwt : " + globals.jwtToken);
   }
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _delayedLoadUserLocation() async {
+    await Future.delayed(Duration(seconds: 1));
+    await _loadUserLocation();
   }
 
   Future<void> _loadUserLocation() async {
@@ -48,6 +59,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         userLatitude = userPosition.latitude;
         userLongitude = userPosition.longitude;
+        isLoadingLocation = false;
       });
     } catch (e) {
       print("Error fetching user location: $e");
@@ -66,17 +78,16 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SizedBox(
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              SafeArea(
+      body: isLoadingLocation
+          ? Center(
+              child: SizedBox(
+                width: 300,
+                child: Lottie.network(
+                    'https://lottie.host/e5abe087-7811-44fa-a384-e5df4243c00f/mK3LQGpd4P.json'),
+              ),
+            )
+          : SizedBox(
+              child: SafeArea(
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -192,16 +203,9 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           Navigator.push(
                               context,
-                              PageRouteBuilder(pageBuilder:
-                                  (context, animation1, animation2) {
-                                return MapsPage(widget.userId ?? 0);
-                              }, transitionsBuilder:
-                                  (context, animation1, animation2, child) {
-                                return FadeTransition(
-                                  opacity: animation1,
-                                  child: child,
-                                );
-                              }));
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      DetailRestaurantPage_2(1, null)));
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -235,38 +239,34 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              MapsPage(widget.userId),
-              // MapsPage(),
-              ProfilePage(widget.userId ?? 0)
-            ],
-          ),
-        ),
-        bottomNavigationBar: GNav(
-          color: Colors.black,
-          activeColor: Colors.green,
-          tabs: const [
-            GButton(
-              icon: Icons.home,
-              iconSize: 30,
-              text: 'หน้าแรก',
             ),
-            GButton(
-              icon: Icons.location_on_rounded,
-              iconSize: 30,
-              text: 'แผนที่',
-            ),
-            GButton(
-              icon: Icons.person,
-              iconSize: 30,
-              text: 'ฉัน',
-            ),
-          ],
-          onTabChange: (index) {
-            _pageController.jumpToPage(index); // กระโดดไปยังหน้าที่เลือก
-            print(
-                'PageController: $_pageController'); // แสดงรายละเอียดของ PageController
-            print('Selected Index: $index'); // แสดงดัชนีที่เลือก
-          },
-        ));
+    );
+    // bottomNavigationBar: GNav(
+    //   color: Colors.black,
+    //   activeColor: Colors.green,
+    //   tabs: const [
+    //     GButton(
+    //       icon: Icons.home,
+    //       iconSize: 30,
+    //       text: 'หน้าแรก',
+    //     ),
+    //     GButton(
+    //       icon: Icons.location_on_rounded,
+    //       iconSize: 30,
+    //       text: 'แผนที่',
+    //     ),
+    //     GButton(
+    //       icon: Icons.person,
+    //       iconSize: 30,
+    //       text: 'ฉัน',
+    //     ),
+    //   ],
+    //   onTabChange: (index) {
+    //     _pageController.jumpToPage(index); // กระโดดไปยังหน้าที่เลือก
+    //     print(
+    //         'PageController: $_pageController'); // แสดงรายละเอียดของ PageController
+    //     print('Selected Index: $index'); // แสดงดัชนีที่เลือก
+    //   },
+    // ),
   }
 }

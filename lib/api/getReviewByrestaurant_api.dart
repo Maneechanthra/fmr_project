@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class GetReviewByrestaurant {
-  final String title;
+  final String? title;
   final String content;
   final int id;
   final double rating;
@@ -22,7 +22,7 @@ class GetReviewByrestaurant {
 
   factory GetReviewByrestaurant.fromJson(Map<String, dynamic> json) =>
       GetReviewByrestaurant(
-        title: json["title"],
+        title: json["title"] ?? "",
         content: json["content"],
         id: json["id"],
         rating: json["rating"]?.toDouble(),
@@ -41,7 +41,7 @@ Future<List<GetReviewByrestaurant>> fetchReviewByRestaurant(
       'Accept': '*/*',
       'connection': 'keep-alive',
     },
-  );
+  ).timeout(const Duration(minutes: 5));
 
   if (response.statusCode == 200) {
     try {

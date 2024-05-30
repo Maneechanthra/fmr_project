@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/add/addVerify.dart';
 import 'package:fmr_project/api/myRestaurant_api.dart';
-import 'package:fmr_project/detail_page/detail_restaurant.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant.dart';
 import 'package:fmr_project/update/editRestaurant.dart';
 import 'package:fmr_project/model/restaurant_info.dart';
 
@@ -195,7 +195,7 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                                       SizedBox(
                                         width: 200,
                                         child: Text(
-                                          "จำนวนการเข้าชม: ${item.view_count.toString()} ครั้ง",
+                                          "จำนวนการเข้าชม: ${item.viewCount.toString()} ครั้ง",
                                           style: const TextStyle(
                                             color: Color.fromARGB(255, 0, 0, 0),
                                             fontSize: 14,

@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/recommentded_api.dart';
-import 'package:fmr_project/detail_page/detail_restaurant.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class RecomentedPage extends StatefulWidget {
   final int? userId;
@@ -20,11 +23,39 @@ class RecomentedPage extends StatefulWidget {
 
 class _RecomentedPageState extends State<RecomentedPage> {
   late Future<List<RecommendedModel>> futureRestaurants;
+  bool isImageLoaded = false;
+  late Timer timer;
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    futureRestaurants = fetchSortedRestaurants(); // ทำงานหนักภายนอก UI
+    if (mounted) {
+      futureRestaurants = fetchSortedRestaurants();
+      timer = Timer.periodic(Duration(seconds: 60), (Timer t) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
+
+    // futureRestaurants =
+    //     Future.delayed(Duration(seconds: 3), () => fetchSortedRestaurants())
+    //         .then((value) {
+    //   return value;
+    // });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   double _calculateDistance(
@@ -53,6 +84,10 @@ class _RecomentedPageState extends State<RecomentedPage> {
   ) {
     double score = 0;
 
+    if (distance == null) {
+      return score;
+    }
+
     if (distance != null) {
       score += (100 / distance) * 0.25;
     }
@@ -61,7 +96,6 @@ class _RecomentedPageState extends State<RecomentedPage> {
       score += reviewCount * 0.25;
     }
 
-    // ตรวจสอบประเภทข้อมูลก่อนการใช้งาน
     if (averageRating is double) {
       score += averageRating * 0.25;
     } else if (averageRating is int) {
@@ -79,7 +113,6 @@ class _RecomentedPageState extends State<RecomentedPage> {
     var restaurantInfo = await fetchRestaurants();
 
     restaurantInfo = restaurantInfo.map((restaurant) {
-      // คำนวณระยะทาง
       var distance = _calculateDistance(
         widget.latitude,
         widget.longitude,
@@ -88,7 +121,6 @@ class _RecomentedPageState extends State<RecomentedPage> {
       );
       restaurant.distance = distance;
 
-      // คำนวณคะแนน
       var score = _calculateScore(
         distance,
         restaurant.reviewCount ?? 0,
@@ -100,7 +132,6 @@ class _RecomentedPageState extends State<RecomentedPage> {
       return restaurant;
     }).toList();
 
-    // จัดเรียงตามคะแนน
     restaurantInfo.sort((a, b) => b.score!.compareTo(a.score!));
 
     return restaurantInfo;
@@ -114,20 +145,24 @@ class _RecomentedPageState extends State<RecomentedPage> {
           AsyncSnapshot<List<RecommendedModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-            child: CircularProgressIndicator(),
+            child: SizedBox(
+              width: 200,
+              child: Lottie.network(
+                  'https://lottie.host/e0a50d0a-95f6-42a7-b894-a6597f54a034/ryQS5H9cQO.json'),
+            ),
           );
         } else if (snapshot.hasData) {
           var restaurant_info = snapshot.data!;
           var topRestaurants = restaurant_info.take(4).toList();
-          restaurant_info.forEach((restaurant) {
-            print("Restaurant Name: ${restaurant.restaurantName}");
-            print("Distance: ${restaurant.distance?.toStringAsFixed(2)} km");
-            print("Review Count: ${restaurant.reviewCount}");
-            print("Average Rating: ${restaurant.averageRating}");
-            print("Favorites Count: ${restaurant.favoritesCount}");
-            print("Total Score: ${restaurant.score}");
-            print("----------------------------");
-          });
+          // restaurant_info.forEach((restaurant) {
+          //   print("Restaurant Name: ${restaurant.restaurantName}");
+          //   print("Distance: ${restaurant.distance?.toStringAsFixed(2)} km");
+          //   print("Review Count: ${restaurant.reviewCount}");
+          //   print("Average Rating: ${restaurant.averageRating}");
+          //   print("Favorites Count: ${restaurant.favoritesCount}");
+          //   print("Total Score: ${restaurant.score}");
+          //   print("----------------------------");
+          // });
 
           return Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
@@ -141,13 +176,20 @@ class _RecomentedPageState extends State<RecomentedPage> {
                 // RecommendedModel item = restaurant_info[index];
                 var item = topRestaurants[index];
                 // final category =
+                final String imagePath = restaurant_info[index].imagePath;
                 final String imageUrl =
-                    'http://10.0.2.2:8000/api/public/${restaurant_info[index].imagePath}';
+                    'http://10.0.2.2:8000/api/public/$imagePath';
+
+                Future.delayed(Duration(seconds: 0), () {
+                  setState(() {
+                    isImageLoaded = true;
+                  });
+                });
                 return Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailRestaurantPage_2(
@@ -181,12 +223,20 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                     topLeft: Radius.circular(10),
                                     topRight: Radius.circular(10),
                                   ),
-                                  child: Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: 100,
-                                  ),
+                                  child: isImageLoaded
+                                      ? CachedNetworkImage(
+                                          imageUrl: imageUrl,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        )
+                                      : SizedBox(),
                                 ),
                                 Positioned(
                                   top: 8,
@@ -214,7 +264,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                           ),
                                           item.averageRating != null
                                               ? Text(
-                                                  item.averageRating.toString(),
+                                                  "${item.averageRating!.toStringAsFixed(2)}",
                                                   style:
                                                       TextStyle(fontSize: 12),
                                                 )

@@ -3,22 +3,20 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PlaceMarkerPage extends StatefulWidget {
-  final LatLng initialPosition;
-
-  const PlaceMarkerPage({Key? key, required this.initialPosition})
-      : super(key: key);
+  const PlaceMarkerPage({Key? key}) : super(key: key);
 
   @override
   _PlaceMarkerPageState createState() => _PlaceMarkerPageState();
 }
 
 class _PlaceMarkerPageState extends State<PlaceMarkerPage> {
-  late LatLng _selectedPosition;
+  // late LatLng _latLng = LatLng(17.2667199760001, 104.134101002072);
+  late LatLng _selectedPosition = LatLng(17.2667199760001, 104.134101002072);
 
   @override
   void initState() {
     super.initState();
-    _selectedPosition = widget.initialPosition;
+    // _selectedPosition = _latLng;
   }
 
   @override
@@ -31,7 +29,7 @@ class _PlaceMarkerPageState extends State<PlaceMarkerPage> {
         children: [
           GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: widget.initialPosition,
+              target: _selectedPosition,
               zoom: 15,
             ),
             onTap: (LatLng latLng) {
@@ -74,16 +72,58 @@ class _PlaceMarkerPageState extends State<PlaceMarkerPage> {
       _selectedPosition.longitude,
     );
 
-    // Extract address components from placemarks
-    if (placemarks != null && placemarks.isNotEmpty) {
+    if (placemarks.isNotEmpty) {
       final Placemark placemark = placemarks[0];
       final String address =
           "${placemark.street}, ${placemark.subLocality}, ${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}";
 
-      Navigator.pop(context, address);
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('ที่อยู่'),
+            content: SingleChildScrollView(
+              child: Text(
+                address,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop({
+                    "address": address,
+                    "latLng": _selectedPosition,
+                  });
+                },
+                child: Text('บันทึก'),
+              ),
+            ],
+          );
+        },
+      ).then((result) {
+        if (result != null) {
+          Navigator.of(context).pop(result);
+        }
+      });
     } else {
-      // Handle error case when no address is found
-      Navigator.pop(context, 'Address not found');
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Address not found'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }

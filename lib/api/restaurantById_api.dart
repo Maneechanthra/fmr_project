@@ -13,24 +13,24 @@ import 'dart:convert';
 class RestaurantById {
   final int id;
   final String restaurantName;
-  final String categoryTitle;
+  final List<String> restaurantCategory;
   final double latitude;
   final double longitude;
   final String address;
   final String telephone1;
   final dynamic telephone2;
-  final int verified;
-  final double averageRating;
-  final int reviewCount;
-  final int favoritesCount;
-  final int viewCount;
+  final int? verified;
+  final double? averageRating;
+  final int? reviewCount;
+  final int? favoritesCount;
+  final int? viewCount;
   final List<String> imagePaths;
   final List<Review> reviews;
 
   RestaurantById({
     required this.id,
     required this.restaurantName,
-    required this.categoryTitle,
+    required this.restaurantCategory,
     required this.latitude,
     required this.longitude,
     required this.address,
@@ -48,17 +48,18 @@ class RestaurantById {
   factory RestaurantById.fromJson(Map<String, dynamic> json) => RestaurantById(
         id: json["id"],
         restaurantName: json["restaurant_name"],
-        categoryTitle: json["category_title"],
+        restaurantCategory:
+            List<String>.from(json["restaurant_category"].map((x) => x)),
         latitude: json["latitude"]?.toDouble(),
         longitude: json["longitude"]?.toDouble(),
         address: json["address"],
         telephone1: json["telephone_1"],
-        telephone2: json["telephone_2"],
-        verified: json["verified"],
+        telephone2: json["telephone_2"] ?? "",
+        verified: json["verified"] ?? 0,
         averageRating: json["average_rating"]?.toDouble(),
-        reviewCount: json["review_count"],
-        favoritesCount: json["favorites_count"],
-        viewCount: json["view_count"],
+        reviewCount: json["review_count"] ?? 0,
+        favoritesCount: json["favorites_count"] ?? 0,
+        viewCount: json["view_count"] ?? 0,
         imagePaths: List<String>.from(json["image_paths"].map((x) => x)),
         reviews:
             List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
@@ -72,7 +73,7 @@ class Review {
   final double rating;
   final String name;
   final String created_at;
-  final List<dynamic> imagePathsReview;
+  final List<dynamic>? imagePathsReview;
 
   Review({
     required this.title,
@@ -85,7 +86,7 @@ class Review {
   });
 
   factory Review.fromJson(Map<String, dynamic> json) => Review(
-        title: json["title"],
+        title: json["title"] ?? "",
         content: json["content"],
         id: json["id"],
         rating: json["rating"]?.toDouble(),
@@ -106,7 +107,7 @@ Future<RestaurantById> getRestaurantById(int restaurantId) async {
       'Accept': '*/*',
       'connection': 'keep-alive',
     },
-  );
+  ).timeout(const Duration(minutes: 5));
 
   if (response.statusCode == 200) {
     try {

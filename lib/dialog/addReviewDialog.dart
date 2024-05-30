@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
   final _reviewForm = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final contentController = TextEditingController();
-  final rating = 1;
+  double ratingScore = 1.0;
   final List<File> selectedImages = [];
 
   Future<void> _pickImages() async {
@@ -83,66 +84,73 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
   Future<ReviewRestaurant?> _reviewRestaurant() async {
     final Uri url = Uri.parse('http://10.0.2.2:8000/api/review/insert');
 
-    // สร้าง MultipartRequest เพื่อส่งข้อมูล
     var request = http.MultipartRequest('POST', url);
 
     request.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
 
-    // เพิ่มข้อมูลรีวิว
     request.fields['content'] = contentController.text;
-    request.fields['rating'] = rating.toString();
+    request.fields['rating'] = ratingScore.toString();
     request.fields['review_by'] = widget.userId.toString();
     request.fields['restaurant_id'] = widget.restaurantId.toString();
 
+    print("rating body : " + ratingScore.toString());
+    print("review_by body : " + widget.userId.toString());
+    print("restaurant_id body : " + widget.restaurantId.toString());
+
     try {
-      // ส่งรีวิวเพื่อรับ review_id
       var response = await request.send();
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseJson = await response.stream.bytesToString();
         final Map<String, dynamic> data = jsonDecode(responseJson);
 
-        final reviewId = data['review_id']; // รับ review_id ที่สร้างใหม่
-
-        // สร้าง MultipartRequest ใหม่เพื่ออัปโหลดรูปภาพพร้อม review_id
-        var imageRequest = http.MultipartRequest('POST', url);
-
-        imageRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
-        imageRequest.fields['review_id'] =
-            reviewId.toString(); // เพิ่ม review_id
-
-        // เพิ่มไฟล์รูปภาพ
-        for (File image in selectedImages) {
-          imageRequest.files.add(await http.MultipartFile.fromPath(
-            'path', // ชื่อ field ที่สอดคล้องกับ backend
-            image.path,
-          ));
+        final reviewId = data['review_id'];
+        if (selectedImages != null && selectedImages.isNotEmpty) {
+          await _uploadImages(reviewId);
         }
 
-        // ส่งคำขอใหม่เพื่ออัปโหลดรูปภาพ
-        var imageResponse = await imageRequest.send();
-
-        if (imageResponse.statusCode == 200 ||
-            imageResponse.statusCode == 201) {
-          return ReviewRestaurant.fromJson(data); // ส่งกลับข้อมูลรีวิว
-        } else {
-          throw Exception(
-              "Failed to upload images"); // ข้อผิดพลาดในการอัปโหลดรูปภาพ
-        }
+        return ReviewRestaurant.fromJson(data);
       } else {
-        throw Exception("Failed to add review"); // ข้อผิดพลาดในการสร้างรีวิว
+        throw Exception("Failed to add review");
       }
     } catch (e) {
-      // จัดการข้อผิดพลาด
       print('Error: $e');
-      throw Exception("An error occurred: $e"); // แจ้งข้อผิดพลาด
+      throw Exception("An error occurred: $e");
+    }
+  }
+
+  Future<void> _uploadImages(int reviewId) async {
+    final Uri url = Uri.parse(
+        'http://10.0.2.2:8000/api/review/insert/insertImages/$reviewId');
+
+    var imageRequest = http.MultipartRequest('POST', url);
+    imageRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
+
+    imageRequest.fields['review_id'] = reviewId.toString();
+    for (int i = 0; i < selectedImages.length; i++) {
+      String fieldName = 'path[]';
+      imageRequest.files.add(await http.MultipartFile.fromPath(
+        fieldName,
+        selectedImages[i].path,
+      ));
+      print(
+        selectedImages[i].path,
+      );
+    }
+
+    print("reivew id by image : " + reviewId.toString());
+
+    var response = await imageRequest.send();
+
+    print(response.statusCode);
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception("Failed to upload images");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      // physics: NeverScrollableScrollPhysics(),
       child: Padding(
         padding: const EdgeInsets.only(top: 50.0),
         child: Dialog(
@@ -203,7 +211,8 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                             ),
                             onRatingUpdate: (rating) {
                               setState(() {
-                                rating = rating;
+                                ratingScore = rating;
+                                print(ratingScore);
                               });
                             },
                           ),

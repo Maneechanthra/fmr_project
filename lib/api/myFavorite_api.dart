@@ -2,47 +2,66 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '/globals.dart' as globals;
 
+import 'dart:convert';
+
 class MyFavoriteModel {
   final int id;
   final String restaurantName;
-  final String title;
   final int verified;
   final int status;
-  final String categoryTitle;
   final String imagePath;
   final double? averageRating;
   final int reviewCount;
   final int favoritesCount;
   final int viewCount;
+  final List<String> restaurantCategory;
 
   MyFavoriteModel({
     required this.id,
     required this.restaurantName,
-    required this.title,
     required this.verified,
     required this.status,
-    required this.categoryTitle,
     required this.imagePath,
     required this.averageRating,
     required this.reviewCount,
     required this.favoritesCount,
     required this.viewCount,
+    required this.restaurantCategory,
   });
+
+  factory MyFavoriteModel.fromRawJson(String str) =>
+      MyFavoriteModel.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
 
   factory MyFavoriteModel.fromJson(Map<String, dynamic> json) =>
       MyFavoriteModel(
         id: json["id"],
         restaurantName: json["restaurant_name"],
-        title: json["title"],
         verified: json["verified"],
         status: json["status"],
-        categoryTitle: json["category_title"],
         imagePath: json["image_path"],
         averageRating: json["average_rating"]?.toDouble(),
         reviewCount: json["review_count"],
         favoritesCount: json["favorites_count"],
         viewCount: json["view_count"],
+        restaurantCategory:
+            List<String>.from(json["restaurant_category"].map((x) => x)),
       );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "restaurant_name": restaurantName,
+        "verified": verified,
+        "status": status,
+        "image_path": imagePath,
+        "average_rating": averageRating,
+        "review_count": reviewCount,
+        "favorites_count": favoritesCount,
+        "view_count": viewCount,
+        "restaurant_category":
+            List<dynamic>.from(restaurantCategory.map((x) => x)),
+      };
 }
 
 Future<List<MyFavoriteModel>> fetchMyFavorites(int? userId) async {

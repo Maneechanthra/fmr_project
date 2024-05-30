@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:fmr_project/api/getRestaurant_map_api.dart';
 import 'package:fmr_project/detail_page/all_typerestaurant.dart';
 import 'package:fmr_project/detail_page/all_typerestaurant_for_editForm.dart';
-import 'package:fmr_project/detail_page/detail_restaurant.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant.dart';
 import 'package:fmr_project/model/restaurant_info.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lottie/lottie.dart' as lot;
 import 'package:slider_controller/slider_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -76,21 +77,19 @@ class _MapsPageState extends State<MapsPage> {
             markerId: MarkerId("userLocation"),
             position: LatLng(latitude, longitude),
             infoWindow: InfoWindow(title: "ตำแหน่งปัจจุบัน"),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-              BitmapDescriptor.hueRed,
-            ),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
           );
 
           CameraPosition cameraPosition = CameraPosition(
             zoom: 13,
             target: LatLng(latitude, longitude),
           );
-
           controller
               .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
+          // Update circle radius around the user location
           double circleRadiusKm = circleRadius * 1000;
-
           selectedCircle = Circle(
             circleId: CircleId("selectedCircle"),
             center: LatLng(latitude, longitude),
@@ -100,240 +99,254 @@ class _MapsPageState extends State<MapsPage> {
             strokeWidth: 2,
           );
 
-          _isLoading = false;
+          // Fetch restaurants within the circle asynchronously
+          _fetchRestaurantsInCircle(
+              controller, LatLng(latitude, longitude), circleRadius);
+        });
+      }
+    });
+  }
 
-          List<Restaurant_2> restaurantsInCircle = getRestaurantsInCircle(
-              allRestaurants_2, LatLng(latitude, longitude), circleRadius);
+  Future<void> _fetchRestaurantsInCircle(GoogleMapController controller,
+      LatLng userLocation, double circleRadius) async {
+    try {
+      GetResturantByMap? restaurantMap = await fetchRestaurantMap();
+      if (restaurantMap != null) {
+        List<Restaurant> allRestaurants = restaurantMap.restaurants;
+        List<Restaurant> restaurantsInCircle = getRestaurantsInCircle(
+          allRestaurants,
+          userLocation,
+          circleRadius,
+        );
 
-          List<Marker> restaurantMarkers =
-              restaurantsInCircle.map((restaurant) {
-            return Marker(
-              markerId: MarkerId(restaurant.name),
-              position: LatLng(restaurant.latitude, restaurant.longitude),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 120.0),
-                        child: Dialog(
-                          child: Container(
-                              height: 350,
-                              width: MediaQuery.of(context).size.width * 1,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
+        // Create markers for the restaurants
+        List<Marker> restaurantMarkers = restaurantsInCircle.map((restaurant) {
+          final String imageUrl =
+              'http://10.0.2.2:8000/api/public/${restaurant.imagePaths}';
+          return Marker(
+            markerId: MarkerId(restaurant.restaurantName),
+            position: LatLng(restaurant.latitude, restaurant.longitude),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 120.0),
+                      child: Dialog(
+                        child: Container(
+                          height: 350,
+                          width: MediaQuery.of(context).size.width * 1,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                top: MediaQuery.of(context).size.width * 0.03,
+                                left: MediaQuery.of(context).size.width * 0.70,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 40,
+                                    color: Colors.red,
+                                  ),
+                                ),
                               ),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                      top: 3,
-                                      left: 240,
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: 20),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: restaurant.imagePaths.length,
+                                        itemBuilder: (BuildContext context,
+                                            int imageIndex) {
+                                          final String imageUrl =
+                                              'http://10.0.2.2:8000/api/public/${restaurant.imagePaths[imageIndex]}';
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10.0, top: 10),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              child: Image.network(
+                                                imageUrl,
+                                                fit: BoxFit.cover,
+                                                width: 200,
+                                                height: 20,
+                                              ),
+                                            ),
+                                          );
                                         },
-                                        child: Icon(
-                                          Icons.close,
-                                          size: 40,
-                                          color: Colors.red,
-                                        ),
-                                      )),
-                                  Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Column(
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         SizedBox(
-                                          height: 20,
-                                        ),
-                                        Expanded(
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount:
-                                                restaurant.imageUrls.length,
-                                            itemBuilder: (BuildContext context,
-                                                int imageIndex) {
-                                              return Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 10.0, top: 10),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  child: Image.asset(
-                                                    restaurant
-                                                        .imageUrls[imageIndex],
-                                                    fit: BoxFit.cover,
-                                                    width: 200,
-                                                    height: 20,
-                                                  ),
-                                                ),
-                                              );
-                                            },
+                                          width: 160,
+                                          child: Text(
+                                            restaurant.restaurantName,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            SizedBox(
-                                              width: 160,
-                                              child: Text(
-                                                restaurant.name,
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                restaurant.verified == 2
-                                                    ? Icon(
-                                                        Icons.verified_rounded,
-                                                        color: Colors.blue,
-                                                      )
-                                                    : SizedBox(),
-                                                SizedBox(width: 5),
-                                                Text(
-                                                  "เปิดอยู่",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.green,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 7,
-                                        ),
                                         Row(
                                           children: [
-                                            Container(
-                                              width: 50,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: Colors.red),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    restaurant.rating
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.white),
-                                                  ),
-                                                  Icon(
-                                                    Icons.star,
-                                                    size: 14,
-                                                    color: Colors.white,
-                                                  ),
-                                                ],
+                                            if (restaurant.verified == 2)
+                                              Icon(
+                                                Icons.verified_rounded,
+                                                color: Colors.blue,
                                               ),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
+                                            SizedBox(width: 5),
                                             Text(
-                                              restaurant.review.toString() +
-                                                  " รีวิว",
+                                              "เปิดอยู่",
                                               style: TextStyle(
-                                                  color: const Color.fromARGB(
-                                                      137, 77, 77, 77)),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          "ประเภทร้าน: " +
-                                              restaurant.type_restaurant,
-                                          style: TextStyle(
-                                              color: const Color.fromARGB(
-                                                  137, 77, 77, 77)),
-                                        ),
-                                        Divider(),
-                                        GestureDetector(
-                                          onTap: () {
-                                            _openGoogleMapsForDirections(
-                                              restaurant.latitude,
-                                              restaurant.longitude,
-                                            );
-                                          },
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                1.0,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Center(
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.directions,
-                                                    color: Colors.white,
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                    "นำทาง",
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ],
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.green,
                                               ),
                                             ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 7),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: 50,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: Colors.red,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                restaurant.averageRating
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Icon(
+                                                Icons.star,
+                                                size: 14,
+                                                color: Colors.white,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          "${restaurant.reviewCount} รีวิว",
+                                          style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                137, 77, 77, 77),
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              )),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      "ประเภทร้าน: ${restaurant.restaurantCategory}",
+                                      style: TextStyle(
+                                        color: const Color.fromARGB(
+                                            137, 77, 77, 77),
+                                      ),
+                                    ),
+                                    Divider(),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _openGoogleMapsForDirections(
+                                          restaurant.latitude,
+                                          restaurant.longitude,
+                                        );
+                                      },
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                1.0,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Center(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.directions,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                "นำทาง",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    );
-                  },
-                );
-              },
-            );
-          }).toList();
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        }).toList();
 
-          _markers = Set<Marker>.of(restaurantMarkers);
-          if (selectedMarker != null) {
-            _markers.add(selectedMarker!);
-          }
-
-          _isMarkerSelected = false;
-        });
+        _markers = Set<Marker>.of(restaurantMarkers);
+        if (selectedMarker != null) {
+          _markers.add(selectedMarker!);
+        }
+      } else {
+        print("Failed to fetch restaurant map.");
       }
+    } catch (e) {
+      print("Error fetching restaurant data: $e");
+    }
+
+    setState(() {
+      _isLoading = false;
+      _isMarkerSelected = false;
     });
   }
 
@@ -356,11 +369,11 @@ class _MapsPageState extends State<MapsPage> {
     return degree * (pi / 180);
   }
 
-  List<Restaurant_2> getRestaurantsInCircle(List<Restaurant_2> allRestaurants,
+  List<Restaurant> getRestaurantsInCircle(List<Restaurant> allRestaurants,
       LatLng userLocation, double circleRadius) {
-    List<Restaurant_2> restaurantsInCircle = [];
+    List<Restaurant> restaurantsInCircle = [];
 
-    for (Restaurant_2 restaurant in allRestaurants) {
+    for (Restaurant restaurant in allRestaurants) {
       double distance = calculateDistance(userLocation.latitude,
           userLocation.longitude, restaurant.latitude, restaurant.longitude);
 
@@ -371,6 +384,22 @@ class _MapsPageState extends State<MapsPage> {
 
     return restaurantsInCircle;
   }
+
+  // List<Restaurant> getRestaurantsInCircle(List<Restaurant> allRestaurants,
+  //     LatLng userLocation, double circleRadius) {
+  //   List<Restaurant> restaurantsInCircle = [];
+
+  //   for (Restaurant restaurant in allRestaurants) {
+  //     double distance = calculateDistance(userLocation.latitude,
+  //         userLocation.longitude, restaurant.latitude, restaurant.longitude);
+
+  //     if (distance <= circleRadius) {
+  //       restaurantsInCircle.add(restaurant);
+  //     }
+  //   }
+
+  //   return restaurantsInCircle;
+  // }
 
   void _openGoogleMapsForDirections(
       double destinationLatitude, double destinationLongitude) async {
@@ -394,9 +423,7 @@ class _MapsPageState extends State<MapsPage> {
             future: futureGetRestaurantByMap,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                return Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 return Center(
                   child: Text("error "),
@@ -463,188 +490,176 @@ class _MapsPageState extends State<MapsPage> {
                       ),
                     ),
                     Expanded(
-                        child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                      ),
-                      child: ListView.builder(
-                        controller: scrollController,
-                        itemCount: restaurants.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final restaurant = restaurants[index];
-                          final restaurantCategory = category[index];
-                          // final category_restaurant =
-                          //     restaurant.restaurantCategory[index];
-                          // print(
-                          //     "category of restaurant : ${category_restaurant}");
-                          final path = restaurant.imagePaths[index];
-                          // print(restaurant.restaurantCategory);
-                          final imageUrls =
-                              'http://10.0.2.2:8000/api/public/$path';
-                          if (restaurant.restaurantCategory
-                              .contains(selectedRestaurantType)) {
-                            return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        DetailRestaurantPage_2(
-                                      restaurant.id,
-                                      widget.userId,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        child: ListView.builder(
+                          controller: scrollController,
+                          itemCount: restaurants.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final restaurant = restaurants[index];
+                            // เช็คว่าถ้า selectedRestaurantType เป็น "ทุกประเภท" หรือไม่
+                            if (selectedRestaurantType == "ทุกประเภท" ||
+                                restaurant.restaurantCategory
+                                    .contains(selectedRestaurantType)) {
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          DetailRestaurantPage_2(
+                                        restaurant.id,
+                                        widget.userId,
+                                      ),
                                     ),
-                                  ),
-                                );
-                                print(restaurant.id);
-                                print(index);
-                              },
-                              child: Container(
-                                width: 200,
-                                height: 250,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: 3,
-                                          itemBuilder: (BuildContext context,
-                                              int imageIndex) {
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 10.0, top: 10),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                child: Image.network(
-                                                  imageUrls,
-                                                  fit: BoxFit.cover,
-                                                  width: 150,
-                                                  height: 150,
+                                  );
+                                  print(restaurant.id);
+                                  print(index);
+                                },
+                                child: Container(
+                                  width: 200,
+                                  height: 250,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount:
+                                                restaurant.imagePaths.length,
+                                            itemBuilder: (BuildContext context,
+                                                int imageIndex) {
+                                              final path = restaurant
+                                                  .imagePaths[imageIndex];
+                                              final imageUrls =
+                                                  'http://10.0.2.2:8000/api/public/$path';
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 10.0, top: 10),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: Image.network(
+                                                    imageUrls,
+                                                    fit: BoxFit.cover,
+                                                    width: 150,
+                                                    height: 150,
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          },
+                                              );
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                restaurant.restaurantName,
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              restaurant.verified == 2
-                                                  ? Icon(
-                                                      Icons.verified_rounded,
-                                                      color: Colors.blue,
-                                                    )
-                                                  : SizedBox(),
-                                            ],
-                                          ),
-                                          Text(
-                                            "เปิด",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.green,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      SizedBox(
-                                        height: 7,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: 50,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                color: Colors.red),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                        SizedBox(height: 10),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
                                               children: [
                                                 Text(
-                                                  restaurant.averageRating
-                                                      .toString(),
+                                                  restaurant.restaurantName,
                                                   style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.white),
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                                Icon(
-                                                  Icons.star,
-                                                  size: 14,
-                                                  color: Colors.white,
-                                                ),
+                                                SizedBox(width: 5),
+                                                restaurant.verified == 2
+                                                    ? Icon(
+                                                        Icons.verified_rounded,
+                                                        color: Colors.blue,
+                                                      )
+                                                    : SizedBox(),
                                               ],
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            restaurant.reviewCount.toString() +
-                                                " รีวิว",
-                                            style: TextStyle(
-                                                color: const Color.fromARGB(
-                                                    137, 77, 77, 77)),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      SizedBox(
-                                        width: 281,
-                                        child: Text(
-                                          "ประเภทร้านอาหาร : " +
-                                              restaurant.restaurantCategory
-                                                  .join("/"),
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color.fromARGB(
-                                                255, 168, 168, 168),
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
+                                            Text(
+                                              "เปิด",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.green,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      Divider(),
-                                    ],
+                                        SizedBox(height: 5),
+                                        SizedBox(height: 7),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: 50,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color: Colors.red),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "${restaurant.averageRating!.toStringAsFixed(2)}",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.white),
+                                                  ),
+                                                  Icon(
+                                                    Icons.star,
+                                                    size: 14,
+                                                    color: Colors.white,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              restaurant.reviewCount
+                                                      .toString() +
+                                                  " รีวิว",
+                                              style: TextStyle(
+                                                  color: const Color.fromARGB(
+                                                      137, 77, 77, 77)),
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        SizedBox(
+                                          width: 281,
+                                          child: Text(
+                                            "ประเภทร้านอาหาร : " +
+                                                restaurant.restaurantCategory
+                                                    .join("/"),
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: Color.fromARGB(
+                                                  255, 168, 168, 168),
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                          ),
+                                        ),
+                                        Divider(),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          } else {
-                            return Container();
-                          }
-                        },
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
                       ),
-                    )),
+                    ),
                   ],
                 );
               }
@@ -663,7 +678,8 @@ class _MapsPageState extends State<MapsPage> {
               _controller.complete(controller);
               if (_isLoading) {
                 Center(
-                  child: CircularProgressIndicator(),
+                  child: lot.Lottie.network(
+                      'https://lottie.host/8b0df7cd-4871-46be-8ccb-e5d7a3fa0e95/EXzvBIct6n.json'),
                 );
               }
             },
@@ -794,34 +810,6 @@ class _MapsPageState extends State<MapsPage> {
               ),
             ),
           ),
-          // Positioned(
-          //   right: MediaQuery.of(context).size.width * 0.25,
-          //   top: MediaQuery.of(context).size.height * 0.17,
-          //   left: MediaQuery.of(context).size.width * 0.19,
-          //   child: ElevatedButton(
-          //     onPressed: () {},
-          //     style: ElevatedButton.styleFrom(
-          //       backgroundColor: Colors.green,
-          //       foregroundColor: Colors.white,
-          //       shape: RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(100),
-          //       ),
-          //       elevation: 5,
-          //     ),
-          //     child: const Row(
-          //       children: [
-          //         Icon(Icons.search),
-          //         SizedBox(
-          //           width: 10,
-          //         ),
-          //         Text(
-          //           "ค้นหาบริเวณที่เลือก",
-          //           style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );

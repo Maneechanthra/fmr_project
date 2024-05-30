@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/login_api.dart';
-import 'package:fmr_project/screen/forgotpassword.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
+import 'package:fmr_project/forgot_password/forgotpassword.dart';
 import 'package:fmr_project/screen/home.dart';
 import 'package:fmr_project/screen/register.dart';
 import 'package:http/http.dart' as http;
@@ -224,11 +226,13 @@ class _LoginPageState extends State<LoginPage> {
                       confirmBtnText: 'ตกลง',
                       confirmBtnColor: Color.fromARGB(255, 0, 113, 219),
                       onConfirmBtnTap: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (contxt) =>
-                                    HomePage(response.userId)));
+                                builder: (context) => BottomNavigatorScreen(
+                                      userId: response.userId,
+                                      indexPage: 0,
+                                    )));
                       },
                     );
                     globals.isLoggedIn = true;

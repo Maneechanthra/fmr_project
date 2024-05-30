@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:another_carousel_pro/another_carousel_pro.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/favorite_api.dart';
 import 'package:fmr_project/api/restaurantById_api.dart';
@@ -8,14 +9,10 @@ import 'package:fmr_project/detail_page/all_review.dart';
 import 'package:fmr_project/dialog/addReportDialog.dart';
 import 'package:fmr_project/dialog/addReviewDialog.dart';
 import 'package:fmr_project/dialog/detailMoreDialog.dart';
-import 'package:fmr_project/model/restaurant_info.dart';
-import 'package:fmr_project/screen/login.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:like_button/like_button.dart';
-import 'package:fmr_project/model/review_info.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 
@@ -32,16 +29,34 @@ class DetailRestaurantPage_2 extends StatefulWidget {
 
 class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
   bool isFavorite = false;
-  // late Future<List<RestaurantById>> futureRestaurants;
   late Future<RestaurantById> futureRestaurants;
   int current = 0;
+  late Timer timer;
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    futureRestaurants = getRestaurantById(widget.restaurantId);
-    print("restaurantId : " + widget.restaurantId.toString());
-    print("userId : " + widget.userId.toString());
+    if (mounted) {
+      futureRestaurants = getRestaurantById(widget.restaurantId);
+      timer = Timer.periodic(Duration(seconds: 60), (Timer t) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   Future<FavoritesModel> insertFavorite(int userId, int restaurantId) async {
@@ -72,35 +87,6 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // body: NestedScrollView(
-      //   headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-      //     return <Widget>[
-      //       SliverAppBar(
-      //         expandedHeight: 250,
-      //         floating: false,
-      //         pinned: true,
-      //         flexibleSpace: FlexibleSpaceBar(
-      //           title: Text("ร้านครัวแล้วแต่ ม.เกษตร จังหวัดสกลนคร"),
-      //           background: SizedBox(
-      //             width: double.infinity,
-      //             height: 250,
-      //             child: AnotherCarousel(
-      //               images: [
-      //                 NetworkImage(
-      //                     "https://s359.kapook.com//pagebuilder/9dbc7505-3b39-4b7f-85b4-1c88c2a01e7f.jpg"),
-      //                 NetworkImage(
-      //                     "https://s359.kapook.com//pagebuilder/6ef91549-ce57-47d6-88db-3ca0c16d1b9e.jpg"),
-      //                 NetworkImage(
-      //                     "https://s359.kapook.com//pagebuilder/f08aab92-a04b-4acd-9718-f58f566b476a.jpg"),
-      //                 NetworkImage(
-      //                     "https://s359.kapook.com//pagebuilder/3d735587-e0fd-4409-ad65-bfeb72f15e98.jpg"),
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //     ];
-      //   },
       body: SingleChildScrollView(
         child: FutureBuilder(
             future: futureRestaurants,
@@ -127,9 +113,15 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                           height: 250,
                           child: AnotherCarousel(
                             images: imageUrls.map((url) {
-                              return Image.network(
-                                url,
+                              return CachedNetworkImage(
+                                imageUrl: url,
+                                // width: MediaQuery.of(context).size.width,
+                                // height: 100,
                                 fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    Center(child: CircularProgressIndicator()),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
                               );
                             }).toList(),
                           ),
@@ -148,16 +140,17 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                                   width: 50,
                                   height: 50,
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color.fromARGB(
-                                              221, 189, 189, 189),
-                                          offset: Offset(0, 2),
-                                          blurRadius: 2,
-                                        ),
-                                      ]),
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color.fromARGB(
+                                            221, 189, 189, 189),
+                                        offset: Offset(0, 2),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
+                                  ),
                                   child: Center(
                                     child: Icon(
                                       Icons.arrow_back_ios,
@@ -207,7 +200,6 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Row แสดงชื่อร้านอาหารและไอคอนตรวจสอบ
                               Row(
                                 children: [
                                   SizedBox(
@@ -221,15 +213,8 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                                       ),
                                     ),
                                   ),
-                                  // ไอคอนตรวจสอบสถานะ
-                                  // หากต้องการใช้งานอีกครั้ง สามารถเปิดความคิดเห็น
-                                  // Icon(
-                                  //   Icons.verified_rounded,
-                                  //   color: Colors.blue,
-                                  // )
                                 ],
                               ),
-                              // ตรวจสอบว่า userId เป็น null หรือ 0 และเลือก Widget ตามเงื่อนไข
                               LikeButton(
                                 isLiked: isFavorite,
                                 onTap: (bool isLiked) async {
@@ -248,7 +233,6 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                                     return Future.value(isLiked);
                                   } else {
                                     try {
-                                      // ลองทำการเพิ่มรายการโปรด
                                       final favorite = await insertFavorite(
                                           widget.restaurantId, widget.userId!);
 
@@ -325,7 +309,7 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                             height: 5,
                           ),
                           Text(
-                            data.categoryTitle,
+                            data.restaurantCategory.join(" / "),
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Color.fromARGB(255, 145, 145, 145),
@@ -386,7 +370,7 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
                                   ),
                                   Text(
                                     isFavorite == true
-                                        ? (data.favoritesCount + 1).toString()
+                                        ? (data.favoritesCount! + 1).toString()
                                         : data.favoritesCount.toString(),
                                   ),
                                 ],
@@ -447,7 +431,6 @@ class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
             }),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-
       floatingActionButton: InkWell(
         onTap: () {
           showDialog(
@@ -491,16 +474,6 @@ class RestaurantInfoWidget extends StatelessWidget {
   final RestaurantById restaurantId;
 
   RestaurantInfoWidget(this.restaurantId);
-
-  // LatLng _latLng = LatLng(17.27274239, 104.1265007);
-  // void _openPhoneApp(String phoneNumber) async {
-  //   final url = 'tel:$phoneNumber';
-  //   if (await canLaunch(url)) {
-  //     await launch(url);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -676,7 +649,7 @@ class ReviewsWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          "${restaurantId.averageRating.toInt()}",
+                          "${restaurantId.averageRating!.toInt()}",
                           style: TextStyle(
                             fontSize: 65,
                             fontWeight: FontWeight.bold,
@@ -923,16 +896,14 @@ Widget _CommentWidget(RestaurantById restaurantId) {
   return ListView.builder(
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
-    // กำหนด itemCount เป็น 2 เพื่อแสดงเพียง 2 รีวิว
     itemCount: 2,
     itemBuilder: (BuildContext context, int index) {
-      // ป้องกันไม่ให้ดัชนีเกินขอบเขตของ restaurantId.reviews
       if (index >= restaurantId.reviews.length) {
-        return Container(); // คืนค่า Container เปล่าเพื่อหลีกเลี่ยงข้อผิดพลาด
+        return Container();
       }
 
       final review = restaurantId.reviews[index];
-      final List<String> imageUrlsReview = review.imagePathsReview.map((path) {
+      final List<String> imageUrlsReview = review.imagePathsReview!.map((path) {
         return 'http://10.0.2.2:8000/api/public/$path';
       }).toList();
 
@@ -1023,9 +994,14 @@ Widget _CommentWidget(RestaurantById restaurantId) {
 
                 return Padding(
                   padding: const EdgeInsets.only(right: 10.0),
-                  child: Image.network(
-                    imageUrlsReview[index],
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrlsReview[index],
+                    // width: MediaQuery.of(context).size.width,
+                    // height: 100,
                     fit: BoxFit.cover,
+                    placeholder: (context, url) =>
+                        Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 );
               },

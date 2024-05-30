@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
 import 'package:fmr_project/screen/home.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
-class IndexPage extends StatefulWidget {
-  const IndexPage({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<IndexPage> createState() => _IndexPageState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _IndexPageState extends State<IndexPage>
+class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   @override
   void initState() {
@@ -19,8 +21,11 @@ class _IndexPageState extends State<IndexPage>
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomePage(0)));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => BottomNavigatorScreen(
+                indexPage: 0,
+                userId: null,
+              )));
     });
   }
 

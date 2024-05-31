@@ -248,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       QuickAlert.show(
                                         context: context,
                                         type: QuickAlertType.success,
-                                        text: 'เข้าสู่ระบบสำเร็จ!',
+                                        text: 'แก้ไขข้อมูลสำเร็จ!',
                                         confirmBtnText: 'ตกลง',
                                         confirmBtnColor:
                                             Color.fromARGB(255, 0, 113, 219),

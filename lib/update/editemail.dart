@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/updateEmail_api.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
 import 'package:fmr_project/screen/profile.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
@@ -100,20 +101,25 @@ class _EditEmailPageState extends State<EditEmailPage> {
               InkWell(
                 onTap: () async {
                   if (_updateEmailForm.currentState!.validate()) {
-                    print("progress");
-                    UpdateEmail user = await _updateEmail();
-                    print("success");
+                    print("update progess");
+                    UpdateEmail response = await _updateEmail();
+                    print("update success");
                     QuickAlert.show(
                       context: context,
                       type: QuickAlertType.success,
-                      text: 'บันทึกข้อมูลสำเร็จ!',
+                      text: 'แก้ไขข้อมูลสำเร็จ!',
                       confirmBtnText: 'ตกลง',
                       confirmBtnColor: Color.fromARGB(255, 0, 113, 219),
                       onConfirmBtnTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (contxt) => ProfilePage(user.id)));
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => BottomNavigatorScreen(
+                              userId: response.id,
+                              indexPage: 3,
+                            ),
+                          ),
+                          (Route<dynamic> route) => false,
+                        );
                       },
                     );
                   }

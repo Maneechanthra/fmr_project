@@ -30,9 +30,7 @@ class ProfileModel {
 }
 
 Future<ProfileModel?> fetchProfile(int? userId) async {
-  // ตรวจสอบว่าค่า userId ไม่เป็น null และไม่ใช่ 0
   if (userId == null || userId == 0) {
-    // ถ้า userId เป็น null หรือ 0, คืนค่า null หรือคุณอาจเลือกโยนข้อผิดพลาดเฉพาะกรณีนี้
     print("User ID is null or zero, skipping API call.");
     return null; // คืนค่า null หรือละเว้นการทำงาน
   }

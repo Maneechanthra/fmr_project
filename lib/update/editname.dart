@@ -4,6 +4,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/updateName_api.dart';
 import 'package:fmr_project/bottom_navigator/bottom_navigator.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
 import 'package:fmr_project/screen/profile.dart';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/models/quickalert_type.dart';
@@ -103,23 +104,24 @@ class _EditNamePageState extends State<EditNamePage> {
                 onTap: () async {
                   if (_updateNameForm.currentState!.validate()) {
                     print("update progess");
-                    UpdateName user = await _updateName();
+                    UpdateName response = await _updateName();
                     print("update success");
                     QuickAlert.show(
                       context: context,
                       type: QuickAlertType.success,
-                      text: 'บันทึกข้อมูลสำเร็จ!',
+                      text: 'เข้าสู่ระบบสำเร็จ!',
                       confirmBtnText: 'ตกลง',
                       confirmBtnColor: Color.fromARGB(255, 0, 113, 219),
                       onConfirmBtnTap: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (contxt) => BottomNavigatorPage(
-                                      userId: user.id,
-                                      indexPage: 2,
-                                    )));
-                        // Navigator.pop(context);
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => BottomNavigatorScreen(
+                              userId: response.id,
+                              indexPage: 3,
+                            ),
+                          ),
+                          (Route<dynamic> route) => false,
+                        );
                       },
                     );
                   }

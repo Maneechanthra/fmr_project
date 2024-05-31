@@ -5,18 +5,18 @@ import '/globals.dart' as globals;
 class AddReviewModel {
   final Review review;
   final int reviewId;
-  final List<String> images;
+  // final List<String> images;
 
   AddReviewModel({
     required this.review,
     required this.reviewId,
-    required this.images,
+    // required this.images,
   });
 
   factory AddReviewModel.fromJson(Map<String, dynamic> json) => AddReviewModel(
         review: Review.fromJson(json["review"]),
         reviewId: json["review_id"],
-        images: List<String>.from(json["images"].map((x) => x)),
+        // images: List<String>.from(json["images"].map((x) => x)),
       );
 }
 

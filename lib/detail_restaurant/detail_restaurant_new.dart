@@ -1,6 +1,12 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:enefty_icons/enefty_icons.dart';
+import 'package:flutter/widgets.dart';
+import 'package:fmr_project/api/favorite_api.dart';
 import 'package:fmr_project/api/restaurantById_api.dart';
+import 'package:fmr_project/color/colors.dart';
 import 'package:fmr_project/dialog/addReportDialog.dart';
 import 'package:fmr_project/dialog/addReviewDialog.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +15,8 @@ import 'package:like_button/like_button.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:another_carousel_pro/another_carousel_pro.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '/globals.dart' as globals;
+import 'package:http/http.dart' as http;
 
 class DetailRestaurantScreen extends StatefulWidget {
   final int restaurantId;
@@ -32,6 +40,31 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
   void initState() {
     super.initState();
     futureRestaurants = getRestaurantById(widget.restaurantId);
+  }
+
+  Future<FavoritesModel> insertFavorite(int userId, int restaurantId) async {
+    final body = {
+      'restaurant_id': widget.restaurantId.toString(),
+      'favorite_by': widget.userId.toString(),
+    };
+
+    final response = await http.post(
+      Uri.parse("http://10.0.2.2:8000/api/favorites/insert"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': "*/*",
+        'connection': 'keep-alive',
+        'Authorization': 'Bearer ' + globals.jwtToken,
+      },
+      body: jsonEncode(body),
+    );
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return FavoritesModel.fromJson(data);
+    } else {
+      throw Exception(
+          'Failed to insert favorite. Status code: ${response.statusCode}');
+    }
   }
 
   @override
@@ -66,44 +99,47 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                         height: MediaQuery.of(context).size.height * 0.4,
                         child: ClipRRect(
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(100),
-                            bottomRight: Radius.circular(100),
+                            bottomLeft: Radius.circular(0),
+                            bottomRight: Radius.circular(0),
                           ),
-                          child: AnotherCarousel(
-                            images: imageUrls.map((url) {
-                              return CachedNetworkImage(
-                                imageUrl: url,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) => Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              );
-                            }).toList(),
+                          child: ClipRRect(
+                            child: AnotherCarousel(
+                              images: imageUrls.map((url) {
+                                return CachedNetworkImage(
+                                  imageUrl: url,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ),
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 60),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             InkWell(
                               onTap: () {
-                                Navigator.of(context).pop();
+                                Navigator.pop(context);
                               },
                               child: Container(
                                 width: 50,
                                 height: 50,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(100),
-                                  color: Color.fromARGB(202, 255, 255, 255),
+                                  color: Color.fromARGB(255, 255, 255, 255),
                                 ),
                                 child: Center(
                                   child: Icon(
                                     EneftyIcons.arrow_left_bold,
+                                    size: 30,
                                   ),
                                 ),
                               ),
@@ -124,7 +160,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(100),
-                                      color: Color.fromARGB(202, 255, 255, 255),
+                                      color: Color.fromARGB(255, 255, 255, 255),
                                     ),
                                     child: Center(
                                       child: LikeButton(
@@ -141,12 +177,18 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                               confirmBtnColor: Color.fromARGB(
                                                   255, 0, 113, 219),
                                             );
+
                                             return Future.value(isLiked);
                                           } else {
                                             try {
+                                              final favorite =
+                                                  await insertFavorite(
+                                                      widget.restaurantId,
+                                                      widget.userId!);
                                               setState(() {
                                                 isFavorite = !isLiked;
                                               });
+
                                               return Future.value(!isLiked);
                                             } catch (e) {
                                               QuickAlert.show(
@@ -176,7 +218,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                                 : Icons.favorite_border,
                                             color: isLiked
                                                 ? Colors.pink
-                                                : Color.fromARGB(255, 0, 0, 0),
+                                                : Colors.grey,
                                             size: 30,
                                           );
                                         },
@@ -201,7 +243,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(100),
-                                      color: Color.fromARGB(202, 255, 255, 255),
+                                      color: Color.fromARGB(255, 255, 255, 255),
                                     ),
                                     child: Center(
                                       child: Icon(
@@ -234,7 +276,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                         Text(
                           restaurantInfo.restaurantName,
                           style: GoogleFonts.prompt(
-                            fontSize: 24,
+                            fontSize: 26,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -246,7 +288,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                 width: MediaQuery.of(context).size.width * 0.25,
                                 height: 30,
                                 decoration: BoxDecoration(
-                                  color: Colors.blue,
+                                  color: Color.fromARGB(255, 0, 80, 145),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 child: Row(
@@ -308,7 +350,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                     ),
                                     SizedBox(width: 5),
                                     Text(
-                                      '(${restaurantInfo.reviewCount} Reviews)',
+                                      '(${restaurantInfo.reviewCount} รีวิว)',
                                       style: GoogleFonts.prompt(
                                         fontSize: 16,
                                         color: Colors.grey,
@@ -333,7 +375,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                   Icons.favorite,
                                   color: const Color.fromARGB(255, 255, 7, 7),
                                 ),
-                                Text(" ${restaurantInfo.viewCount} ครั้ง")
+                                Text(" ${restaurantInfo.favoritesCount} ครั้ง")
                               ],
                             ),
                           ],
@@ -344,6 +386,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                         _address(restaurantInfo, context),
                         SizedBox(height: 20),
                         _reviews(restaurantInfo, context),
+                        SizedBox(height: 60),
                       ],
                     ),
                   ),
@@ -370,7 +413,8 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
           width: MediaQuery.sizeOf(context).width * 0.9,
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), color: Colors.blue),
+              borderRadius: BorderRadius.circular(10),
+              color: AppColors.primaryColor),
           child: Center(
               child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -383,7 +427,6 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                 "เขียนรีวิว",
                 style: TextStyle(
                     fontSize: 18,
-                    // fontFamily: 'EkkamaiNew',white),
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),
@@ -399,9 +442,14 @@ Widget _address(RestaurantById restaurantInfo, BuildContext context) {
   return Column(
     children: [
       Container(
-        height: 200,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+        width: MediaQuery.sizeOf(context).width * 1.0,
+        height: MediaQuery.sizeOf(context).height * 0.15,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border:
+                Border.all(color: const Color.fromARGB(221, 216, 216, 216))),
+        child: Padding(
+          padding: const EdgeInsets.all(3.0),
           child: GoogleMap(
             initialCameraPosition: CameraPosition(
               target: LatLng(restaurantInfo.latitude, restaurantInfo.longitude),
@@ -409,12 +457,11 @@ Widget _address(RestaurantById restaurantInfo, BuildContext context) {
             ),
             markers: {
               Marker(
-                markerId: MarkerId('restaurantLocation'),
+                markerId: MarkerId('1'),
                 position:
                     LatLng(restaurantInfo.latitude, restaurantInfo.longitude),
               ),
             },
-            zoomControlsEnabled: false,
           ),
         ),
       ),
@@ -496,7 +543,7 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Reviews",
+              "รีวิว",
               style: GoogleFonts.prompt(
                 textStyle: TextStyle(
                   fontSize: 20,
@@ -505,12 +552,12 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
               ),
             ),
             Text(
-              "View All",
+              "(${restaurantInfo.reviewCount}) ดูรีวิวทั้งหมด",
               style: GoogleFonts.prompt(
                 textStyle: TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: Colors.red,
+                  color: Color.fromARGB(255, 0, 183, 255),
                 ),
               ),
             ),
@@ -521,18 +568,22 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
         shrinkWrap: true,
         padding: EdgeInsets.all(0),
         physics: NeverScrollableScrollPhysics(),
-        itemCount: 2,
+        itemCount: min(2, restaurantInfo.reviews.length),
         itemBuilder: (BuildContext context, index) {
+          if (index >= restaurantInfo.reviews.length) {
+            return SizedBox.shrink();
+          }
           final reviews = restaurantInfo.reviews[index];
-          final List<String> imageUrlsReview =
-              reviews.imagePathsReview!.map((path) {
-            return 'http://10.0.2.2:8000/api/public/$path';
-          }).toList();
+          final List<String> imageUrlsReview = reviews.imagePathsReview != null
+              ? reviews.imagePathsReview!.map((path) {
+                  return 'http://10.0.2.2:8000/api/public/$path';
+                }).toList()
+              : [];
+
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Container(
               width: MediaQuery.of(context).size.width * 1,
-              height: MediaQuery.of(context).size.height * 0.58,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: Color.fromARGB(255, 255, 255, 255),
@@ -619,58 +670,61 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
                     Divider(
                       color: Colors.grey,
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      reviews.title.toString(),
-                      style: GoogleFonts.prompt(
-                        textStyle: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Text(
-                      reviews.content.toString(),
-                      style: GoogleFonts.prompt(
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      child: ListView.builder(
-                        padding: EdgeInsets.all(0),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: imageUrlsReview.length,
-                        itemBuilder: (context, index) {
-                          if (index >= imageUrlsReview.length) {
-                            return Container();
-                          }
-
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 10.0),
-                            child: CachedNetworkImage(
-                              imageUrl: imageUrlsReview[index],
-                              // width: MediaQuery.of(context).size.width,
-                              // height: 100,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) =>
-                                  Center(child: CircularProgressIndicator()),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
+                    reviews.title.toString().isEmpty
+                        ? SizedBox()
+                        : Text(
+                            reviews.title.toString(),
+                            style: GoogleFonts.prompt(
+                              textStyle: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          );
-                        },
+                          ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    SizedBox(
+                      child: Text(
+                        reviews.content.toString(),
+                        style: GoogleFonts.prompt(
+                          textStyle: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ),
                     ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    imageUrlsReview.isEmpty
+                        ? SizedBox()
+                        : SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.15,
+                            child: ListView.builder(
+                              padding: EdgeInsets.all(0),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: imageUrlsReview.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 10.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: CachedNetworkImage(
+                                      imageUrl: imageUrlsReview[index],
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                   ],
                 ),
               ),

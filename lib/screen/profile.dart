@@ -232,7 +232,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                         children: [
                                           Text(
                                             "ชื่อ-นามสกุล",
-                                            style: TextStyle(fontSize: 14),
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color.fromARGB(
+                                                    255, 255, 0, 0)),
                                           ),
                                           Icon(Icons.edit),
                                         ],
@@ -285,22 +288,28 @@ class _ProfilePageState extends State<ProfilePage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      Text(
+                                        "อีเมล",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color:
+                                                Color.fromARGB(255, 255, 0, 0)),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "อีเมล",
-                                            style: TextStyle(fontSize: 14),
+                                            userData.email,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w800),
                                           ),
                                           Icon(Icons.edit),
                                         ],
-                                      ),
-                                      Text(
-                                        userData.email,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w800),
                                       ),
                                     ],
                                   ),
@@ -669,10 +678,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
     );
   }
-
-  // Widget _login() {
-  //   return SizedBox();
-  // }
 
   Widget _notlogin(context) {
     return SafeArea(

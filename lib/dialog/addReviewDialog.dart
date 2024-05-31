@@ -1,21 +1,17 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fmr_project/add/addReviewPage.dart';
-import 'package:fmr_project/add/addTimeOpenClose.dart';
 import 'package:fmr_project/api/reviewRestaurant_api.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
 import 'package:fmr_project/screen/login.dart';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import '/globals.dart' as globals;
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:path/path.dart' as path;
 
 class AddReviewDialog extends StatefulWidget {
   final int restaurantId;
@@ -27,7 +23,6 @@ class AddReviewDialog extends StatefulWidget {
 }
 
 class _AddReviewDialogState extends State<AddReviewDialog> {
-  // List<OpeningClosingTime> selectedTimes = [];
   final _reviewForm = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final contentController = TextEditingController();
@@ -87,12 +82,12 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
     var request = http.MultipartRequest('POST', url);
 
     request.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
-
     request.fields['content'] = contentController.text;
     request.fields['rating'] = ratingScore.toString();
     request.fields['review_by'] = widget.userId.toString();
     request.fields['restaurant_id'] = widget.restaurantId.toString();
 
+    print("content: " + contentController.text);
     print("rating body : " + ratingScore.toString());
     print("review_by body : " + widget.userId.toString());
     print("restaurant_id body : " + widget.restaurantId.toString());
@@ -100,15 +95,20 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
     try {
       var response = await request.send();
 
+      print("response statusCode: " + response.statusCode.toString());
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseJson = await response.stream.bytesToString();
-        final Map<String, dynamic> data = jsonDecode(responseJson);
+        final Map<String, dynamic>? data = jsonDecode(responseJson);
 
-        final reviewId = data['review_id'];
-        if (selectedImages != null && selectedImages.isNotEmpty) {
-          await _uploadImages(reviewId);
+        if (data == null) {
+          throw Exception("Failed to parse response data");
         }
 
+        final reviewId = data['review_id'];
+        if (selectedImages != null && selectedImages!.isNotEmpty) {
+          await _uploadImages(reviewId);
+        }
         return ReviewRestaurant.fromJson(data);
       } else {
         throw Exception("Failed to add review");
@@ -127,24 +127,33 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
     imageRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
 
     imageRequest.fields['review_id'] = reviewId.toString();
-    for (int i = 0; i < selectedImages.length; i++) {
-      String fieldName = 'path[]';
-      imageRequest.files.add(await http.MultipartFile.fromPath(
-        fieldName,
-        selectedImages[i].path,
-      ));
-      print(
-        selectedImages[i].path,
-      );
+
+    // ตรวจสอบ selectedImages ก่อน
+    if (selectedImages != null && selectedImages.isNotEmpty) {
+      for (int i = 0; i < selectedImages.length; i++) {
+        String fieldName = 'path[]';
+        imageRequest.files.add(await http.MultipartFile.fromPath(
+          fieldName,
+          selectedImages[i].path,
+        ));
+        print(selectedImages[i].path);
+      }
+    } else {
+      print("No images selected for upload.");
     }
 
-    print("reivew id by image : " + reviewId.toString());
+    print("review id by image: " + reviewId.toString());
 
-    var response = await imageRequest.send();
+    try {
+      var response = await imageRequest.send();
 
-    print(response.statusCode);
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception("Failed to upload images");
+      print(response.statusCode);
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw Exception("Failed to upload images");
+      }
+    } catch (e) {
+      print('Image upload error: $e');
+      throw Exception("An error occurred while uploading images: $e");
     }
   }
 
@@ -168,7 +177,6 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                   Positioned(
                       top: 3,
                       left: 290,
-                      // bottom: 530,
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
@@ -247,14 +255,13 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                  color: Colors.grey), // สีขอบเทาเมื่อโฟกัส
+                              borderSide: BorderSide(color: Colors.grey),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide(
-                                  color: const Color.fromARGB(255, 214, 214,
-                                      214)), // สีขอบเทาเมื่อไม่ได้โฟกัส
+                                  color:
+                                      const Color.fromARGB(255, 214, 214, 214)),
                             ),
                             hintText: "เขียนรีวิวสั้น ๆ",
                           ),
@@ -387,12 +394,33 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                                       print("progress");
                                       ReviewRestaurant? review =
                                           await _reviewRestaurant();
+                                      QuickAlert.show(
+                                        context: context,
+                                        type: QuickAlertType.success,
+                                        text: 'บันทึกข้อมูลสำเร็จ!',
+                                        confirmBtnText: 'ตกลง',
+                                        confirmBtnColor:
+                                            Color.fromARGB(255, 0, 113, 219),
+                                        onConfirmBtnTap: () {
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DetailRestaurantScreen(
+                                                          restaurantId: widget
+                                                              .restaurantId,
+                                                          userId:
+                                                              widget.userId)));
+                                        },
+                                      );
                                     }
+
                                     print("review successfuly");
                                   }
                                 },
                                 child: Container(
-                                  width: 145,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.475,
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: Color.fromARGB(255, 0, 153, 255),

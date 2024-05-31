@@ -2,6 +2,7 @@ import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/color/colors.dart';
 import 'package:fmr_project/favorite/favorite.dart';
+import 'package:fmr_project/profile/profile_screen.dart';
 import 'package:fmr_project/screen/home.dart';
 import 'package:fmr_project/screen/map.dart';
 import 'package:fmr_project/screen/profile.dart';
@@ -32,7 +33,7 @@ class _BottomNavigatorScreenState extends State<BottomNavigatorScreen> {
       HomePage(widget.userId ?? 0),
       MapsPage(widget.userId ?? 0),
       FavoriteScreen(widget.userId ?? 0),
-      ProfilePage(widget.userId ?? 0),
+      ProfileScreen(userId: widget.userId ?? 0),
     ];
   }
 
@@ -74,12 +75,12 @@ class _BottomNavigatorScreenState extends State<BottomNavigatorScreen> {
           ),
           NavigationDestination(
             icon: Icon(
-              EneftyIcons.favorite_chart_outline,
+              Icons.favorite_outline,
               size: 30,
               color: AppColors.primaryColor,
             ),
             selectedIcon: Icon(
-              EneftyIcons.favorite_chart_bold,
+              Icons.favorite,
               size: 30,
               color: AppColors.primaryColor,
             ),

@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/recommentded_api.dart';
 import 'package:fmr_project/detail_restaurant/detail_restaurant.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -44,12 +46,6 @@ class _RecomentedPageState extends State<RecomentedPage> {
         }
       });
     }
-
-    // futureRestaurants =
-    //     Future.delayed(Duration(seconds: 3), () => fetchSortedRestaurants())
-    //         .then((value) {
-    //   return value;
-    // });
   }
 
   @override
@@ -167,10 +163,11 @@ class _RecomentedPageState extends State<RecomentedPage> {
           return Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
             child: GridView.count(
+              padding: EdgeInsets.all(0),
               crossAxisCount: 2,
               mainAxisSpacing: 3,
               shrinkWrap: true,
-              childAspectRatio: 1,
+              childAspectRatio: 0.95,
               physics: const NeverScrollableScrollPhysics(),
               children: List.generate(topRestaurants.length = 4, (index) {
                 // RecommendedModel item = restaurant_info[index];
@@ -189,18 +186,17 @@ class _RecomentedPageState extends State<RecomentedPage> {
                   padding: const EdgeInsets.all(3.0),
                   child: InkWell(
                     onTap: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailRestaurantPage_2(
-                            item.id,
-                            widget.userId,
+                          builder: (context) => DetailRestaurantScreen(
+                            restaurantId: item.id,
+                            userId: widget.userId,
                           ),
                         ),
                       );
                     },
                     child: SizedBox(
-                      height: 300,
                       child: Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -228,7 +224,10 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                           imageUrl: imageUrl,
                                           width:
                                               MediaQuery.of(context).size.width,
-                                          height: 100,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.12,
                                           fit: BoxFit.cover,
                                           placeholder: (context, url) => Center(
                                               child:
@@ -331,29 +330,63 @@ class _RecomentedPageState extends State<RecomentedPage> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 8.0, top: 5),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Divider(),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
                               child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    width: 50,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Color.fromARGB(255, 212, 14, 0)),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(0.8),
-                                        child: Text(
-                                          "${item.distance?.toStringAsFixed(2)} km",
-                                          style: GoogleFonts.prompt(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color.fromARGB(
-                                                  255, 255, 255, 255)),
-                                        ),
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.05,
+                                        child: Image.asset(
+                                            "assets/img/icons/distance.png"),
                                       ),
-                                    ),
+                                      // Icon(
+                                      //   Icons.location_off,
+                                      //   size: 20,
+                                      // ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        "${item.distance?.toStringAsFixed(2)} km",
+                                        style: GoogleFonts.prompt(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color:
+                                                Color.fromARGB(255, 0, 0, 0)),
+                                      ),
+                                    ],
                                   ),
+                                  // Container(
+                                  //   width: 50,
+                                  //   height: 20,
+                                  //   decoration: BoxDecoration(
+                                  //       borderRadius: BorderRadius.circular(5),
+                                  //       color: Color.fromARGB(255, 212, 14, 0)),
+                                  //   child: Center(
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(0.8),
+                                  //       child: Text(
+                                  //         "${item.distance?.toStringAsFixed(2)} km",
+                                  //         style: GoogleFonts.prompt(
+                                  //             fontSize: 10,
+                                  //             fontWeight: FontWeight.normal,
+                                  //             color: Color.fromARGB(
+                                  //                 255, 255, 255, 255)),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   const SizedBox(
                                     width: 3,
                                   ),

@@ -120,8 +120,8 @@ class ReviewRestaurant {
 }
 
 class Review {
-  final String? restaurantId; // Nullable if it might be missing in JSON
-  final String? title; // Nullable if title is optional
+  final String? restaurantId;
+  final String? title;
   final String content;
   final double? rating;
   final String reviewBy;
@@ -130,8 +130,8 @@ class Review {
   final int id;
 
   Review({
-    this.restaurantId, // Nullable field
-    this.title, // Nullable field
+    this.restaurantId,
+    this.title,
     required this.content,
     required this.rating,
     required this.reviewBy,

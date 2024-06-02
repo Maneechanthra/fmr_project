@@ -12,6 +12,7 @@ import 'package:fmr_project/api/reportRestaurant_api.dart';
 import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
 import 'package:fmr_project/color/colors.dart';
 import 'package:fmr_project/login/login_new.dart';
+import 'package:fmr_project/my_restaurant/myRestaurant.dart';
 import 'package:fmr_project/report_restaurant/report_my_restaurant.dart';
 import 'package:fmr_project/update/changepassword.dart';
 import 'package:fmr_project/update/editemail.dart';
@@ -342,7 +343,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               width: MediaQuery.of(context).size.width * 1,
                               height: MediaQuery.of(context).size.height * 0.1,
                               decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 221, 139, 33),
+                                color: AppColors.primaryColor,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Padding(
@@ -420,7 +421,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           /////////// category ///////////////////
                           Padding(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 5),
+                                horizontal: 30, vertical: 15),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -456,7 +457,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 textStyle: TextStyle(
                                                   color: Color.fromARGB(
                                                       255, 0, 0, 0),
-                                                  fontSize: 14,
+                                                  fontSize: 16,
                                                   fontWeight: FontWeight.w400,
                                                 ),
                                               ),
@@ -486,7 +487,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
+                                        vertical: 15),
                                     child: Row(
                                       children: [
                                         Row(
@@ -503,7 +504,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 textStyle: TextStyle(
                                                   color: Color.fromARGB(
                                                       255, 0, 0, 0),
-                                                  fontSize: 14,
+                                                  fontSize: 16,
                                                   fontWeight: FontWeight.w400,
                                                 ),
                                               ),
@@ -526,10 +527,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                AddRestaurantScreen(
-                                                    selectedCategories: [],
-                                                    userId:
-                                                        widget.userId ?? 0)));
+                                                MyRestaurantScreen(
+                                                  uesrId: widget.userId ?? 0,
+                                                )));
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -550,7 +550,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 textStyle: TextStyle(
                                                   color: Color.fromARGB(
                                                       255, 0, 0, 0),
-                                                  fontSize: 14,
+                                                  fontSize: 16,
                                                   fontWeight: FontWeight.w400,
                                                 ),
                                               ),
@@ -566,7 +566,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                   ),
                                 ),
-                                Divider(),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Divider(),
+                                ),
                                 ////////////////////// change password ///////////////////
                                 InkWell(
                                   onTap: () {
@@ -595,7 +599,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 textStyle: TextStyle(
                                                   color: Color.fromARGB(
                                                       255, 0, 0, 0),
-                                                  fontSize: 14,
+                                                  fontSize: 16,
                                                   fontWeight: FontWeight.w400,
                                                 ),
                                               ),
@@ -633,18 +637,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         userId: null,
                                                       )));
                                         }).show();
-                                    // Navigator.push(
-                                    //     context,
-                                    //     PageRouteBuilder(pageBuilder:
-                                    //         (context, animation1, animation2) {
-                                    //       return HomePage(widget.userId);
-                                    //     }, transitionsBuilder: (context, animation1,
-                                    //         animation2, child) {
-                                    //       return FadeTransition(
-                                    //         opacity: animation1,
-                                    //         child: child,
-                                    //       );
-                                    //     }));
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -666,7 +658,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 textStyle: TextStyle(
                                                   color: Color.fromARGB(
                                                       255, 255, 0, 0),
-                                                  fontSize: 14,
+                                                  fontSize: 16,
                                                   fontWeight: FontWeight.w400,
                                                 ),
                                               ),
@@ -682,7 +674,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                   ),
                                 ),
-                                Divider(),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Divider(),
+                                ),
                                 ////////////////////////// delete account ///////////////////////
                                 Padding(
                                   padding:

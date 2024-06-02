@@ -10,11 +10,14 @@ class MyRestaurantModel {
   final String categories;
   final int verified;
   final int status;
+  final String address;
   final String imagePath;
   final dynamic averageRating;
   final int reviewCount;
   final int favoritesCount;
   final int viewCount;
+  final int reportCount;
+  final String name;
 
   MyRestaurantModel({
     required this.id,
@@ -22,11 +25,14 @@ class MyRestaurantModel {
     required this.categories,
     required this.verified,
     required this.status,
+    required this.address,
     required this.imagePath,
     required this.averageRating,
     required this.reviewCount,
     required this.favoritesCount,
     required this.viewCount,
+    required this.reportCount,
+    required this.name,
   });
 
   factory MyRestaurantModel.fromRawJson(String str) =>
@@ -41,11 +47,14 @@ class MyRestaurantModel {
         categories: json["categories"],
         verified: json["verified"],
         status: json["status"],
+        address: json["address"],
         imagePath: json["image_path"],
         averageRating: json["average_rating"],
         reviewCount: json["review_count"],
         favoritesCount: json["favorites_count"],
         viewCount: json["view_count"],
+        reportCount: json["reports_count"],
+        name: json["name"],
       );
 
   Map<String, dynamic> toJson() => {

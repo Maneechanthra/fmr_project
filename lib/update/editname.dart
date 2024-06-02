@@ -74,6 +74,7 @@ class _EditNamePageState extends State<EditNamePage> {
           "แก้ไขชื่อ-นามสกุล",
           style: TextStyle(fontSize: 18),
         ),
+        centerTitle: true,
       ),
       body: Center(
         child: Form(
@@ -106,24 +107,26 @@ class _EditNamePageState extends State<EditNamePage> {
                     print("update progess");
                     UpdateName response = await _updateName();
                     print("update success");
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.success,
-                      text: 'เข้าสู่ระบบสำเร็จ!',
-                      confirmBtnText: 'ตกลง',
-                      confirmBtnColor: Color.fromARGB(255, 0, 113, 219),
-                      onConfirmBtnTap: () {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => BottomNavigatorScreen(
-                              userId: response.id,
-                              indexPage: 3,
+
+                    AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.question,
+                        animType: AnimType.topSlide,
+                        showCloseIcon: true,
+                        title: "ยืนยันแก้ไขข้อมูล?",
+                        desc: "คุณต้องการชื่อ-นามสกุลใช่หรือไม่?",
+                        btnCancelOnPress: () {},
+                        btnOkOnPress: () {
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => BottomNavigatorScreen(
+                                userId: response.id,
+                                indexPage: 3,
+                              ),
                             ),
-                          ),
-                          (Route<dynamic> route) => false,
-                        );
-                      },
-                    );
+                            (Route<dynamic> route) => false,
+                          );
+                        }).show();
                   }
                 },
                 child: Container(

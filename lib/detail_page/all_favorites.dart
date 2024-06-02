@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/myFavorite_api.dart';
 import 'package:fmr_project/detail_restaurant/detail_restaurant.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
 import 'package:fmr_project/model/restaurant_info.dart';
 
 class AllFavoriesPage extends StatefulWidget {
@@ -83,8 +84,10 @@ class _AllFavoriesPageState extends State<AllFavoriesPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        DetailRestaurantPage_2(
-                                            item.id, widget.userId)));
+                                        DetailRestaurantScreen(
+                                          restaurantId: item.id,
+                                          userId: widget.userId,
+                                        )));
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 1,

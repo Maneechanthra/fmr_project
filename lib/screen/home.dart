@@ -78,9 +78,9 @@ class _HomePageState extends State<HomePage> {
       body: isLoadingLocation
           ? Center(
               child: SizedBox(
-                width: 300,
+                width: MediaQuery.of(context).size.width * 1,
                 child: Lottie.network(
-                    'https://lottie.host/e5abe087-7811-44fa-a384-e5df4243c00f/mK3LQGpd4P.json'),
+                    'https://lottie.host/abb3c040-8222-44b8-9541-801d75890585/e4hCPyyVYT.json'),
               ),
             )
           : SizedBox(
@@ -239,32 +239,5 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
     );
-    // bottomNavigationBar: GNav(
-    //   color: Colors.black,
-    //   activeColor: Colors.green,
-    //   tabs: const [
-    //     GButton(
-    //       icon: Icons.home,
-    //       iconSize: 30,
-    //       text: 'หน้าแรก',
-    //     ),
-    //     GButton(
-    //       icon: Icons.location_on_rounded,
-    //       iconSize: 30,
-    //       text: 'แผนที่',
-    //     ),
-    //     GButton(
-    //       icon: Icons.person,
-    //       iconSize: 30,
-    //       text: 'ฉัน',
-    //     ),
-    //   ],
-    //   onTabChange: (index) {
-    //     _pageController.jumpToPage(index); // กระโดดไปยังหน้าที่เลือก
-    //     print(
-    //         'PageController: $_pageController'); // แสดงรายละเอียดของ PageController
-    //     print('Selected Index: $index'); // แสดงดัชนีที่เลือก
-    //   },
-    // ),
   }
 }

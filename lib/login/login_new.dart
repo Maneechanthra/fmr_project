@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -245,27 +246,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                     if (_loginForm.currentState!.validate()) {
                                       LoginResponse response =
                                           await verifyLogin();
-                                      QuickAlert.show(
-                                        context: context,
-                                        type: QuickAlertType.success,
-                                        text: 'แก้ไขข้อมูลสำเร็จ!',
-                                        confirmBtnText: 'ตกลง',
-                                        confirmBtnColor:
-                                            Color.fromARGB(255, 0, 113, 219),
-                                        onConfirmBtnTap: () {
-                                          Navigator.of(context)
-                                              .pushAndRemoveUntil(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  BottomNavigatorScreen(
-                                                userId: response.userId,
-                                                indexPage: 0,
+                                      AwesomeDialog(
+                                          context: context,
+                                          dialogType: DialogType.success,
+                                          animType: AnimType.topSlide,
+                                          title: "เข้าสู่ระบบสำเร็จ",
+                                          desc:
+                                              "ยินดีต้อนรับคุณ ${response.name}",
+                                          btnOkOnPress: () {
+                                            Navigator.of(context)
+                                                .pushAndRemoveUntil(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    BottomNavigatorScreen(
+                                                  indexPage: 0,
+                                                  userId: response.userId,
+                                                ),
                                               ),
-                                            ),
-                                            (Route<dynamic> route) => false,
-                                          );
-                                        },
-                                      );
+                                              (Route<dynamic> route) => false,
+                                            );
+                                          }).show();
                                       globals.isLoggedIn = true;
                                       globals.jwtToken = response.jwtToken;
                                       print(response.userId);
@@ -284,6 +284,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         0.07,
                                     decoration: BoxDecoration(
                                         color: AppColors.primaryColor,
+                                        // gradient: LinearGradient(
+                                        //   begin: Alignment.topCenter,
+                                        //   end: Alignment.bottomCenter,
+                                        //   colors: [
+                                        //     Color(0xFFFFD700), // Golden yellow
+                                        //     Color(0xFFFFA500), // Orange
+                                        //   ],
+                                        // ),
                                         borderRadius: BorderRadius.circular(12),
                                         boxShadow: [
                                           BoxShadow(

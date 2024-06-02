@@ -142,7 +142,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: SizedBox(
-              width: 200,
+              // width: 200,
               child: Lottie.network(
                   'https://lottie.host/e0a50d0a-95f6-42a7-b894-a6597f54a034/ryQS5H9cQO.json'),
             ),
@@ -169,8 +169,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
               shrinkWrap: true,
               childAspectRatio: 0.95,
               physics: const NeverScrollableScrollPhysics(),
-              children: List.generate(topRestaurants.length = 4, (index) {
-                // RecommendedModel item = restaurant_info[index];
+              children: List.generate(topRestaurants.length, (index) {
                 var item = topRestaurants[index];
                 // final category =
                 final String imagePath = restaurant_info[index].imagePath;
@@ -263,7 +262,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                           ),
                                           item.averageRating != null
                                               ? Text(
-                                                  "${item.averageRating!.toStringAsFixed(2)}",
+                                                  "${item.averageRating!.toStringAsFixed(1)}",
                                                   style:
                                                       TextStyle(fontSize: 12),
                                                 )
@@ -395,7 +394,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                     height: 20,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color: Color.fromARGB(162, 14, 12, 9),
+                                      color: Color.fromARGB(214, 255, 153, 0),
                                     ),
                                     child: Center(
                                       child: Padding(
@@ -405,7 +404,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                               " รีวิว",
                                           style: GoogleFonts.prompt(
                                               fontSize: 10,
-                                              fontWeight: FontWeight.normal,
+                                              fontWeight: FontWeight.w500,
                                               color: Color.fromARGB(
                                                   255, 255, 255, 255)),
                                         ),

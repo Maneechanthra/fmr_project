@@ -5,13 +5,13 @@ import '/globals.dart' as globals;
 class RecommendedModel {
   final int id;
   final String restaurantName;
-  final int verified;
+  final int? verified;
   final double latitude;
   final double longitude;
   final String imagePath;
   final double? averageRating;
-  final int reviewCount;
-  final int favoritesCount;
+  final int? reviewCount;
+  final int? favoritesCount;
   final List<String> restaurantCategory;
   double? score;
   double? distance;
@@ -35,17 +35,17 @@ class RecommendedModel {
       RecommendedModel(
         id: json["id"],
         restaurantName: json["restaurant_name"],
-        verified: json["verified"],
+        verified: json["verified"] ?? 0,
         latitude: json["latitude"]?.toDouble(),
         longitude: json["longitude"]?.toDouble(),
         imagePath: json["image_path"],
-        averageRating: json["average_rating"]?.toDouble(),
-        reviewCount: json["review_count"],
-        favoritesCount: json["favorites_count"],
+        averageRating: json["average_rating"]?.toDouble() ?? 0.0,
+        reviewCount: json["review_count"] ?? 0,
+        favoritesCount: json["favorites_count"] ?? 0,
         restaurantCategory:
             List<String>.from(json["restaurant_category"].map((x) => x)),
-        distance: json["distance"],
-        score: json["score"],
+        distance: json["distance"] ?? 0,
+        score: json["score"] ?? 0,
       );
 }
 
@@ -56,9 +56,8 @@ Future<List<RecommendedModel>> fetchRestaurants() async {
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': '*/*',
       'connection': 'keep-alive',
-      // 'Authorization': 'Bearer ' + globals.jwtToken,
     },
-  ).timeout(const Duration(minutes: 5));
+  );
 
   print(response.statusCode);
   print(response.body);

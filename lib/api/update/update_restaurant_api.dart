@@ -3,15 +3,15 @@ import 'package:http/http.dart' as http;
 
 // To parse this JSON data, do
 //
-//     final restaurantById = restaurantByIdFromJson(jsonString);
+//     final getRestaurantModelForUpdated = getRestaurantModelForUpdatedFromJson(jsonString);
 
 // To parse this JSON data, do
 //
-//     final restaurantById = restaurantByIdFromJson(jsonString);
+//     final getRestaurantModelForUpdated = getRestaurantModelForUpdatedFromJson(jsonString);
 
 import 'dart:convert';
 
-class RestaurantById {
+class getRestaurantModelForUpdated {
   final int id;
   final String restaurantName;
   final double latitude;
@@ -30,7 +30,7 @@ class RestaurantById {
   final List<Opening> openings;
   final List<Review> reviews;
 
-  RestaurantById({
+  getRestaurantModelForUpdated({
     required this.id,
     required this.restaurantName,
     required this.latitude,
@@ -50,7 +50,8 @@ class RestaurantById {
     required this.createdBy,
   });
 
-  factory RestaurantById.fromJson(Map<String, dynamic> json) => RestaurantById(
+  factory getRestaurantModelForUpdated.fromJson(Map<String, dynamic> json) =>
+      getRestaurantModelForUpdated(
         id: json["id"],
         restaurantName: json["restaurant_name"],
         latitude: json["latitude"]?.toDouble(),
@@ -140,7 +141,7 @@ class Review {
 
 // ----------------------------------------------------------------
 // ----------------------------------------------------------------
-// Future<RestaurantById> getRestaurantById(int restaurantId) async {
+// Future<getRestaurantModelForUpdated> getgetRestaurantModelForUpdated(int restaurantId) async {
 //   final response = await http.get(
 //     Uri.parse('http://10.0.2.2:8000/api/restaurant/$restaurantId'),
 //     headers: <String, String>{
@@ -162,7 +163,7 @@ class Review {
 //         if (restaurantData == null) {
 //           throw Exception('Restaurant data is null');
 //         }
-//         return RestaurantById.fromJson(restaurantData);
+//         return getRestaurantModelForUpdated.fromJson(restaurantData);
 //       } else {
 //         throw Exception(
 //             'Invalid data structure. Expected a single restaurant object');
@@ -177,7 +178,8 @@ class Review {
 //   }
 // }
 
-Future<RestaurantById> getRestaurantById(int restaurantId) async {
+Future<getRestaurantModelForUpdated> fetchUpdatedRestaurant(
+    int restaurantId) async {
   final response = await http.get(
     Uri.parse('http://10.0.2.2:8000/api/restaurant/$restaurantId'),
     headers: <String, String>{
@@ -191,7 +193,7 @@ Future<RestaurantById> getRestaurantById(int restaurantId) async {
 
   if (response.statusCode == 200) {
     final data = json.decode(response.body);
-    return RestaurantById.fromJson(data);
+    return getRestaurantModelForUpdated.fromJson(data);
   } else {
     throw Exception('Failed to load data from API');
   }

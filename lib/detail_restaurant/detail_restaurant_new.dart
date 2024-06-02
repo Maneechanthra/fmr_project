@@ -1,14 +1,20 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fmr_project/api/addRestaurant_api.dart';
 import 'package:fmr_project/api/favorite_api.dart';
+import 'package:fmr_project/api/favorites/checkFavorite_api.dart';
 import 'package:fmr_project/api/restaurantById_api.dart';
+import 'package:fmr_project/api/views/view_api.dart';
 import 'package:fmr_project/color/colors.dart';
 import 'package:fmr_project/dialog/addReportDialog.dart';
 import 'package:fmr_project/dialog/addReviewDialog.dart';
+import 'package:fmr_project/informations_restaurant/informatins.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:like_button/like_button.dart';
@@ -33,15 +39,52 @@ class DetailRestaurantScreen extends StatefulWidget {
 }
 
 class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
-  bool isFavorite = false;
+  late int createdBy;
+  late bool isFavorite = false;
   late Future<RestaurantById> futureRestaurants;
+  late Future<ChechkFavorite> futureCheckFavorite;
 
   @override
   void initState() {
     super.initState();
     futureRestaurants = getRestaurantById(widget.restaurantId);
+    futureCheckFavorite =
+        fetchCheckFavorite(widget.userId!, widget.restaurantId);
+
+    addViews(widget.userId, widget.restaurantId);
   }
 
+  Future<ViewModel> addViews(int? userId, int restaurantId) async {
+    final Map<String, String> body = {
+      'restaurant_id': widget.restaurantId.toString(),
+      'view_by': widget.userId?.toString() ?? '0',
+    };
+
+    final response = await http.post(
+      Uri.parse("http://10.0.2.2:8000/api/view/insert"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': "*/*",
+        'connection': 'keep-alive',
+        'Authorization': 'Bearer ' + globals.jwtToken,
+      },
+      body: jsonEncode(body),
+    );
+
+    print(response.body);
+    print(response.statusCode);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return ViewModel.fromJson(data);
+    } else {
+      print('Response: ${response.body}');
+      throw Exception(
+          'Failed to log visit. Status code: ${response.statusCode}');
+    }
+  }
+
+  // add favorite
   Future<FavoritesModel> insertFavorite(int userId, int restaurantId) async {
     final body = {
       'restaurant_id': widget.restaurantId.toString(),
@@ -83,6 +126,9 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
             );
           } else if (snapshot.hasData) {
             final restaurantInfo = snapshot.data!;
+            createdBy = restaurantInfo.createdBy;
+
+            print("created by in futureBuilder : " + createdBy.toString());
             final List<String> imageUrls =
                 restaurantInfo.imagePaths.map((path) {
               return 'http://10.0.2.2:8000/api/public/$path';
@@ -146,85 +192,109 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                             ),
                             Row(
                               children: [
-                                InkWell(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => ReportDialogPage(
-                                          widget.userId ?? 0,
-                                          widget.restaurantId),
-                                    );
+                                FutureBuilder(
+                                  future: futureCheckFavorite,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else {
+                                      if (snapshot.hasData) {
+                                        final item =
+                                            snapshot.data as ChechkFavorite;
+                                        var isFavorite = item.status == 1;
+                                        return Container(
+                                          width: 50,
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255),
+                                          ),
+                                          child: Center(
+                                            child: LikeButton(
+                                              isLiked: isFavorite,
+                                              onTap: (bool isLiked) async {
+                                                if (widget.userId == null ||
+                                                    widget.userId == 0) {
+                                                  QuickAlert.show(
+                                                    context: context,
+                                                    type:
+                                                        QuickAlertType.warning,
+                                                    text:
+                                                        'กรุณาเข้าสู่ระบบเพื่อใช้ฟังก์ชันนี้',
+                                                    confirmBtnText: 'ตกลง',
+                                                    confirmBtnColor:
+                                                        Color.fromARGB(
+                                                            255, 0, 113, 219),
+                                                  );
+                                                  return Future.value(isLiked);
+                                                } else {
+                                                  try {
+                                                    final favorite =
+                                                        await insertFavorite(
+                                                            widget.restaurantId,
+                                                            widget.userId!);
+
+                                                    setState(() {
+                                                      isFavorite =
+                                                          item.status == 1
+                                                              ? !isLiked
+                                                              : true;
+                                                    });
+                                                    return Future.value(
+                                                        isFavorite);
+                                                  } catch (e) {
+                                                    QuickAlert.show(
+                                                      context: context,
+                                                      type:
+                                                          QuickAlertType.error,
+                                                      text:
+                                                          'เกิดข้อผิดพลาด: $e',
+                                                      confirmBtnText: 'ตกลง',
+                                                      confirmBtnColor:
+                                                          Colors.red,
+                                                    );
+                                                    return Future.value(
+                                                        isLiked);
+                                                  }
+                                                }
+                                              },
+                                              size: 30,
+                                              circleColor: CircleColor(
+                                                start: Colors.pink,
+                                                end: Colors.red,
+                                              ),
+                                              bubblesColor: BubblesColor(
+                                                dotPrimaryColor: Colors.pink,
+                                                dotSecondaryColor: Colors.red,
+                                              ),
+                                              likeBuilder: (bool isLiked) {
+                                                return Icon(
+                                                  isFavorite
+                                                      ? Icons.favorite
+                                                      : Icons.favorite_border,
+                                                  color: isFavorite
+                                                      ? Colors.red
+                                                      : (isLiked
+                                                          ? Colors.pink
+                                                          : Colors.grey),
+                                                  size: 30,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        );
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else {
+                                        return Text('No data');
+                                      }
+                                    }
                                   },
-                                  child: Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: Color.fromARGB(255, 255, 255, 255),
-                                    ),
-                                    child: Center(
-                                      child: LikeButton(
-                                        isLiked: isFavorite,
-                                        onTap: (bool isLiked) async {
-                                          if (widget.userId == null ||
-                                              widget.userId == 0) {
-                                            QuickAlert.show(
-                                              context: context,
-                                              type: QuickAlertType.warning,
-                                              text:
-                                                  'กรุณาเข้าสู่ระบบเพื่อใช้ฟังก์ชันนี้',
-                                              confirmBtnText: 'ตกลง',
-                                              confirmBtnColor: Color.fromARGB(
-                                                  255, 0, 113, 219),
-                                            );
-
-                                            return Future.value(isLiked);
-                                          } else {
-                                            try {
-                                              final favorite =
-                                                  await insertFavorite(
-                                                      widget.restaurantId,
-                                                      widget.userId!);
-                                              setState(() {
-                                                isFavorite = !isLiked;
-                                              });
-
-                                              return Future.value(!isLiked);
-                                            } catch (e) {
-                                              QuickAlert.show(
-                                                context: context,
-                                                type: QuickAlertType.error,
-                                                text: 'เกิดข้อผิดพลาด: $e',
-                                                confirmBtnText: 'ตกลง',
-                                                confirmBtnColor: Colors.red,
-                                              );
-                                              return Future.value(isLiked);
-                                            }
-                                          }
-                                        },
-                                        size: 30,
-                                        circleColor: CircleColor(
-                                          start: Colors.pink,
-                                          end: Colors.red,
-                                        ),
-                                        bubblesColor: BubblesColor(
-                                          dotPrimaryColor: Colors.pink,
-                                          dotSecondaryColor: Colors.red,
-                                        ),
-                                        likeBuilder: (bool isLiked) {
-                                          return Icon(
-                                            isLiked
-                                                ? Icons.favorite
-                                                : Icons.favorite_border,
-                                            color: isLiked
-                                                ? Colors.pink
-                                                : Colors.grey,
-                                            size: 30,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
                                 ),
                                 SizedBox(
                                   width: 20,
@@ -321,7 +391,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                               child: Text(
                                 restaurantInfo.address,
                                 style: GoogleFonts.prompt(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   color: Colors.grey,
                                 ),
                               ),
@@ -342,17 +412,17 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                         color: Colors.orange),
                                     SizedBox(width: 5),
                                     Text(
-                                      restaurantInfo.averageRating!
+                                      restaurantInfo.averageRating
                                           .toStringAsFixed(1),
                                       style: GoogleFonts.prompt(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                       ),
                                     ),
                                     SizedBox(width: 5),
                                     Text(
                                       '(${restaurantInfo.reviewCount} รีวิว)',
                                       style: GoogleFonts.prompt(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         color: Colors.grey,
                                       ),
                                     ),
@@ -385,6 +455,8 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                         SizedBox(height: 20),
                         _address(restaurantInfo, context),
                         SizedBox(height: 20),
+                        _information(restaurantInfo, context),
+                        SizedBox(height: 20),
                         _reviews(restaurantInfo, context),
                         SizedBox(height: 60),
                       ],
@@ -403,10 +475,26 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: InkWell(
         onTap: () {
-          showDialog(
-              context: context,
-              builder: (context) =>
-                  AddReviewDialog(widget.restaurantId, widget.userId ?? 0));
+          print(widget.userId);
+          print(createdBy.toString());
+
+          if (widget.userId == createdBy) {
+            print(createdBy.toString());
+            print("คุณเป็นเจ้าของร้าน");
+            AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.warning,
+                    animType: AnimType.topSlide,
+                    title: "ไม่สามารถเพิ่มรีวิวได้",
+                    desc: "ไม่สามารถเพิ่มรีวิวได้เนื่องจากคุณเป็นเจ้าของร้าน",
+                    btnOkOnPress: () {})
+                .show();
+          } else {
+            showDialog(
+                context: context,
+                builder: (context) =>
+                    AddReviewDialog(widget.restaurantId, widget.userId ?? 0));
+          }
         },
         child: Container(
           height: 45,
@@ -443,13 +531,13 @@ Widget _address(RestaurantById restaurantInfo, BuildContext context) {
     children: [
       Container(
         width: MediaQuery.sizeOf(context).width * 1.0,
-        height: MediaQuery.sizeOf(context).height * 0.15,
+        height: MediaQuery.sizeOf(context).height * 0.2,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border:
                 Border.all(color: const Color.fromARGB(221, 216, 216, 216))),
         child: Padding(
-          padding: const EdgeInsets.all(3.0),
+          padding: const EdgeInsets.all(5.0),
           child: GoogleMap(
             initialCameraPosition: CameraPosition(
               target: LatLng(restaurantInfo.latitude, restaurantInfo.longitude),
@@ -471,29 +559,41 @@ Widget _address(RestaurantById restaurantInfo, BuildContext context) {
         children: [
           Column(
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.145,
-                height: MediaQuery.of(context).size.height * 0.067,
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(75, 250, 198, 42),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: Center(
-                  child: Icon(
-                    EneftyIcons.call_bold,
-                    color: Colors.amber[800],
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => InfomatinsScreen(
+                                restaurantName: restaurantInfo.restaurantName,
+                                opening: restaurantInfo.openings,
+                                restaurants: [restaurantInfo],
+                              )));
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.145,
+                  height: MediaQuery.of(context).size.height * 0.067,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(55, 250, 198, 42),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      EneftyIcons.info_circle_bold,
+                      color: Colors.amber[800],
+                    ),
                   ),
                 ),
               ),
               SizedBox(
-                height: 5,
+                height: 10,
               ),
               Text(
-                "โทร",
+                "ข้อมูลเพิ่มเติม",
                 style: GoogleFonts.prompt(
                     textStyle: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 )),
               ),
             ],
@@ -515,14 +615,14 @@ Widget _address(RestaurantById restaurantInfo, BuildContext context) {
                 ),
               ),
               SizedBox(
-                height: 5,
+                height: 10,
               ),
               Text(
-                "ตำแหน่ง",
+                "นำทาง",
                 style: GoogleFonts.prompt(
                     textStyle: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 )),
               ),
             ],
@@ -533,6 +633,89 @@ Widget _address(RestaurantById restaurantInfo, BuildContext context) {
   );
 }
 
+// =============================== infomations ==================================
+Widget _information(RestaurantById restaurantInfo, BuildContext context) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Divider(),
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Text(
+                  "โทร: ",
+                  style: GoogleFonts.prompt(
+                    textStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                Text(
+                  restaurantInfo.telephone1,
+                  style: GoogleFonts.prompt(
+                    textStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Icon(EneftyIcons.call_outline),
+          ],
+        ),
+      ),
+      Divider(),
+      restaurantInfo.telephone2 == ""
+          ? SizedBox()
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "โทร: ",
+                            style: GoogleFonts.prompt(
+                              textStyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            restaurantInfo.telephone1,
+                            style: GoogleFonts.prompt(
+                              textStyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Icon(EneftyIcons.call_outline),
+                    ],
+                  ),
+                ),
+                Divider(),
+              ],
+            ),
+    ],
+  );
+}
+
+// ============================= reviews ====================================
 Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -631,7 +814,7 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
                                   ),
                                 ),
                                 Text(
-                                  reviews.created_at,
+                                  reviews.createdAt,
                                   style: GoogleFonts.prompt(
                                     textStyle: TextStyle(
                                       fontSize: 12,
@@ -670,7 +853,7 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
                     Divider(
                       color: Colors.grey,
                     ),
-                    reviews.title.toString().isEmpty
+                    reviews.title.toString().isEmpty || reviews.title == null
                         ? SizedBox()
                         : Text(
                             reviews.title.toString(),

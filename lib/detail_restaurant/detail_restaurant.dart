@@ -1,1021 +1,1021 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:another_carousel_pro/another_carousel_pro.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:fmr_project/api/favorite_api.dart';
-import 'package:fmr_project/api/restaurantById_api.dart';
-import 'package:fmr_project/detail_page/all_review.dart';
-import 'package:fmr_project/dialog/addReportDialog.dart';
-import 'package:fmr_project/dialog/addReviewDialog.dart';
-import 'package:fmr_project/dialog/detailMoreDialog.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:like_button/like_button.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
-import '/globals.dart' as globals;
-import 'package:http/http.dart' as http;
+// import 'dart:async';
+// import 'dart:convert';
+// import 'package:another_carousel_pro/another_carousel_pro.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:flutter/material.dart';
+// import 'package:fmr_project/api/favorite_api.dart';
+// import 'package:fmr_project/api/restaurantById_api.dart';
+// import 'package:fmr_project/detail_page/all_review.dart';
+// import 'package:fmr_project/dialog/addReportDialog.dart';
+// import 'package:fmr_project/dialog/addReviewDialog.dart';
+// import 'package:fmr_project/dialog/detailMoreDialog.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:like_button/like_button.dart';
+// import 'package:quickalert/models/quickalert_type.dart';
+// import 'package:quickalert/widgets/quickalert_dialog.dart';
+// import '/globals.dart' as globals;
+// import 'package:http/http.dart' as http;
 
-class DetailRestaurantPage_2 extends StatefulWidget {
-  final int restaurantId;
-  final int? userId;
+// class DetailRestaurantPage_2 extends StatefulWidget {
+//   final int restaurantId;
+//   final int? userId;
 
-  DetailRestaurantPage_2(this.restaurantId, this.userId, {Key? key})
-      : super(key: key);
+//   DetailRestaurantPage_2(this.restaurantId, this.userId, {Key? key})
+//       : super(key: key);
 
-  @override
-  State<DetailRestaurantPage_2> createState() => _DetailRestaurantPage_2State();
-}
+//   @override
+//   State<DetailRestaurantPage_2> createState() => _DetailRestaurantPage_2State();
+// }
 
-class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
-  bool isFavorite = false;
-  late Future<RestaurantById> futureRestaurants;
-  int current = 0;
-  late Timer timer;
+// class _DetailRestaurantPage_2State extends State<DetailRestaurantPage_2> {
+//   bool isFavorite = false;
+//   late Future<RestaurantById> futureRestaurants;
+//   int current = 0;
+//   late Timer timer;
 
-  @override
-  void setState(fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
+//   @override
+//   void setState(fn) {
+//     if (mounted) {
+//       super.setState(fn);
+//     }
+//   }
 
-  @override
-  void initState() {
-    super.initState();
-    if (mounted) {
-      futureRestaurants = getRestaurantById(widget.restaurantId);
-      timer = Timer.periodic(Duration(seconds: 60), (Timer t) {
-        if (mounted) {
-          setState(() {});
-        }
-      });
-    }
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     if (mounted) {
+//       futureRestaurants = getRestaurantById(widget.restaurantId);
+//       timer = Timer.periodic(Duration(seconds: 60), (Timer t) {
+//         if (mounted) {
+//           setState(() {});
+//         }
+//       });
+//     }
+//   }
 
-  @override
-  void dispose() {
-    timer.cancel();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     timer.cancel();
+//     super.dispose();
+//   }
 
-  Future<FavoritesModel> insertFavorite(int userId, int restaurantId) async {
-    final body = {
-      'restaurant_id': widget.restaurantId.toString(),
-      'favorite_by': widget.userId.toString(),
-    };
+//   Future<FavoritesModel> insertFavorite(int userId, int restaurantId) async {
+//     final body = {
+//       'restaurant_id': widget.restaurantId.toString(),
+//       'favorite_by': widget.userId.toString(),
+//     };
 
-    final response = await http.post(
-      Uri.parse("http://10.0.2.2:8000/api/favorites/insert"),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': "*/*",
-        'connection': 'keep-alive',
-        'Authorization': 'Bearer ' + globals.jwtToken,
-      },
-      body: jsonEncode(body),
-    );
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      return FavoritesModel.fromJson(data);
-    } else {
-      throw Exception(
-          'Failed to insert favorite. Status code: ${response.statusCode}');
-    }
-  }
+//     final response = await http.post(
+//       Uri.parse("http://10.0.2.2:8000/api/favorites/insert"),
+//       headers: <String, String>{
+//         'Content-Type': 'application/json; charset=UTF-8',
+//         'Accept': "*/*",
+//         'connection': 'keep-alive',
+//         'Authorization': 'Bearer ' + globals.jwtToken,
+//       },
+//       body: jsonEncode(body),
+//     );
+//     if (response.statusCode == 200 || response.statusCode == 201) {
+//       final Map<String, dynamic> data = jsonDecode(response.body);
+//       return FavoritesModel.fromJson(data);
+//     } else {
+//       throw Exception(
+//           'Failed to insert favorite. Status code: ${response.statusCode}');
+//     }
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: FutureBuilder(
-            future: futureRestaurants,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                final data = snapshot.data!;
-                print(data.address);
-                final List<String> imageUrls = data.imagePaths.map((path) {
-                  return 'http://10.0.2.2:8000/api/public/$path';
-                }).toList();
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: SingleChildScrollView(
+//         child: FutureBuilder(
+//             future: futureRestaurants,
+//             builder: (context, snapshot) {
+//               if (snapshot.connectionState == ConnectionState.waiting) {
+//                 return Center(
+//                   child: CircularProgressIndicator(),
+//                 );
+//               } else {
+//                 final data = snapshot.data!;
+//                 print(data.address);
+//                 final List<String> imageUrls = data.imagePaths.map((path) {
+//                   return 'http://10.0.2.2:8000/api/public/$path';
+//                 }).toList();
 
-                print(imageUrls);
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Stack(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          height: 250,
-                          child: AnotherCarousel(
-                            images: imageUrls.map((url) {
-                              return CachedNetworkImage(
-                                imageUrl: url,
-                                // width: MediaQuery.of(context).size.width,
-                                // height: 100,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) =>
-                                    Center(child: CircularProgressIndicator()),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 50),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color.fromARGB(
-                                            221, 189, 189, 189),
-                                        offset: Offset(0, 2),
-                                        blurRadius: 2,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.arrow_back_ios,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) => ReportDialogPage(
-                                          widget.userId ?? 0,
-                                          widget.restaurantId));
-                                },
-                                child: Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color.fromARGB(
-                                              221, 189, 189, 189),
-                                          offset: Offset(0, 2),
-                                          blurRadius: 2,
-                                        ),
-                                      ]),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.report,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.75,
-                                    child: Text(
-                                      data.restaurantName,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              LikeButton(
-                                isLiked: isFavorite,
-                                onTap: (bool isLiked) async {
-                                  if (widget.userId == null ||
-                                      widget.userId == 0) {
-                                    QuickAlert.show(
-                                      context: context,
-                                      type: QuickAlertType.warning,
-                                      text:
-                                          'กรุณาเข้าสู่ระบบเพื่อใช้ฟังก์ชันนี้',
-                                      confirmBtnText: 'ตกลง',
-                                      confirmBtnColor:
-                                          Color.fromARGB(255, 0, 113, 219),
-                                    );
+//                 print(imageUrls);
+//                 return Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Stack(
+//                       children: [
+//                         SizedBox(
+//                           width: double.infinity,
+//                           height: 250,
+//                           child: AnotherCarousel(
+//                             images: imageUrls.map((url) {
+//                               return CachedNetworkImage(
+//                                 imageUrl: url,
+//                                 // width: MediaQuery.of(context).size.width,
+//                                 // height: 100,
+//                                 fit: BoxFit.cover,
+//                                 placeholder: (context, url) =>
+//                                     Center(child: CircularProgressIndicator()),
+//                                 errorWidget: (context, url, error) =>
+//                                     Icon(Icons.error),
+//                               );
+//                             }).toList(),
+//                           ),
+//                         ),
+//                         Padding(
+//                           padding: EdgeInsets.symmetric(
+//                               horizontal: 20, vertical: 50),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                             children: [
+//                               InkWell(
+//                                 onTap: () {
+//                                   Navigator.pop(context);
+//                                 },
+//                                 child: Container(
+//                                   width: 50,
+//                                   height: 50,
+//                                   decoration: BoxDecoration(
+//                                     borderRadius: BorderRadius.circular(100),
+//                                     color: Colors.white,
+//                                     boxShadow: [
+//                                       BoxShadow(
+//                                         color: const Color.fromARGB(
+//                                             221, 189, 189, 189),
+//                                         offset: Offset(0, 2),
+//                                         blurRadius: 2,
+//                                       ),
+//                                     ],
+//                                   ),
+//                                   child: Center(
+//                                     child: Icon(
+//                                       Icons.arrow_back_ios,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                               InkWell(
+//                                 onTap: () {
+//                                   showDialog(
+//                                       context: context,
+//                                       builder: (context) => ReportDialogPage(
+//                                           widget.userId ?? 0,
+//                                           widget.restaurantId));
+//                                 },
+//                                 child: Container(
+//                                   width: 50,
+//                                   height: 50,
+//                                   decoration: BoxDecoration(
+//                                       borderRadius: BorderRadius.circular(100),
+//                                       color: Colors.white,
+//                                       boxShadow: [
+//                                         BoxShadow(
+//                                           color: const Color.fromARGB(
+//                                               221, 189, 189, 189),
+//                                           offset: Offset(0, 2),
+//                                           blurRadius: 2,
+//                                         ),
+//                                       ]),
+//                                   child: Center(
+//                                     child: Icon(
+//                                       Icons.report,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                     Padding(
+//                       padding: EdgeInsets.all(15),
+//                       child: Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Row(
+//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                             children: [
+//                               Row(
+//                                 children: [
+//                                   SizedBox(
+//                                     width: MediaQuery.of(context).size.width *
+//                                         0.75,
+//                                     child: Text(
+//                                       data.restaurantName,
+//                                       style: const TextStyle(
+//                                         fontSize: 20,
+//                                         fontWeight: FontWeight.bold,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                               LikeButton(
+//                                 isLiked: isFavorite,
+//                                 onTap: (bool isLiked) async {
+//                                   if (widget.userId == null ||
+//                                       widget.userId == 0) {
+//                                     QuickAlert.show(
+//                                       context: context,
+//                                       type: QuickAlertType.warning,
+//                                       text:
+//                                           'กรุณาเข้าสู่ระบบเพื่อใช้ฟังก์ชันนี้',
+//                                       confirmBtnText: 'ตกลง',
+//                                       confirmBtnColor:
+//                                           Color.fromARGB(255, 0, 113, 219),
+//                                     );
 
-                                    return Future.value(isLiked);
-                                  } else {
-                                    try {
-                                      final favorite = await insertFavorite(
-                                          widget.restaurantId, widget.userId!);
+//                                     return Future.value(isLiked);
+//                                   } else {
+//                                     try {
+//                                       final favorite = await insertFavorite(
+//                                           widget.restaurantId, widget.userId!);
 
-                                      setState(() {
-                                        isFavorite = !isLiked;
-                                      });
+//                                       setState(() {
+//                                         isFavorite = !isLiked;
+//                                       });
 
-                                      return Future.value(!isLiked);
-                                    } catch (e) {
-                                      QuickAlert.show(
-                                        context: context,
-                                        type: QuickAlertType.error,
-                                        text: 'เกิดข้อผิดพลาด: $e',
-                                        confirmBtnText: 'ตกลง',
-                                        confirmBtnColor: Colors.red,
-                                      );
-                                      return Future.value(isLiked);
-                                    }
-                                  }
-                                },
-                                size: 30,
-                                circleColor: CircleColor(
-                                  start: Colors.pink,
-                                  end: Colors.red,
-                                ),
-                                bubblesColor: BubblesColor(
-                                  dotPrimaryColor: Colors.pink,
-                                  dotSecondaryColor: Colors.red,
-                                ),
-                                likeBuilder: (bool isLiked) {
-                                  return Icon(
-                                    isLiked
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: isLiked ? Colors.pink : Colors.grey,
-                                    size: 30,
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          data.verified == 2
-                              ? Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.25,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.task_alt_outlined,
-                                        size: 16,
-                                        color: Colors.white,
-                                      ),
-                                      Text(
-                                        "Official",
-                                        style: TextStyle(color: Colors.white),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              : SizedBox(),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            data.restaurantCategory.join(" / "),
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Color.fromARGB(255, 145, 145, 145),
-                                fontSize: 16),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                    size: 18,
-                                    color: Colors.orange,
-                                  ),
-                                  Text(
-                                    data.averageRating.toString(),
-                                    style: TextStyle(
-                                      color: const Color.fromARGB(255, 0, 0, 0),
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "(${data.reviewCount} รีวิว)",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 155, 155, 155),
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
-                                    size: 16,
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    isFavorite == true
-                                        ? (data.favoritesCount! + 1).toString()
-                                        : data.favoritesCount.toString(),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 5),
-                                  child: Container(
-                                    height: 20,
-                                    width: 2,
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(255, 219, 219, 219),
-                                    ),
-                                  )),
-                              Row(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.visibility,
-                                        color: const Color.fromARGB(
-                                            255, 153, 153, 153),
-                                        size: 18,
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        "${data.viewCount.toString()} ครั้ง",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RestaurantInfoWidget(snapshot.data!),
-                          ReviewsWidget(snapshot.data!),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              }
-            }),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: InkWell(
-        onTap: () {
-          showDialog(
-              context: context,
-              builder: (context) =>
-                  AddReviewDialog(widget.restaurantId, widget.userId ?? 0));
-        },
-        child: Container(
-          height: 45,
-          width: MediaQuery.sizeOf(context).width * 0.9,
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), color: Colors.blue),
-          child: Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.reviews, size: 18, color: Colors.white),
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                "เขียนรีวิว",
-                style: TextStyle(
-                    fontSize: 18,
-                    // fontFamily: 'EkkamaiNew',white),
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ],
-          )),
-        ),
-      ),
-    );
-  }
-}
+//                                       return Future.value(!isLiked);
+//                                     } catch (e) {
+//                                       QuickAlert.show(
+//                                         context: context,
+//                                         type: QuickAlertType.error,
+//                                         text: 'เกิดข้อผิดพลาด: $e',
+//                                         confirmBtnText: 'ตกลง',
+//                                         confirmBtnColor: Colors.red,
+//                                       );
+//                                       return Future.value(isLiked);
+//                                     }
+//                                   }
+//                                 },
+//                                 size: 30,
+//                                 circleColor: CircleColor(
+//                                   start: Colors.pink,
+//                                   end: Colors.red,
+//                                 ),
+//                                 bubblesColor: BubblesColor(
+//                                   dotPrimaryColor: Colors.pink,
+//                                   dotSecondaryColor: Colors.red,
+//                                 ),
+//                                 likeBuilder: (bool isLiked) {
+//                                   return Icon(
+//                                     isLiked
+//                                         ? Icons.favorite
+//                                         : Icons.favorite_border,
+//                                     color: isLiked ? Colors.pink : Colors.grey,
+//                                     size: 30,
+//                                   );
+//                                 },
+//                               ),
+//                             ],
+//                           ),
+//                           SizedBox(
+//                             height: 5,
+//                           ),
+//                           data.verified == 2
+//                               ? Container(
+//                                   width:
+//                                       MediaQuery.of(context).size.width * 0.25,
+//                                   height: 30,
+//                                   decoration: BoxDecoration(
+//                                     color: Colors.blue,
+//                                     borderRadius: BorderRadius.circular(5),
+//                                   ),
+//                                   child: Row(
+//                                     mainAxisAlignment:
+//                                         MainAxisAlignment.spaceEvenly,
+//                                     crossAxisAlignment:
+//                                         CrossAxisAlignment.center,
+//                                     children: [
+//                                       Icon(
+//                                         Icons.task_alt_outlined,
+//                                         size: 16,
+//                                         color: Colors.white,
+//                                       ),
+//                                       Text(
+//                                         "Official",
+//                                         style: TextStyle(color: Colors.white),
+//                                       )
+//                                     ],
+//                                   ),
+//                                 )
+//                               : SizedBox(),
+//                           SizedBox(
+//                             height: 5,
+//                           ),
+//                           Text(
+//                             data.restaurantCategory.join(" / "),
+//                             style: TextStyle(
+//                                 fontWeight: FontWeight.w500,
+//                                 color: Color.fromARGB(255, 145, 145, 145),
+//                                 fontSize: 16),
+//                           ),
+//                           SizedBox(
+//                             height: 5,
+//                           ),
+//                           Row(
+//                             children: [
+//                               Row(
+//                                 mainAxisAlignment:
+//                                     MainAxisAlignment.spaceEvenly,
+//                                 children: [
+//                                   Icon(
+//                                     Icons.star,
+//                                     size: 18,
+//                                     color: Colors.orange,
+//                                   ),
+//                                   Text(
+//                                     data.averageRating.toString(),
+//                                     style: TextStyle(
+//                                       color: const Color.fromARGB(255, 0, 0, 0),
+//                                       fontSize: 16,
+//                                     ),
+//                                   ),
+//                                   SizedBox(
+//                                     width: 10,
+//                                   ),
+//                                   Text(
+//                                     "(${data.reviewCount} รีวิว)",
+//                                     style: TextStyle(
+//                                       color: Color.fromARGB(255, 155, 155, 155),
+//                                       fontSize: 16,
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                               SizedBox(
+//                                 width: 5,
+//                               ),
+//                             ],
+//                           ),
+//                           SizedBox(
+//                             height: 5,
+//                           ),
+//                           Row(
+//                             children: [
+//                               Row(
+//                                 children: [
+//                                   Icon(
+//                                     Icons.favorite,
+//                                     color: Colors.red,
+//                                     size: 16,
+//                                   ),
+//                                   SizedBox(
+//                                     width: 5,
+//                                   ),
+//                                   Text(
+//                                     isFavorite == true
+//                                         ? (data.favoritesCount! + 1).toString()
+//                                         : data.favoritesCount.toString(),
+//                                   ),
+//                                 ],
+//                               ),
+//                               Padding(
+//                                   padding: EdgeInsets.symmetric(horizontal: 5),
+//                                   child: Container(
+//                                     height: 20,
+//                                     width: 2,
+//                                     decoration: BoxDecoration(
+//                                       color: Color.fromARGB(255, 219, 219, 219),
+//                                     ),
+//                                   )),
+//                               Row(
+//                                 children: [
+//                                   Row(
+//                                     children: [
+//                                       Icon(
+//                                         Icons.visibility,
+//                                         color: const Color.fromARGB(
+//                                             255, 153, 153, 153),
+//                                         size: 18,
+//                                       ),
+//                                       SizedBox(
+//                                         width: 5,
+//                                       ),
+//                                       Text(
+//                                         "${data.viewCount.toString()} ครั้ง",
+//                                         style: TextStyle(
+//                                           fontSize: 16,
+//                                         ),
+//                                       ),
+//                                     ],
+//                                   ),
+//                                 ],
+//                               ),
+//                             ],
+//                           ),
+//                           SizedBox(
+//                             height: 10,
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                     Padding(
+//                       padding: const EdgeInsets.symmetric(horizontal: 10),
+//                       child: Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           RestaurantInfoWidget(snapshot.data!),
+//                           ReviewsWidget(snapshot.data!),
+//                         ],
+//                       ),
+//                     ),
+//                   ],
+//                 );
+//               }
+//             }),
+//       ),
+//       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+//       floatingActionButton: InkWell(
+//         onTap: () {
+//           showDialog(
+//               context: context,
+//               builder: (context) =>
+//                   AddReviewDialog(widget.restaurantId, widget.userId ?? 0));
+//         },
+//         child: Container(
+//           height: 45,
+//           width: MediaQuery.sizeOf(context).width * 0.9,
+//           margin: const EdgeInsets.all(10),
+//           decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(10), color: Colors.blue),
+//           child: Center(
+//               child: Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Icon(Icons.reviews, size: 18, color: Colors.white),
+//               SizedBox(
+//                 width: 5,
+//               ),
+//               Text(
+//                 "เขียนรีวิว",
+//                 style: TextStyle(
+//                     fontSize: 18,
+//                     // fontFamily: 'EkkamaiNew',white),
+//                     fontWeight: FontWeight.bold,
+//                     color: Colors.white),
+//               ),
+//             ],
+//           )),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-//----------------------------------------------------------------
-//----------------------------------------------------------------
-class RestaurantInfoWidget extends StatelessWidget {
-  final RestaurantById restaurantId;
+// //----------------------------------------------------------------
+// //----------------------------------------------------------------
+// class RestaurantInfoWidget extends StatelessWidget {
+//   final RestaurantById restaurantId;
 
-  RestaurantInfoWidget(this.restaurantId);
+//   RestaurantInfoWidget(this.restaurantId);
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: MediaQuery.sizeOf(context).width * 1.0,
-            height: 200,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                    color: const Color.fromARGB(221, 216, 216, 216))),
-            child: Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(restaurantId.latitude, restaurantId.longitude),
-                  zoom: 15,
-                ),
-                markers: {
-                  Marker(
-                    markerId: MarkerId('1'),
-                    position:
-                        LatLng(restaurantId.latitude, restaurantId.longitude),
-                  ),
-                },
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: SizedBox(
-              height: 40,
-              child: Text(
-                restaurantId.address,
-              ),
-            ),
-          ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: SizedBox(
-              height: 20,
-              child: InkWell(
-                onTap: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "โทร : ${restaurantId.telephone1}",
-                    ),
-                    Icon(Icons.phone),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Divider(),
-          restaurantId.telephone2 == ""
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: SizedBox(
-                    height: 20,
-                    child: InkWell(
-                      onTap: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "โทร : ${restaurantId.telephone2}",
-                          ),
-                          Icon(Icons.phone),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-              : SizedBox(),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: InkWell(
-              onTap: () {
-                showDialog(
-                    context: context, builder: (context) => MoreDialogPage());
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "ข้อมูลเพิ่มเติม",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
-                      Icon(Icons.more),
-                    ],
-                  ),
-                  Text(
-                    "เวลาเปิดปิด...",
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Divider(),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.all(8.0),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Container(
+//             width: MediaQuery.sizeOf(context).width * 1.0,
+//             height: 200,
+//             decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.circular(10),
+//                 border: Border.all(
+//                     color: const Color.fromARGB(221, 216, 216, 216))),
+//             child: Padding(
+//               padding: const EdgeInsets.all(3.0),
+//               child: GoogleMap(
+//                 initialCameraPosition: CameraPosition(
+//                   target: LatLng(restaurantId.latitude, restaurantId.longitude),
+//                   zoom: 15,
+//                 ),
+//                 markers: {
+//                   Marker(
+//                     markerId: MarkerId('1'),
+//                     position:
+//                         LatLng(restaurantId.latitude, restaurantId.longitude),
+//                   ),
+//                 },
+//               ),
+//             ),
+//           ),
+//           SizedBox(
+//             height: 10,
+//           ),
+//           Divider(),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(vertical: 5),
+//             child: SizedBox(
+//               height: 40,
+//               child: Text(
+//                 restaurantId.address,
+//               ),
+//             ),
+//           ),
+//           Divider(),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(vertical: 5),
+//             child: SizedBox(
+//               height: 20,
+//               child: InkWell(
+//                 onTap: () {},
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     Text(
+//                       "โทร : ${restaurantId.telephone1}",
+//                     ),
+//                     Icon(Icons.phone),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//           Divider(),
+//           restaurantId.telephone2 == ""
+//               ? Padding(
+//                   padding: const EdgeInsets.symmetric(vertical: 5),
+//                   child: SizedBox(
+//                     height: 20,
+//                     child: InkWell(
+//                       onTap: () {},
+//                       child: Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                         children: [
+//                           Text(
+//                             "โทร : ${restaurantId.telephone2}",
+//                           ),
+//                           Icon(Icons.phone),
+//                         ],
+//                       ),
+//                     ),
+//                   ),
+//                 )
+//               : SizedBox(),
+//           Divider(),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(vertical: 5),
+//             child: InkWell(
+//               onTap: () {
+//                 showDialog(
+//                     context: context, builder: (context) => MoreDialogPage());
+//               },
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Text(
+//                         "ข้อมูลเพิ่มเติม",
+//                         style: TextStyle(
+//                             fontSize: 16, fontWeight: FontWeight.w500),
+//                       ),
+//                       Icon(Icons.more),
+//                     ],
+//                   ),
+//                   Text(
+//                     "เวลาเปิดปิด...",
+//                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//           Divider(),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
-//----------------------------------------------------------------
-//----------------------------------------------------------------
-class ReviewsWidget extends StatelessWidget {
-  final RestaurantById restaurantId;
+// //----------------------------------------------------------------
+// //----------------------------------------------------------------
+// class ReviewsWidget extends StatelessWidget {
+//   final RestaurantById restaurantId;
 
-  ReviewsWidget(this.restaurantId);
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "${restaurantId.reviewCount.toString()} รีวิว",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                AllReivewsPage(restaurantId.id)));
-                  },
-                  child: Text(
-                    "ดูทั้งหมด",
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: 130,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          "${restaurantId.averageRating!.toInt()}",
-                          style: TextStyle(
-                            fontSize: 65,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          "จาก ${restaurantId.reviewCount.toString()} รีวิว",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: List.generate(
-                                      5,
-                                      (index) {
-                                        Color starColor;
-                                        if (index < 5) {
-                                          starColor = const Color.fromARGB(
-                                              255, 255, 165, 0);
-                                        } else {
-                                          starColor = const Color.fromARGB(
-                                              255, 199, 199, 199);
-                                        }
-                                        return Icon(
-                                          Icons.star,
-                                          color: starColor,
-                                          size: 14,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  const Text(
-                                    "0",
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: List.generate(
-                                      5,
-                                      (index) {
-                                        Color starColor;
-                                        if (index < 4) {
-                                          starColor = const Color.fromARGB(
-                                              255, 255, 165, 0);
-                                        } else {
-                                          starColor = const Color.fromARGB(
-                                              255, 199, 199, 199);
-                                        }
-                                        return Icon(
-                                          Icons.star,
-                                          color: starColor,
-                                          size: 14,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  const Text(
-                                    "3",
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: List.generate(
-                                      5,
-                                      (index) {
-                                        Color starColor;
-                                        if (index < 3) {
-                                          starColor = const Color.fromARGB(
-                                              255, 255, 165, 0);
-                                        } else {
-                                          starColor = const Color.fromARGB(
-                                              255, 199, 199, 199);
-                                        }
-                                        return Icon(
-                                          Icons.star,
-                                          color: starColor,
-                                          size: 14,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  const Text(
-                                    "0",
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: List.generate(
-                                      5,
-                                      (index) {
-                                        Color starColor;
-                                        if (index < 2) {
-                                          starColor = const Color.fromARGB(
-                                              255, 255, 165, 0);
-                                        } else {
-                                          starColor = const Color.fromARGB(
-                                              255, 199, 199, 199);
-                                        }
-                                        return Icon(
-                                          Icons.star,
-                                          color: starColor,
-                                          size: 14,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  const Text(
-                                    "0",
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: List.generate(
-                                      5,
-                                      (index) {
-                                        Color starColor;
-                                        if (index < 1) {
-                                          starColor = const Color.fromARGB(
-                                              255, 255, 165, 0);
-                                        } else {
-                                          starColor = const Color.fromARGB(
-                                              255, 199, 199, 199);
-                                        }
-                                        return Icon(
-                                          Icons.star,
-                                          color: starColor,
-                                          size: 14,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  const Text(
-                                    "0",
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Divider(),
-            restaurantId.reviewCount == 0
-                ? SizedBox()
-                : _CommentWidget(restaurantId),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AllReivewsPage(restaurantId.id)));
-              },
-              child: Container(
-                width: double.infinity,
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color.fromARGB(255, 233, 233, 233),
-                ),
-                child: Center(
-                  child: Text(
-                    "ดูทั้งหมด",
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w200,
-                        color: const Color.fromARGB(255, 0, 0, 0)),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 80,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   ReviewsWidget(this.restaurantId);
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.all(8.0),
+//       child: SingleChildScrollView(
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Text(
+//                   "${restaurantId.reviewCount.toString()} รีวิว",
+//                   style: TextStyle(
+//                     fontSize: 16,
+//                     fontWeight: FontWeight.w600,
+//                   ),
+//                 ),
+//                 InkWell(
+//                   onTap: () {
+//                     Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                             builder: (context) =>
+//                                 AllReivewsPage(restaurantId.id)));
+//                   },
+//                   child: Text(
+//                     "ดูทั้งหมด",
+//                     style: TextStyle(color: Colors.blue),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             SizedBox(
+//               height: 5,
+//             ),
+//             Container(
+//               width: MediaQuery.of(context).size.width * 0.9,
+//               height: 130,
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                 children: [
+//                   Padding(
+//                     padding: const EdgeInsets.only(top: 8.0),
+//                     child: Column(
+//                       children: [
+//                         Text(
+//                           "${restaurantId.averageRating!.toInt()}",
+//                           style: TextStyle(
+//                             fontSize: 65,
+//                             fontWeight: FontWeight.bold,
+//                           ),
+//                         ),
+//                         Text(
+//                           "จาก ${restaurantId.reviewCount.toString()} รีวิว",
+//                           style: TextStyle(
+//                             fontSize: 12,
+//                             fontWeight: FontWeight.w400,
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                   Padding(
+//                     padding: const EdgeInsets.only(top: 5.0),
+//                     child: Column(
+//                       children: [
+//                         Padding(
+//                           padding: const EdgeInsets.only(top: 15.0),
+//                           child: Column(
+//                             children: [
+//                               Row(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 crossAxisAlignment: CrossAxisAlignment.center,
+//                                 children: [
+//                                   Row(
+//                                     children: List.generate(
+//                                       5,
+//                                       (index) {
+//                                         Color starColor;
+//                                         if (index < 5) {
+//                                           starColor = const Color.fromARGB(
+//                                               255, 255, 165, 0);
+//                                         } else {
+//                                           starColor = const Color.fromARGB(
+//                                               255, 199, 199, 199);
+//                                         }
+//                                         return Icon(
+//                                           Icons.star,
+//                                           color: starColor,
+//                                           size: 14,
+//                                         );
+//                                       },
+//                                     ),
+//                                   ),
+//                                   const SizedBox(
+//                                     width: 5,
+//                                   ),
+//                                   const Text(
+//                                     "0",
+//                                     style: TextStyle(
+//                                         fontSize: 14, color: Colors.grey),
+//                                   ),
+//                                 ],
+//                               ),
+//                               Row(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 crossAxisAlignment: CrossAxisAlignment.center,
+//                                 children: [
+//                                   Row(
+//                                     children: List.generate(
+//                                       5,
+//                                       (index) {
+//                                         Color starColor;
+//                                         if (index < 4) {
+//                                           starColor = const Color.fromARGB(
+//                                               255, 255, 165, 0);
+//                                         } else {
+//                                           starColor = const Color.fromARGB(
+//                                               255, 199, 199, 199);
+//                                         }
+//                                         return Icon(
+//                                           Icons.star,
+//                                           color: starColor,
+//                                           size: 14,
+//                                         );
+//                                       },
+//                                     ),
+//                                   ),
+//                                   const SizedBox(
+//                                     width: 5,
+//                                   ),
+//                                   const Text(
+//                                     "3",
+//                                     style: TextStyle(
+//                                         fontSize: 14, color: Colors.grey),
+//                                   ),
+//                                 ],
+//                               ),
+//                               Row(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 crossAxisAlignment: CrossAxisAlignment.center,
+//                                 children: [
+//                                   Row(
+//                                     children: List.generate(
+//                                       5,
+//                                       (index) {
+//                                         Color starColor;
+//                                         if (index < 3) {
+//                                           starColor = const Color.fromARGB(
+//                                               255, 255, 165, 0);
+//                                         } else {
+//                                           starColor = const Color.fromARGB(
+//                                               255, 199, 199, 199);
+//                                         }
+//                                         return Icon(
+//                                           Icons.star,
+//                                           color: starColor,
+//                                           size: 14,
+//                                         );
+//                                       },
+//                                     ),
+//                                   ),
+//                                   const SizedBox(
+//                                     width: 5,
+//                                   ),
+//                                   const Text(
+//                                     "0",
+//                                     style: TextStyle(
+//                                         fontSize: 14, color: Colors.grey),
+//                                   ),
+//                                 ],
+//                               ),
+//                               Row(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 crossAxisAlignment: CrossAxisAlignment.center,
+//                                 children: [
+//                                   Row(
+//                                     children: List.generate(
+//                                       5,
+//                                       (index) {
+//                                         Color starColor;
+//                                         if (index < 2) {
+//                                           starColor = const Color.fromARGB(
+//                                               255, 255, 165, 0);
+//                                         } else {
+//                                           starColor = const Color.fromARGB(
+//                                               255, 199, 199, 199);
+//                                         }
+//                                         return Icon(
+//                                           Icons.star,
+//                                           color: starColor,
+//                                           size: 14,
+//                                         );
+//                                       },
+//                                     ),
+//                                   ),
+//                                   const SizedBox(
+//                                     width: 5,
+//                                   ),
+//                                   const Text(
+//                                     "0",
+//                                     style: TextStyle(
+//                                         fontSize: 14, color: Colors.grey),
+//                                   ),
+//                                 ],
+//                               ),
+//                               Row(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 crossAxisAlignment: CrossAxisAlignment.center,
+//                                 children: [
+//                                   Row(
+//                                     children: List.generate(
+//                                       5,
+//                                       (index) {
+//                                         Color starColor;
+//                                         if (index < 1) {
+//                                           starColor = const Color.fromARGB(
+//                                               255, 255, 165, 0);
+//                                         } else {
+//                                           starColor = const Color.fromARGB(
+//                                               255, 199, 199, 199);
+//                                         }
+//                                         return Icon(
+//                                           Icons.star,
+//                                           color: starColor,
+//                                           size: 14,
+//                                         );
+//                                       },
+//                                     ),
+//                                   ),
+//                                   const SizedBox(
+//                                     width: 5,
+//                                   ),
+//                                   const Text(
+//                                     "0",
+//                                     style: TextStyle(
+//                                         fontSize: 14, color: Colors.grey),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//             Divider(),
+//             restaurantId.reviewCount == 0
+//                 ? SizedBox()
+//                 : _CommentWidget(restaurantId),
+//             GestureDetector(
+//               onTap: () {
+//                 Navigator.push(
+//                     context,
+//                     MaterialPageRoute(
+//                         builder: (context) => AllReivewsPage(restaurantId.id)));
+//               },
+//               child: Container(
+//                 width: double.infinity,
+//                 height: 40,
+//                 decoration: BoxDecoration(
+//                   borderRadius: BorderRadius.circular(10),
+//                   color: Color.fromARGB(255, 233, 233, 233),
+//                 ),
+//                 child: Center(
+//                   child: Text(
+//                     "ดูทั้งหมด",
+//                     style: TextStyle(
+//                         fontSize: 16,
+//                         fontWeight: FontWeight.w200,
+//                         color: const Color.fromARGB(255, 0, 0, 0)),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//             SizedBox(
+//               height: 80,
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-//----------------------------------------------------------------
-Widget _CommentWidget(RestaurantById restaurantId) {
-  return ListView.builder(
-    shrinkWrap: true,
-    physics: NeverScrollableScrollPhysics(),
-    itemCount: 2,
-    itemBuilder: (BuildContext context, int index) {
-      if (index >= restaurantId.reviews.length) {
-        return Container();
-      }
+// //----------------------------------------------------------------
+// Widget _CommentWidget(RestaurantById restaurantId) {
+//   return ListView.builder(
+//     shrinkWrap: true,
+//     physics: NeverScrollableScrollPhysics(),
+//     itemCount: 2,
+//     itemBuilder: (BuildContext context, int index) {
+//       if (index >= restaurantId.reviews.length) {
+//         return Container();
+//       }
 
-      final review = restaurantId.reviews[index];
-      final List<String> imageUrlsReview = review.imagePathsReview!.map((path) {
-        return 'http://10.0.2.2:8000/api/public/$path';
-      }).toList();
+//       final review = restaurantId.reviews[index];
+//       final List<String> imageUrlsReview = review.imagePathsReview!.map((path) {
+//         return 'http://10.0.2.2:8000/api/public/$path';
+//       }).toList();
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 30,
-                child: Image.asset("assets/img/icons/user.png"),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                review.name,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  children: List.generate(
-                    5,
-                    (index) {
-                      Color starColor;
-                      if (index < 5) {
-                        starColor = const Color.fromARGB(255, 255, 165, 0);
-                      } else {
-                        starColor = const Color.fromARGB(255, 199, 199, 199);
-                      }
-                      return Icon(
-                        Icons.star,
-                        color: starColor,
-                        size: 14,
-                      );
-                    },
-                  ),
-                ),
-                Text(
-                  review.created_at,
-                  style: TextStyle(
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            review.title ?? "",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            review.content,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: imageUrlsReview.length,
-              itemBuilder: (context, index) {
-                if (index >= imageUrlsReview.length) {
-                  return Container();
-                }
+//       return Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Row(
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: [
+//               SizedBox(
+//                 width: 30,
+//                 child: Image.asset("assets/img/icons/user.png"),
+//               ),
+//               SizedBox(
+//                 width: 10,
+//               ),
+//               Text(
+//                 review.name,
+//                 style: TextStyle(
+//                   fontSize: 18,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ],
+//           ),
+//           Padding(
+//             padding: const EdgeInsets.symmetric(vertical: 10),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: [
+//                 Row(
+//                   children: List.generate(
+//                     5,
+//                     (index) {
+//                       Color starColor;
+//                       if (index < 5) {
+//                         starColor = const Color.fromARGB(255, 255, 165, 0);
+//                       } else {
+//                         starColor = const Color.fromARGB(255, 199, 199, 199);
+//                       }
+//                       return Icon(
+//                         Icons.star,
+//                         color: starColor,
+//                         size: 14,
+//                       );
+//                     },
+//                   ),
+//                 ),
+//                 Text(
+//                   review.created_at,
+//                   style: TextStyle(
+//                     fontSize: 12,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           Text(
+//             review.title ?? "",
+//             style: TextStyle(
+//               fontSize: 16,
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//           SizedBox(
+//             height: 10,
+//           ),
+//           Text(
+//             review.content,
+//             style: TextStyle(
+//               fontSize: 14,
+//               fontWeight: FontWeight.w500,
+//             ),
+//           ),
+//           SizedBox(
+//             height: 10,
+//           ),
+//           SizedBox(
+//             height: 100,
+//             child: ListView.builder(
+//               scrollDirection: Axis.horizontal,
+//               itemCount: imageUrlsReview.length,
+//               itemBuilder: (context, index) {
+//                 if (index >= imageUrlsReview.length) {
+//                   return Container();
+//                 }
 
-                return Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrlsReview[index],
-                    // width: MediaQuery.of(context).size.width,
-                    // height: 100,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        Center(child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                );
-              },
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Divider(),
-          SizedBox(
-            height: 10,
-          ),
-        ],
-      );
-    },
-  );
-}
+//                 return Padding(
+//                   padding: const EdgeInsets.only(right: 10.0),
+//                   child: CachedNetworkImage(
+//                     imageUrl: imageUrlsReview[index],
+//                     // width: MediaQuery.of(context).size.width,
+//                     // height: 100,
+//                     fit: BoxFit.cover,
+//                     placeholder: (context, url) =>
+//                         Center(child: CircularProgressIndicator()),
+//                     errorWidget: (context, url, error) => Icon(Icons.error),
+//                   ),
+//                 );
+//               },
+//             ),
+//           ),
+//           SizedBox(
+//             height: 10,
+//           ),
+//           Divider(),
+//           SizedBox(
+//             height: 10,
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }

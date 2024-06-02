@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/updateEmail_api.dart';
 import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
@@ -104,24 +105,25 @@ class _EditEmailPageState extends State<EditEmailPage> {
                     print("update progess");
                     UpdateEmail response = await _updateEmail();
                     print("update success");
-                    QuickAlert.show(
-                      context: context,
-                      type: QuickAlertType.success,
-                      text: 'แก้ไขข้อมูลสำเร็จ!',
-                      confirmBtnText: 'ตกลง',
-                      confirmBtnColor: Color.fromARGB(255, 0, 113, 219),
-                      onConfirmBtnTap: () {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => BottomNavigatorScreen(
-                              userId: response.id,
-                              indexPage: 3,
+                    AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.question,
+                        animType: AnimType.topSlide,
+                        showCloseIcon: true,
+                        title: "ยืนยันแก้ไขข้อมูล?",
+                        desc: "คุณต้องการอีเมลใช่หรือไม่?",
+                        btnCancelOnPress: () {},
+                        btnOkOnPress: () {
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => BottomNavigatorScreen(
+                                userId: response.id,
+                                indexPage: 3,
+                              ),
                             ),
-                          ),
-                          (Route<dynamic> route) => false,
-                        );
-                      },
-                    );
+                            (Route<dynamic> route) => false,
+                          );
+                        }).show();
                   }
                 },
                 child: Container(

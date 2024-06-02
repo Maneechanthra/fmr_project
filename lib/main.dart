@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
-import 'package:fmr_project/profile/profile_screen.dart';
 import 'package:fmr_project/splash_screen/splash_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -35,16 +32,6 @@ class MyApp extends StatelessWidget {
           fontFamily: GoogleFonts.mitr().fontFamily,
           scaffoldBackgroundColor: Colors.white,
         ),
-        // initialRoute: '/home',
-        // routes: {
-        //   '/home': (context) => RecommendedScreen(
-        //         userId: null,
-        //         // indexPage: 0,
-        //         // userId: null,
-        //       ),
-
-        //   // Add more routes as needed
-        // },
         home: SplashScreen());
   }
 }

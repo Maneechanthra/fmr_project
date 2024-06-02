@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fmr_project/add/addVerify.dart';
 import 'package:fmr_project/api/myRestaurant_api.dart';
 import 'package:fmr_project/detail_restaurant/detail_restaurant.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
 import 'package:fmr_project/update/editRestaurant.dart';
 import 'package:fmr_project/model/restaurant_info.dart';
 
@@ -73,8 +74,10 @@ class _AllRestaurantOfmeState extends State<AllRestaurantOfme> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        DetailRestaurantPage_2(
-                                            item.id, widget.userId)));
+                                        DetailRestaurantScreen(
+                                          restaurantId: item.id,
+                                          userId: widget.userId,
+                                        )));
                             print(item.id);
                           },
                           child: Container(

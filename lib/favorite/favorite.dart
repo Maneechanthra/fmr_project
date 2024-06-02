@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fmr_project/api/myFavorite_api.dart';
 import 'package:fmr_project/color/colors.dart';
 import 'package:fmr_project/detail_restaurant/detail_restaurant.dart';
+import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
 import 'package:fmr_project/login/login_new.dart';
 import 'package:fmr_project/screen/login.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -74,6 +75,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        // appBar: AppBar(
+        //   title: Text(
+        //     "ร้านอาหารที่ชื่นชอบ",
+        //     style: GoogleFonts.prompt(textStyle: TextStyle(fontSize: 18)),
+        //   ),
+        //   leading: SizedBox(),
+        //   centerTitle: true,
+        // ),
         body: widget.userId == 0
             ? _notLodin()
             : FutureBuilder<List<MyFavoriteModel>>(
@@ -164,8 +173,10 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              DetailRestaurantPage_2(
-                                                  item.id, widget.userId)));
+                                              DetailRestaurantScreen(
+                                                restaurantId: item.id,
+                                                userId: widget.userId,
+                                              )));
                                 },
                                 child: Container(
                                   width: MediaQuery.of(context).size.width * 1,
@@ -173,14 +184,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                       MediaQuery.of(context).size.height * 0.15,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    color: Color.fromARGB(101, 236, 236, 236),
-                                    // boxShadow: [
-                                    //   BoxShadow(
-                                    //     color: const Color.fromARGB(29, 0, 0, 0),
-                                    //     blurRadius: 10,
-                                    //     offset: Offset(0, 5),
-                                    //   )
-                                    // ],
+                                    color: Color.fromARGB(98, 255, 210, 159),
                                   ),
                                   child: Row(
                                     crossAxisAlignment:

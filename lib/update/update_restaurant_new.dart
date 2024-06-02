@@ -18,18 +18,19 @@ import 'package:intl/intl.dart';
 import '/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 
-class AddRestaurantScreen extends StatefulWidget {
+class UpdatedRestaurantScreen extends StatefulWidget {
   final List<Map<String, dynamic>> selectedCategories;
   final int userId;
 
-  const AddRestaurantScreen(
+  const UpdatedRestaurantScreen(
       {required this.selectedCategories, required this.userId, super.key});
 
   @override
-  State<AddRestaurantScreen> createState() => _AddRestaurantScreenState();
+  State<UpdatedRestaurantScreen> createState() =>
+      _UpdatedRestaurantScreenState();
 }
 
-class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
+class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
   final _addRestaurantForm = GlobalKey<FormState>();
   final _restaurantNameController = TextEditingController();
   final _telephone_1_Controller = TextEditingController();

@@ -27,7 +27,7 @@ class getRestaurantModelForUpdated {
   final int createdBy;
   final List<String> restaurantCategory;
   final List<String> imagePaths;
-  final List<Opening> openings;
+  final List<OpeningUpdated> OpeningUpdateds;
   final List<Review> reviews;
 
   getRestaurantModelForUpdated({
@@ -45,7 +45,7 @@ class getRestaurantModelForUpdated {
     required this.viewCount,
     required this.restaurantCategory,
     required this.imagePaths,
-    required this.openings,
+    required this.OpeningUpdateds,
     required this.reviews,
     required this.createdBy,
   });
@@ -68,14 +68,14 @@ class getRestaurantModelForUpdated {
         restaurantCategory:
             List<String>.from(json["restaurant_category"].map((x) => x)),
         imagePaths: List<String>.from(json["image_paths"].map((x) => x)),
-        openings: List<Opening>.from(
-            json["openings"].map((x) => Opening.fromJson(x))),
+        OpeningUpdateds: List<OpeningUpdated>.from(
+            json["OpeningUpdateds"].map((x) => OpeningUpdated.fromJson(x))),
         reviews:
             List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
       );
 }
 
-class Opening {
+class OpeningUpdated {
   final int id;
   final int restaurantId;
   final int dayOpen;
@@ -83,9 +83,9 @@ class Opening {
   final String timeClose;
   final String createdAt;
   final String updatedAt;
-  final dynamic deletedAt;
+  final String? deletedAt;
 
-  Opening({
+  OpeningUpdated({
     required this.id,
     required this.restaurantId,
     required this.dayOpen,
@@ -96,7 +96,7 @@ class Opening {
     required this.deletedAt,
   });
 
-  factory Opening.fromJson(Map<String, dynamic> json) => Opening(
+  factory OpeningUpdated.fromJson(Map<String, dynamic> json) => OpeningUpdated(
         id: json["id"],
         restaurantId: json["restaurant_id"],
         dayOpen: json["day_open"],
@@ -104,7 +104,7 @@ class Opening {
         timeClose: json["time_close"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
-        deletedAt: json["deleted_at"],
+        deletedAt: json["deleted_at"] ?? null,
       );
 }
 
@@ -141,42 +141,6 @@ class Review {
 
 // ----------------------------------------------------------------
 // ----------------------------------------------------------------
-// Future<getRestaurantModelForUpdated> getgetRestaurantModelForUpdated(int restaurantId) async {
-//   final response = await http.get(
-//     Uri.parse('http://10.0.2.2:8000/api/restaurant/$restaurantId'),
-//     headers: <String, String>{
-//       'Content-Type': 'application/json; charset=UTF-8',
-//       'Accept': '*/*',
-//       'connection': 'keep-alive',
-//     },
-//   ).timeout(const Duration(minutes: 5));
-
-//   if (response.statusCode == 200) {
-//     try {
-//       final data = jsonDecode(response.body);
-
-//       if (data != null &&
-//           data is Map<String, dynamic> &&
-//           data.containsKey('restaurant')) {
-//         final restaurantData = data['restaurant'];
-
-//         if (restaurantData == null) {
-//           throw Exception('Restaurant data is null');
-//         }
-//         return getRestaurantModelForUpdated.fromJson(restaurantData);
-//       } else {
-//         throw Exception(
-//             'Invalid data structure. Expected a single restaurant object');
-//       }
-//     } catch (e) {
-//       print('Error decoding JSON: $e');
-//       throw Exception('Failed to decode JSON data');
-//     }
-//   } else {
-//     throw Exception(
-//         'Failed to load data from API. HTTP status: ${response.statusCode}');
-//   }
-// }
 
 Future<getRestaurantModelForUpdated> fetchUpdatedRestaurant(
     int restaurantId) async {
@@ -189,7 +153,7 @@ Future<getRestaurantModelForUpdated> fetchUpdatedRestaurant(
     },
   );
 
-  print(response.body);
+  // print(response.body);
 
   if (response.statusCode == 200) {
     final data = json.decode(response.body);

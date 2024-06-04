@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import '/globals.dart' as globals;
+import 'dart:async';
 
 class HomePage extends StatefulWidget {
   final int? userId;
@@ -19,32 +20,31 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-
   late PageController _pageController = PageController();
   double? userLatitude;
   double? userLongitude;
   bool isLoadingLocation = true;
+  late Timer _locationUpdateTimer;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     _delayedLoadUserLocation();
-    print("userId: " + widget.userId.toString());
-    print("_pageController: " + _pageController.toString());
-    print("latitude : " + userLatitude.toString());
-    print("longtitude : " + userLongitude.toString());
-    print("jwt : " + globals.jwtToken);
+    _locationUpdateTimer = Timer.periodic(Duration(minutes: 5), (timer) {
+      _loadUserLocation();
+    });
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _locationUpdateTimer.cancel();
     super.dispose();
   }
 
   Future<void> _delayedLoadUserLocation() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 1));
     await _loadUserLocation();
   }
 

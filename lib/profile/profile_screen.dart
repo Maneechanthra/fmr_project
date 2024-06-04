@@ -528,7 +528,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 MyRestaurantScreen(
-                                                  uesrId: widget.userId ?? 0,
+                                                  userId: widget.userId ?? 0,
                                                 )));
                                   },
                                   child: Padding(

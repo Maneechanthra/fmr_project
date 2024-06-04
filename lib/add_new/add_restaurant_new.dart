@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,9 @@ import 'package:fmr_project/add/addAddress_on_map.dart';
 import 'package:fmr_project/add_new/add_opening.dart';
 import 'package:fmr_project/api/addCategory_api.dart';
 import 'package:fmr_project/api/addRestaurant_api.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
 import 'package:fmr_project/detail_page/all_typerestaurant.dart';
+import 'package:fmr_project/screen/home.dart';
 import 'package:fmr_project/type_category/all_type_category.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -756,6 +759,22 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
                     if (_addRestaurantForm.currentState!.validate()) {
                       AddRestaurantModel? restaurant = await _addRestaurant();
                       print(restaurant?.restaurant.restaurantName);
+                      AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.success,
+                          animType: AnimType.topSlide,
+                          title: "เพิ่มข้อมูลร้านอาหารสำเร็จ",
+                          desc: "คุณเพิ่มข้อมูลร้านอาหารสำเร็จ",
+                          btnOkOnPress: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => BottomNavigatorScreen(
+                                  indexPage: 0,
+                                  userId: widget.userId,
+                                ),
+                              ),
+                            );
+                          }).show();
                     }
                     print("_categoryController : " + _categoryController.text);
                     if (selectedCategories.isNotEmpty) {

@@ -1,16 +1,26 @@
+import 'dart:convert';
+
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fmr_project/add_new/add_verify_new.dart';
+import 'package:fmr_project/api/addRestaurant_api.dart';
+import 'package:fmr_project/api/deleted_restaurant/delete_restaurant_api.dart';
 import 'package:fmr_project/api/myRestaurant_api.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
 import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
 import 'package:fmr_project/update/update_restaurant_new.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '/globals.dart' as globals;
+import 'package:http/http.dart' as http;
 
 class MyRestaurantScreen extends StatefulWidget {
-  final int uesrId;
-  const MyRestaurantScreen({required this.uesrId, Key? key}) : super(key: key);
+  final int userId;
+  const MyRestaurantScreen({required this.userId, Key? key}) : super(key: key);
 
   @override
   State<MyRestaurantScreen> createState() => _MyRestaurantScreenState();
@@ -21,13 +31,35 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
 
   @override
   void initState() {
-    futureMyRestaurant = fetchMyRestaurants(widget.uesrId);
+    futureMyRestaurant = fetchMyRestaurants(widget.userId);
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  //////////////////// future  _deleteRestaurant /////////////////////
+  Future<DeletedRestaurantModel> _deleteRestaurant(int restaurantId) async {
+    final response = await http.delete(
+      Uri.parse('http://10.0.2.2:8000/api/restaurant/delete/$restaurantId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': '*/*',
+        'connection': 'keep-alive',
+        'Authorization': 'Bearer ' + globals.jwtToken,
+      },
+    );
+
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return DeletedRestaurantModel.fromJson(data);
+    } else {
+      throw Exception('Failed to load data from API');
+    }
   }
 
   @override
@@ -63,7 +95,7 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                 itemBuilder: (context, index) {
                   final MyRestaurantModel restaurant = restaurants[index];
                   final imageUrls =
-                      'http://10.0.2.2:8000/api/public/${restaurant.imagePath}';
+                      'http://10.0.2.2:8000/api/public/${restaurant.imagePaths[index]}';
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -71,7 +103,7 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                           MaterialPageRoute(
                               builder: (context) => DetailRestaurantScreen(
                                   restaurantId: restaurant.id,
-                                  userId: widget.uesrId)));
+                                  userId: widget.userId)));
                     },
                     child: Padding(
                       padding:
@@ -391,49 +423,148 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AddVerifyScreen(
-                                                    userId: widget.uesrId,
-                                                    userName: restaurant.name,
-                                                    restaurantName: restaurant
-                                                        .restaurantName,
-                                                  )));
-                                    },
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.3,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.04,
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue,
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "ยืนยันร้านอาหาร",
-                                          style: TextStyle(
-                                            color: Colors.white,
+                                  restaurant.verified == 1
+                                      ? GestureDetector(
+                                          onTap: () {},
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.3,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.04,
+                                            decoration: BoxDecoration(
+                                              color: Color.fromARGB(
+                                                  172, 142, 196, 241),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                "ส่งคำร้องแล้ว",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AddVerifyScreen(
+                                                          userId: widget.userId,
+                                                          userName: restaurant
+                                                              .userName,
+                                                          restaurantName:
+                                                              restaurant
+                                                                  .restaurantName,
+                                                          restaurantid:
+                                                              restaurant.id,
+                                                        )));
+                                          },
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.3,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.04,
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue,
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                "ยืนยันร้านอาหาร",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
                                   GestureDetector(
                                     onTap: () {
+                                      // List<RestaurantCategory>
+                                      //     selectedCategories = restaurant
+                                      //         .restaurantCategories
+                                      //         .map((category) =>
+                                      //             RestaurantCategory(
+                                      //               id: category.id,
+                                      //               categoryTitle:
+                                      //                   category.categoryTitle,
+                                      //             ))
+                                      //         .toList();
+
+                                      List<Map<String, dynamic>>
+                                          selectedCategories =
+                                          restaurant.restaurantCategories
+                                              .map((category) => {
+                                                    'id': category.id,
+                                                    'category_title':
+                                                        category.categoryTitle,
+                                                  })
+                                              .toList();
+
+                                      List<Map<String, dynamic>> openings =
+                                          restaurant.openings
+                                              .map((opening) => {
+                                                    'day_open': opening.dayOpen,
+                                                    'time_open':
+                                                        opening.timeOpen,
+                                                    'time_close':
+                                                        opening.timeClose,
+                                                  })
+                                              .toList();
+
+                                      // List<Map<String, dynamic>> openings =
+                                      //     restaurant.restaurantCategories
+                                      //         .map((category) => {
+                                      //               'day': category.id,
+                                      //               'tie':
+                                      //                   category.categoryTitle,
+                                      //             })
+                                      //         .toList();
+
+                                      // List<Map<String, dynamic>> imagePaths =
+                                      //     restaurant.imagePaths
+                                      //         .map((category) =>
+                                      //             {'path': category})
+                                      //         .toList();
+
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  UpdatedRestaurantScreen(
-                                                    userId: widget.uesrId,
-                                                    selectedCategories: [],
-                                                  )));
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              UpdatedRestaurantScreen(
+                                            restaurantId: restaurant.id,
+                                            restaurantName:
+                                                restaurant.restaurantName,
+                                            telephone1: restaurant.telephone1,
+                                            telephone2: restaurant.telephone2,
+                                            selectedCategories:
+                                                selectedCategories,
+                                            openingList: openings,
+                                            userId: widget.userId,
+                                            address: restaurant.address,
+                                            location: LatLng(
+                                              restaurant.latitude,
+                                              restaurant.longitude,
+                                            ),
+                                            images: restaurant.imagePaths,
+                                            // imageUrls: imagePaths,
+                                          ),
+                                        ),
+                                      );
                                     },
                                     child: Container(
                                       width: MediaQuery.of(context).size.width *
@@ -456,7 +587,41 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () async {
+                                      DeletedRestaurantModel item =
+                                          await _deleteRestaurant(
+                                              restaurant.id);
+
+                                      AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.question,
+                                        animType: AnimType.topSlide,
+                                        title: "ยืนยันการลบร้านอาหาร",
+                                        desc:
+                                            "คุณต้องการลบข้อมูลร้านอาหารใช่หรือไม่",
+                                        btnCancelOnPress: () {},
+                                        btnOkOnPress: () {
+                                          AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.success,
+                                            animType: AnimType.topSlide,
+                                            title: "ลบข้อมูลร้านอาหารสำเร็จ",
+                                            desc: "คุณลบข้อมูลร้านอาหารสำเร็จ",
+                                            btnOkOnPress: () {
+                                              Navigator.of(context)
+                                                  .pushReplacement(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MyRestaurantScreen(
+                                                    userId: widget.userId,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ).show();
+                                        },
+                                      ).show();
+                                    },
                                     child: Container(
                                       width: MediaQuery.of(context).size.width *
                                           0.26,

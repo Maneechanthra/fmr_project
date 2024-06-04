@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,9 @@ import 'package:fmr_project/add/addAddress_on_map.dart';
 import 'package:fmr_project/add_new/add_opening.dart';
 import 'package:fmr_project/api/addCategory_api.dart';
 import 'package:fmr_project/api/addRestaurant_api.dart';
+import 'package:fmr_project/api/verified/verified_api.dart';
 import 'package:fmr_project/detail_page/all_typerestaurant.dart';
+import 'package:fmr_project/my_restaurant/myRestaurant.dart';
 import 'package:fmr_project/type_category/all_type_category.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,11 +25,13 @@ class AddVerifyScreen extends StatefulWidget {
   final int userId;
   final String userName;
   final String restaurantName;
+  final int restaurantid;
 
   const AddVerifyScreen(
-      {required this.userName,
+      {required this.userId,
+      required this.userName,
       required this.restaurantName,
-      required this.userId,
+      required this.restaurantid,
       super.key});
 
   @override
@@ -39,8 +44,6 @@ class _AddVerifyScreenState extends State<AddVerifyScreen> {
   final _restaurantNameController = TextEditingController();
 
   final List<File> selectedImages = [];
-  String? _address;
-  LatLng? _location;
 
   Map<String, TimeOfDay?> TimeStartControllers = {};
   Map<String, TimeOfDay?> TimeEndControllers = {};
@@ -95,17 +98,15 @@ class _AddVerifyScreenState extends State<AddVerifyScreen> {
   }
 
   //////////////////// future add restaurant /////////////////////
-  Future<AddRestaurantModel?> _addRestaurant() async {
-    final Uri url = Uri.parse('http://10.0.2.2:8000/api/restaurant/insert');
+  Future<VerifiedModel> _verifiedResturant(int restaurantId) async {
+    final Uri url =
+        Uri.parse('http://10.0.2.2:8000/api/verified/insert/$restaurantId');
     var request = http.MultipartRequest('POST', url);
     request.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
-
-    request.fields['restaurant_name'] = _nameController.text;
-    request.fields['telephone_1'] = _restaurantNameController.text;
-    request.fields['created_by'] = widget.userId.toString();
-    request.fields['address'] = _address!;
-    request.fields['latitude'] = _location!.latitude.toString();
-    request.fields['longitude'] = _location!.longitude.toString();
+    // request.fields['restaurant_name'] = _nameController.text;
+    // request.fields['telephone_1'] = _restaurantNameController.text;
+    // request.fields['created_by'] = widget.userId.toString();
+    request.fields['updated_by'] = widget.userId.toString();
 
     try {
       var response = await request.send();
@@ -121,7 +122,7 @@ class _AddVerifyScreenState extends State<AddVerifyScreen> {
           await _uploadImages(restaurantId);
         }
 
-        return AddRestaurantModel.fromJson(data);
+        return VerifiedModel.fromJson(data);
       } else {
         throw Exception("Failed to add restaurant");
       }
@@ -134,7 +135,7 @@ class _AddVerifyScreenState extends State<AddVerifyScreen> {
   //////////////////// upload imaged ///////////////////
   Future<void> _uploadImages(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/restaurant/insertImages/$restaurantId');
+        'http://10.0.2.2:8000/api/verified/insertImages/$restaurantId');
 
     var imageRequest = http.MultipartRequest('POST', url);
     imageRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
@@ -362,8 +363,27 @@ class _AddVerifyScreenState extends State<AddVerifyScreen> {
                 GestureDetector(
                   onTap: () async {
                     if (_addVerify.currentState!.validate()) {
-                      AddRestaurantModel? restaurant = await _addRestaurant();
-                      print(restaurant?.restaurant.restaurantName);
+                      VerifiedModel restaurant =
+                          await _verifiedResturant(widget.restaurantid);
+                      print("register successfully");
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.success,
+                        animType: AnimType.topSlide,
+                        title: "บันทึกข้อมูลสำเร็จ",
+                        desc: "คุณได้ส่งคำร้องขอสถานะรับรองร้านอาหารแล้ว",
+                        btnOkOnPress: () {
+                          // Navigator.of(context).pushReplacement(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => MyRestaurantScreen(
+                          //       uesrId: widget.userId,
+                          //     ),
+                          //   ),
+                          //   // (Route<dynamic> route) => false,
+                          // );
+                          Navigator.pop(context);
+                        },
+                      ).show();
                     }
                   },
                   child: Container(

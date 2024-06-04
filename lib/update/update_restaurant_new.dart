@@ -1,29 +1,48 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:enefty_icons/enefty_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fmr_project/add/addAddress_on_map.dart';
 import 'package:fmr_project/add_new/add_opening.dart';
-import 'package:fmr_project/api/addCategory_api.dart';
 import 'package:fmr_project/api/addRestaurant_api.dart';
-import 'package:fmr_project/detail_page/all_typerestaurant.dart';
+import 'package:fmr_project/api/myRestaurant_api.dart';
+import 'package:fmr_project/api/update/update_restaurant_api.dart';
 import 'package:fmr_project/type_category/all_type_category.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import '/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 
 class UpdatedRestaurantScreen extends StatefulWidget {
+  final int restaurantId;
+  final String restaurantName;
+  final String telephone1;
+  final String? telephone2;
+  // final List<RestaurantCategory> selectedCategories;
+
   final List<Map<String, dynamic>> selectedCategories;
+  final List<Map<String, dynamic>> openingList;
+  final dynamic address;
+  final LatLng location;
+  // final List<Map<String, dynamic>> imageUrls;
+  final List<String> images;
   final int userId;
 
   const UpdatedRestaurantScreen(
-      {required this.selectedCategories, required this.userId, super.key});
+      {required this.restaurantId,
+      required this.restaurantName,
+      required this.telephone1,
+      required this.telephone2,
+      required this.selectedCategories,
+      required this.openingList,
+      required this.userId,
+      required this.address,
+      required this.location,
+      required this.images,
+      super.key});
 
   @override
   State<UpdatedRestaurantScreen> createState() =>
@@ -31,7 +50,8 @@ class UpdatedRestaurantScreen extends StatefulWidget {
 }
 
 class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
-  final _addRestaurantForm = GlobalKey<FormState>();
+  late Future<getRestaurantModelForUpdated> futureUpdatedRestaurant;
+  final _updatedRestaurantForm = GlobalKey<FormState>();
   final _restaurantNameController = TextEditingController();
   final _telephone_1_Controller = TextEditingController();
   final _telephone_2_Controller = TextEditingController();
@@ -40,10 +60,12 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
   final List<File> selectedImages = [];
   String? _address;
   LatLng? _location;
+  List<String?> _images = [];
 
   TextEditingController _openingController = TextEditingController();
-
   List<OpeningClosingTime> openingClosingTimes = [];
+  Map<String, TimeOfDay?> TimeStartControllers = {};
+  Map<String, TimeOfDay?> TimeEndControllers = {};
 
   final List<String> daysOfWeek = [
     'จันทร์',
@@ -55,24 +77,38 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
     'อาทิตย์'
   ];
 
-  Map<String, TimeOfDay?> TimeStartControllers = {};
-  Map<String, TimeOfDay?> TimeEndControllers = {};
-
   @override
   void initState() {
+    futureUpdatedRestaurant = fetchUpdatedRestaurant(widget.restaurantId);
     selectedCategories = widget.selectedCategories;
 
     _categoryController = TextEditingController(
       text: widget.selectedCategories
-          .map((category) => category["id"])
+          .map((category) => category['category_title'])
           .join(", "),
     );
 
-    for (var day in daysOfWeek) {
-      TimeStartControllers[day] = TimeOfDay.now();
-      TimeEndControllers[day] = TimeOfDay.now();
-    }
+    // for (var day in daysOfWeek) {
+    //   TimeStartControllers[day] = TimeOfDay.now();
+    //   TimeEndControllers[day] = TimeOfDay.now();
+    // }
 
+    _restaurantNameController.text = widget.restaurantName;
+    _telephone_1_Controller.text = widget.telephone1;
+    _telephone_2_Controller.text = widget.telephone2 ?? '';
+    _address = widget.address;
+    _location = LatLng(widget.location.latitude, widget.location.longitude);
+
+    _openingController.text = widget.openingList
+        .map((time) =>
+            "${time['day_open']}: ${time['time_open']} - ${time['time_close']}")
+        .join("\n");
+
+    _images = widget.images
+        .map((file) => 'http://10.0.2.2:8000/api/public/${file}')
+        .toList();
+
+    print(_images[1]);
     super.initState();
   }
 
@@ -118,12 +154,12 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
     }
   }
 
-  //////////////////// future add restaurant /////////////////////
-  Future<AddRestaurantModel?> _addRestaurant() async {
-    final Uri url = Uri.parse('http://10.0.2.2:8000/api/restaurant/insert');
+  Future<MyRestaurantModel> _updatedRestaurant() async {
+    final Uri url = Uri.parse('http://10.0.2.2:8000/api/restaurant/updated');
     var request = http.MultipartRequest('POST', url);
     request.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
 
+    request.fields['id'] = widget.restaurantId.toString();
     request.fields['restaurant_name'] = _restaurantNameController.text;
     request.fields['telephone_1'] = _telephone_1_Controller.text;
     request.fields['telephone_2'] = _telephone_2_Controller.text;
@@ -132,6 +168,14 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
     request.fields['latitude'] = _location!.latitude.toString();
     request.fields['longitude'] = _location!.longitude.toString();
 
+    print(_restaurantNameController.text);
+    print(_telephone_1_Controller.text);
+    print(_telephone_2_Controller.text);
+    print(widget.userId.toString());
+    print(_telephone_2_Controller.text);
+    print(_address);
+    print(_location!.longitude);
+
     try {
       var response = await request.send();
 
@@ -139,7 +183,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
         final responseJson = await response.stream.bytesToString();
         final Map<String, dynamic> data = jsonDecode(responseJson);
 
-        final restaurantId = data['restaurant_id'];
+        final restaurantId = widget.restaurantId;
         print("restaurantId of add restaurant : " + restaurantId.toString());
 
         print(
@@ -147,15 +191,20 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
 
         if (selectedCategories.isNotEmpty) {
           await _category(restaurantId);
-        }
-        if (selectedImages.isNotEmpty) {
-          await _uploadImages(restaurantId);
-        }
-        if (openingClosingTimes.isNotEmpty) {
-          await _insertTimeOpeing(restaurantId);
+        } else {
+          print("Not category selected");
         }
 
-        return AddRestaurantModel.fromJson(data);
+        if (openingClosingTimes.isEmpty) {
+          print("Not openingClosingTimes selected");
+          await _insertTimeOpeing(restaurantId);
+        } else {
+          if (openingClosingTimes.isNotEmpty) {
+            await _insertTimeOpeing(restaurantId);
+          }
+        }
+
+        return MyRestaurantModel.fromJson(data);
       } else {
         throw Exception("Failed to add restaurant");
       }
@@ -168,7 +217,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
 //////////////////// add categories ////////////////////
   Future<void> _category(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/restaurant/insertCategories/$restaurantId');
+        'http://10.0.2.2:8000/api/restaurant/updateCategories/$restaurantId');
     var categoryRequest = http.MultipartRequest('POST', url);
     categoryRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
 
@@ -194,7 +243,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
   //////////////////// upload imaged ///////////////////
   Future<void> _uploadImages(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/restaurant/insertImages/$restaurantId');
+        'http://10.0.2.2:8000/api/restaurant/updatedImages/$restaurantId');
 
     var imageRequest = http.MultipartRequest('POST', url);
     imageRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
@@ -223,7 +272,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
 
   Future<void> _insertTimeOpeing(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/restaurant/insertOpenings/$restaurantId');
+        'http://10.0.2.2:8000/api/restaurant/updatedOpening/$restaurantId');
 
     List<Map<String, dynamic>> openingsData = [];
 
@@ -300,7 +349,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: Form(
-            key: _addRestaurantForm,
+            key: _updatedRestaurantForm,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -312,8 +361,11 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                       Text(
                         "ชื่อร้าน Restaurant Name",
                         style: GoogleFonts.kanit(
-                            textStyle: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500)),
+                          textStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
                       SizedBox(
                         height: 5,
@@ -321,8 +373,9 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            color: Color.fromARGB(19, 63, 63, 63),
-                            borderRadius: BorderRadius.circular(12)),
+                          color: Color.fromARGB(19, 63, 63, 63),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: TextFormField(
                           controller: _restaurantNameController,
                           validator: (value) {
@@ -346,7 +399,9 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                             ),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
+                              horizontal: 20,
+                              vertical: 15,
+                            ),
                           ),
                         ),
                       ),
@@ -514,6 +569,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                               color: Color.fromARGB(19, 63, 63, 63),
                               borderRadius: BorderRadius.circular(12)),
                           child: TextField(
+                            style: TextStyle(color: Colors.black),
                             enabled: false,
                             controller: _categoryController,
                             keyboardType: TextInputType.text,
@@ -585,6 +641,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: TextField(
+                            style: TextStyle(color: Colors.black),
                             enabled: false,
                             controller: _openingController,
                             keyboardType: TextInputType.multiline,
@@ -623,29 +680,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                 ),
                 SizedBox(height: 5),
-                // Container(
-                //   width: MediaQuery.of(context).size.width,
-                //   height: MediaQuery.of(context).size.height * 0.25,
-                //   decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(12),
-                //     color: Colors.black12,
-                //   ),
-                //   child: ClipRRect(
-                //     borderRadius: BorderRadius.circular(12),
-                //     child: GoogleMap(
-                //       initialCameraPosition: CameraPosition(
-                //         target: _latLng,
-                //         zoom: 15,
-                //       ),
-                //       markers: {
-                //         Marker(
-                //           markerId: MarkerId('1'),
-                //           position: _latLng,
-                //         ),
-                //       },
-                //     ),
-                //   ),
-                // ),
+
                 SizedBox(
                   height: 10,
                 ),
@@ -662,7 +697,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                         mounted) {
                       setState(() {
                         _address = address["address"];
-                        // ตรวจสอบว่า address["latLng"] มีค่าหรือไม่และเป็นชนิดข้อมูลที่ถูกต้อง
+
                         _location = address["latLng"];
                       });
                     }
@@ -702,38 +737,55 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                 ),
                 Container(
                   height: 80,
-                  child: GridView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount:
-                        selectedImages.length > 0 ? selectedImages.length : 1,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                      mainAxisSpacing: 8.0,
-                      crossAxisSpacing: 8.0,
-                    ),
-                    itemBuilder: (BuildContext context, int index) {
-                      if (selectedImages.length > 0) {
-                        return Image.file(
-                          selectedImages[index],
-                          fit: BoxFit.cover,
-                        );
-                      } else {
-                        // Display a message when there are no selected images
-                        return Center(
+                  child: widget.images.isNotEmpty || selectedImages.isNotEmpty
+                      ? GridView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount:
+                              widget.images.length + selectedImages.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1,
+                            mainAxisSpacing: 8.0,
+                            crossAxisSpacing: 8.0,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index < selectedImages.length) {
+                              return Image.file(
+                                selectedImages[index],
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              int newIndex = index - selectedImages.length;
+                              if (newIndex < widget.images.length) {
+                                return Image.network(
+                                  _images[newIndex]!,
+                                  fit: BoxFit.cover,
+                                );
+                              } else {
+                                return Container();
+                              }
+                            }
+                          },
+                        )
+                      : Center(
                           child: Text(
                             "ยังไม่มีรูปภาพ",
-                            style:
-                                TextStyle(fontSize: 12, color: Colors.black45),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black45,
+                            ),
                           ),
-                        );
-                      }
-                    },
-                  ),
+                        ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: InkWell(
-                    onTap: _pickImages,
+                    onTap: () {
+                      _pickImages().then((_) {
+                        setState(() {});
+                      });
+                    },
                     child: Container(
                       width: 380,
                       height: 40,
@@ -748,15 +800,15 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                     ),
                   ),
                 ),
+
                 SizedBox(
                   height: 15,
                 ),
                 ////////////// button for save /////////////
                 GestureDetector(
                   onTap: () async {
-                    if (_addRestaurantForm.currentState!.validate()) {
-                      AddRestaurantModel? restaurant = await _addRestaurant();
-                      print(restaurant?.restaurant.restaurantName);
+                    if (_updatedRestaurantForm.currentState!.validate()) {
+                      MyRestaurantModel restaurant = await _updatedRestaurant();
                     }
                     print("_categoryController : " + _categoryController.text);
                     if (selectedCategories.isNotEmpty) {

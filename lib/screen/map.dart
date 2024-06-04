@@ -69,6 +69,9 @@ class _MapsPageState extends State<MapsPage> {
       if (mounted) {
         setState(() {
           _isLoading = true;
+          _markers.removeWhere(
+              (Marker marker) => marker.markerId.value == "userLocation");
+
           selectedMarker = Marker(
             markerId: MarkerId("userLocation"),
             position: LatLng(latitude, longitude),
@@ -100,6 +103,43 @@ class _MapsPageState extends State<MapsPage> {
       }
     });
   }
+
+  // void _updateMap(double latitude, double longitude) {
+  //   _controller.future.then((GoogleMapController controller) {
+  //     if (mounted) {
+  //       setState(() {
+  //         _isLoading = true;
+  //         selectedMarker = Marker(
+  //           markerId: MarkerId("userLocation"),
+  //           position: LatLng(latitude, longitude),
+  //           infoWindow: InfoWindow(title: "ตำแหน่งปัจจุบัน"),
+  //           icon:
+  //               BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+  //         );
+
+  //         CameraPosition cameraPosition = CameraPosition(
+  //           zoom: 13,
+  //           target: LatLng(latitude, longitude),
+  //         );
+  //         controller
+  //             .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+  //         double circleRadiusKm = circleRadius * 1000;
+  //         selectedCircle = Circle(
+  //           circleId: CircleId("selectedCircle"),
+  //           center: LatLng(latitude, longitude),
+  //           radius: circleRadiusKm,
+  //           fillColor: Colors.blue.withOpacity(0.3),
+  //           strokeColor: Colors.blue,
+  //           strokeWidth: 2,
+  //         );
+
+  //         _fetchRestaurantsInCircle(
+  //             controller, LatLng(latitude, longitude), circleRadius);
+  //       });
+  //     }
+  //   });
+  // }
 
   Future<void> _fetchRestaurantsInCircle(GoogleMapController controller,
       LatLng userLocation, double circleRadius) async {
@@ -378,22 +418,6 @@ class _MapsPageState extends State<MapsPage> {
     return restaurantsInCircle;
   }
 
-  // List<Restaurant> getRestaurantsInCircle(List<Restaurant> allRestaurants,
-  //     LatLng userLocation, double circleRadius) {
-  //   List<Restaurant> restaurantsInCircle = [];
-
-  //   for (Restaurant restaurant in allRestaurants) {
-  //     double distance = calculateDistance(userLocation.latitude,
-  //         userLocation.longitude, restaurant.latitude, restaurant.longitude);
-
-  //     if (distance <= circleRadius) {
-  //       restaurantsInCircle.add(restaurant);
-  //     }
-  //   }
-
-  //   return restaurantsInCircle;
-  // }
-
   void _openGoogleMapsForDirections(
       double destinationLatitude, double destinationLongitude) async {
     final url =
@@ -653,6 +677,49 @@ class _MapsPageState extends State<MapsPage> {
     return Scaffold(
       body: Stack(
         children: [
+          // GoogleMap(
+          //   onMapCreated: (GoogleMapController controller) {
+          //     _controller.complete(controller);
+          //     if (_isLoading) {
+          //       Center(
+          //         child: lot.Lottie.network(
+          //             'https://lottie.host/8b0df7cd-4871-46be-8ccb-e5d7a3fa0e95/EXzvBIct6n.json'),
+          //       );
+          //     }
+          //   },
+          //   onTap: (LatLng latLng) {
+          //     print("Selected Lat and Long: $latLng");
+          //     setState(() {
+          //       selectedMarker = Marker(
+          //         markerId: const MarkerId("selectedMarker"),
+          //         position: latLng,
+          //         icon: BitmapDescriptor.defaultMarkerWithHue(
+          //           BitmapDescriptor.hueRed,
+          //         ),
+          //       );
+
+          //       double circleRadiusKm = circleRadius * 1000;
+          //       selectedCircle = Circle(
+          //         circleId: const CircleId("selectedCircle"),
+          //         center: latLng,
+          //         radius: circleRadiusKm,
+          //         fillColor: Colors.blue.withOpacity(0.3),
+          //         strokeColor: Colors.blue,
+          //         strokeWidth: 2,
+          //       );
+          //     });
+          //   },
+          //   initialCameraPosition: const CameraPosition(
+          //     target: LatLng(17.27274239, 104.1265007),
+          //     zoom: 15,
+          //   ),
+          //   markers: selectedMarker != null
+          //       ? Set<Marker>.of(_markers.union(Set.of([selectedMarker!])))
+          //       : _markers,
+          //   circles: selectedCircle != null
+          //       ? Set<Circle>.of([selectedCircle!])
+          //       : Set<Circle>(),
+          // ),
           GoogleMap(
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
@@ -666,6 +733,11 @@ class _MapsPageState extends State<MapsPage> {
             onTap: (LatLng latLng) {
               print("Selected Lat and Long: $latLng");
               setState(() {
+                // ลบ Marker ปัจจุบัน
+                _markers.removeWhere(
+                    (marker) => marker.markerId.value == "userLocation");
+
+                // เพิ่ม Marker ใหม่ที่ตำแหน่งที่ระบุบนแผนที่
                 selectedMarker = Marker(
                   markerId: const MarkerId("selectedMarker"),
                   position: latLng,
@@ -683,6 +755,8 @@ class _MapsPageState extends State<MapsPage> {
                   strokeColor: Colors.blue,
                   strokeWidth: 2,
                 );
+
+                _updateMap(latLng.latitude, latLng.longitude);
               });
             },
             initialCameraPosition: const CameraPosition(
@@ -696,6 +770,7 @@ class _MapsPageState extends State<MapsPage> {
                 ? Set<Circle>.of([selectedCircle!])
                 : Set<Circle>(),
           ),
+
           _buildRestaurantList(),
           Positioned(
             top: 30.0,

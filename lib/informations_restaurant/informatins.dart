@@ -8,11 +8,13 @@ class InfomatinsScreen extends StatefulWidget {
   final List<RestaurantById> restaurants;
   final String restaurantName;
   final List<Opening> opening;
+  final List<String> category;
 
   const InfomatinsScreen({
     required this.restaurants,
     required this.restaurantName,
     required this.opening,
+    required this.category,
     Key? key,
   }) : super(key: key);
 
@@ -95,18 +97,19 @@ class _InfomatinsScreenState extends State<InfomatinsScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(color: Colors.white),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+        child: Column(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(color: Colors.white),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "เวลาเปิด-ปิดร้าน",
+                      "ประเภทร้านอาหาร",
                       style: GoogleFonts.prompt(
                         textStyle: TextStyle(
                           fontSize: 16,
@@ -114,148 +117,190 @@ class _InfomatinsScreenState extends State<InfomatinsScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Text(
-                      statusText,
-                      style: GoogleFonts.prompt(
-                        textStyle: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: statusColor,
-                        ),
-                      ),
-                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: widget.category.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Text(
+                            widget.category[index],
+                          ),
+                        );
+                      },
+                    )
                   ],
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 7, // จำนวนวันในสัปดาห์
-                  itemBuilder: (context, index) {
-                    final day = _convertDay(index + 1);
-                    final openings = _getOpeningsForDay(index + 1);
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(color: Colors.white),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "เวลาเปิด-ปิดร้าน",
+                            style: GoogleFonts.prompt(
+                              textStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text(
+                            statusText,
+                            style: GoogleFonts.prompt(
+                              textStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: statusColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: 7, // จำนวนวันในสัปดาห์
+                        itemBuilder: (context, index) {
+                          final day = _convertDay(index + 1);
+                          final openings = _getOpeningsForDay(index + 1);
 
-                    if (openings.isEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                day,
-                                textAlign: TextAlign.left,
-                                style: GoogleFonts.prompt(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                "ปิด",
-                                textAlign: TextAlign.left,
-                                style: GoogleFonts.prompt(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      // final now = DateTime.now();
-                      // final nowDay = now.weekday;
-                      // final nowTime = DateFormat.Hm().format(now);
-                      // final isOpenToday = (index + 1 == nowDay) &&
-                      //     openings.any((opening) =>
-                      //         nowTime.compareTo(opening.timeOpen) >= 0 &&
-                      //         nowTime.compareTo(opening.timeClose) <= 0);
-                      // final todayStatusText = isOpenToday ? "เปิด" : "ปิด";
-                      // final todayStatusColor =
-                      //     isOpenToday ? Colors.green : Colors.red;
-
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                day,
-                                textAlign: TextAlign.left,
-                                style: GoogleFonts.prompt(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
+                          if (openings.isEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "${openings[0].timeOpen}",
-                                    textAlign: TextAlign.left,
-                                    style: GoogleFonts.prompt(
-                                      textStyle: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      day,
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.prompt(
+                                        textStyle: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 3),
-                                    child: Text("-"),
-                                  ),
-                                  Text(
-                                    "${openings[0].timeClose}",
-                                    textAlign: TextAlign.left,
-                                    style: GoogleFonts.prompt(
-                                      textStyle: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      "ปิด",
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.prompt(
+                                        textStyle: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 10),
-                                  // Text(
-                                  //   todayStatusText,
-                                  //   style: GoogleFonts.prompt(
-                                  //     textStyle: TextStyle(
-                                  //       fontSize: 14,
-                                  //       fontWeight: FontWeight.w400,
-                                  //       color: todayStatusColor,
-                                  //     ),
-                                  //   ),
-                                  // ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                )
-              ],
-            ),
-          ),
+                            );
+                          } else {
+                            // final now = DateTime.now();
+                            // final nowDay = now.weekday;
+                            // final nowTime = DateFormat.Hm().format(now);
+                            // final isOpenToday = (index + 1 == nowDay) &&
+                            //     openings.any((opening) =>
+                            //         nowTime.compareTo(opening.timeOpen) >= 0 &&
+                            //         nowTime.compareTo(opening.timeClose) <= 0);
+                            // final todayStatusText = isOpenToday ? "เปิด" : "ปิด";
+                            // final todayStatusColor =
+                            //     isOpenToday ? Colors.green : Colors.red;
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      day,
+                                      textAlign: TextAlign.left,
+                                      style: GoogleFonts.prompt(
+                                        textStyle: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "${openings[0].timeOpen}",
+                                          textAlign: TextAlign.left,
+                                          style: GoogleFonts.prompt(
+                                            textStyle: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 3),
+                                          child: Text("-"),
+                                        ),
+                                        Text(
+                                          "${openings[0].timeClose}",
+                                          textAlign: TextAlign.left,
+                                          style: GoogleFonts.prompt(
+                                            textStyle: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        // Text(
+                                        //   todayStatusText,
+                                        //   style: GoogleFonts.prompt(
+                                        //     textStyle: TextStyle(
+                                        //       fontSize: 14,
+                                        //       fontWeight: FontWeight.w400,
+                                        //       color: todayStatusColor,
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );

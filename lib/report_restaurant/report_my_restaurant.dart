@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/reportRestaurantByuserId_api.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ReportMyRestaurant extends StatefulWidget {
   final int? userId;
@@ -32,10 +33,12 @@ class _ReportMyRestaurantState extends State<ReportMyRestaurant> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text(
-          "รายงานความไม่เหมาะสมร้านอาหารของฉัน",
-          style: TextStyle(fontSize: 18),
-        )),
+          title: Text(
+            "รายงานความไม่เหมาะสมร้านอาหารของฉัน",
+            style: TextStyle(fontSize: 16),
+          ),
+          centerTitle: true,
+        ),
         body: FutureBuilder(
           future: _futureReportRestaurantByuserId,
           builder: (context, snapshot) {
@@ -50,19 +53,26 @@ class _ReportMyRestaurantState extends State<ReportMyRestaurant> {
             } else if (snapshot.hasData) {
               final reportList = snapshot.data as ReportRestaurantByuserIdList;
               if (reportList.reports.isEmpty) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 300,
-                      child: Image.asset("assets/img/not_data.png"),
-                    ),
-                    Text(
-                      "ไม่พบข้อมูล",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 1,
+                        child: Image.asset("assets/img/not_data.png"),
+                      ),
+                      Text(
+                        "ร้านอาหารของคุณมีคุณภาพดีมาก!",
+                        style: GoogleFonts.prompt(
+                          textStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }
               return Padding(

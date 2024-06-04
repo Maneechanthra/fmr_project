@@ -683,24 +683,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Padding(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 10),
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * 1,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.055,
-                                    decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        "ลบบัญชีผู้ใช้",
-                                        style: GoogleFonts.prompt(
-                                            textStyle: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.white,
-                                        )),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      AwesomeDialog(
+                                          context: context,
+                                          dialogType: DialogType.question,
+                                          animType: AnimType.topSlide,
+                                          showCloseIcon: true,
+                                          title: "ยืนยันลบบัญชีผู้ใช้?",
+                                          desc:
+                                              "คุณต้องการลบบัญชีผู้ใช้ใช่หรือไม่?",
+                                          btnCancelOnPress: () {},
+                                          btnOkOnPress: () async {
+                                            await deleteUser(widget.userId!);
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        BottomNavigatorScreen(
+                                                          indexPage: 0,
+                                                          userId: null,
+                                                        )));
+                                          }).show();
+                                    },
+                                    child: Container(
+                                      width:
+                                          MediaQuery.of(context).size.width * 1,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.055,
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "ลบบัญชีผู้ใช้",
+                                          style: GoogleFonts.prompt(
+                                              textStyle: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white,
+                                          )),
+                                        ),
                                       ),
                                     ),
                                   ),

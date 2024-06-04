@@ -87,7 +87,7 @@ class _TypeCategoryScreenState extends State<TypeCategoryScreen> {
                         Navigator.pop(context, selectedCategories);
                       },
                       child: Container(
-                        width: MediaQuery.of(context).size.width,
+                        width: MediaQuery.of(context).size.width * 1,
                         height: MediaQuery.of(context).size.height * 0.06,
                         decoration: BoxDecoration(
                           color: Colors.orange,

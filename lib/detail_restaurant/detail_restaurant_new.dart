@@ -568,6 +568,7 @@ Widget _address(RestaurantById restaurantInfo, BuildContext context) {
                                 restaurantName: restaurantInfo.restaurantName,
                                 opening: restaurantInfo.openings,
                                 restaurants: [restaurantInfo],
+                                category: restaurantInfo.restaurantCategory,
                               )));
                 },
                 child: Container(

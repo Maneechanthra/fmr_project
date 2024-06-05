@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/getReviewByrestaurant_api.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/quickalert.dart';
@@ -173,26 +174,31 @@ Widget _allReviewsPage(BuildContext context,
                             ),
                           ),
                           Text(
-                            "วันที่: ${review.createdAt}",
+                            "เมื่อ: ${review.createdAt}",
                             style: const TextStyle(fontSize: 12),
                           ),
                         ],
                       ),
                       const SizedBox(height: 20),
-                      Text(
-                        review.title ?? "",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      review.title.toString().isEmpty || review.title == null
+                          ? SizedBox()
+                          : Text(
+                              review.title.toString(),
+                              style: GoogleFonts.prompt(
+                                textStyle: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
                       const SizedBox(height: 5),
                       Text(
                         review.content,
-                        style: const TextStyle(
+                        style: GoogleFonts.sarabun(
+                            textStyle: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                        ),
+                        )),
                       ),
                       const SizedBox(height: 10),
                       review.imagePaths != null && review.imagePaths.isNotEmpty
@@ -206,7 +212,9 @@ Widget _allReviewsPage(BuildContext context,
                                       'http://10.0.2.2:8000/api/public/${review.imagePaths[index]}';
                                   return Padding(
                                     padding: const EdgeInsets.only(right: 10.0),
-                                    child: Image.network(imageUrl),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(imageUrl)),
                                   );
                                 },
                               ),

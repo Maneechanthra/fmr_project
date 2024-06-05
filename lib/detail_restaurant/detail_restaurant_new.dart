@@ -20,12 +20,18 @@ import 'package:fmr_project/informations_restaurant/informatins.dart';
 import 'package:fmr_project/reviews/resviews.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:another_carousel_pro/another_carousel_pro.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '/globals.dart' as globals;
 import 'package:http/http.dart' as http;
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/safe_area_values.dart';
+import 'package:top_snackbar_flutter/tap_bounce_container.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class DetailRestaurantScreen extends StatefulWidget {
   final int restaurantId;
@@ -129,6 +135,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
       }),
     );
     if (response.statusCode == 200) {
+      print("ลบร้านชื่นชอบสำเร็จ");
       return null;
     } else {
       throw Exception('Failed to delete post from API');
@@ -229,6 +236,12 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                       if (snapshot.hasData) {
                                         final item =
                                             snapshot.data as ChechkFavorite;
+
+                                        int? favoriteId =
+                                            item.favorites.isNotEmpty
+                                                ? item.favorites[0]?.id
+                                                : null;
+
                                         var isFavorite = item.status == 1;
 
                                         return Container(
@@ -264,10 +277,22 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                                       await insertFavorite(
                                                           widget.restaurantId,
                                                           widget.userId!);
+                                                    } else {
+                                                      await deleteFavorite(
+                                                          favoriteId!);
+                                                      showTopSnackBar(
+                                                        Overlay.of(context),
+                                                        CustomSnackBar.success(
+                                                          message:
+                                                              "Good job, your release is successful. Have a nice day",
+                                                        ),
+                                                      );
                                                     }
 
+                                                    // Refresh UI immediately after addition/deletion
                                                     setState(() {
-                                                      isFavorite = true;
+                                                      isFavorite =
+                                                          !isFavorite; // Toggle the favorite state
                                                     });
 
                                                     return Future.value(true);
@@ -406,7 +431,10 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                         SizedBox(height: 10),
                         Row(
                           children: [
-                            Icon(EneftyIcons.location_bold),
+                            Icon(
+                              EneftyIcons.location_bold,
+                              color: Colors.blue,
+                            ),
                             SizedBox(
                               width: 10,
                             ),
@@ -458,7 +486,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                               children: [
                                 Icon(
                                   EneftyIcons.eye_bold,
-                                  color: const Color.fromARGB(255, 7, 94, 255),
+                                  color: Color.fromARGB(255, 82, 82, 82),
                                 ),
                                 Text(" ${restaurantInfo.viewCount} ครั้ง")
                               ],
@@ -742,6 +770,10 @@ Widget _information(RestaurantById restaurantInfo, BuildContext context) {
 
 // ============================= reviews ====================================
 Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
+  initializeDateFormatting("th");
+
+  final DateFormat dateFormatter = DateFormat("EEEE, dd MMMM yyyy", "th");
+  final DateFormat timeFormatter = DateFormat("HH:mm:ss", "th");
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -792,7 +824,7 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
           }
           final reviews = restaurantInfo.reviews[index];
           final List<String> imageUrlsReview = reviews.imagePathsReview != null
-              ? reviews.imagePathsReview!.map((path) {
+              ? reviews.imagePathsReview.map((path) {
                   return 'http://10.0.2.2:8000/api/public/$path';
                 }).toList()
               : [];
@@ -802,7 +834,7 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
             child: Container(
               width: MediaQuery.of(context).size.width * 1,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(10),
                 color: Color.fromARGB(255, 255, 255, 255),
                 boxShadow: [
                   BoxShadow(
@@ -824,7 +856,7 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
                           children: [
                             Image.asset(
                               "assets/img/icons/user.png",
-                              scale: 10,
+                              scale: 12,
                             ),
                             SizedBox(
                               width: 10,
@@ -839,22 +871,38 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
                                     reviews.name,
                                     style: GoogleFonts.prompt(
                                       textStyle: TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w600,
+                                        color: const Color.fromARGB(
+                                            255, 0, 84, 153),
                                       ),
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                Text(
-                                  reviews.createdAt,
-                                  style: GoogleFonts.prompt(
-                                    textStyle: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "เมื่อ: ${DateFormat("EEEE, dd MMMM yyyy", "th").format(DateTime.parse(reviews.createdAt))}",
+                                      style: GoogleFonts.prompt(
+                                        textStyle: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    // Text(
+                                    //   "เผยแพร่เมื่อ ${DateFormat("HH:mm:ss", "th").format(DateTime.parse(reviews.createdAt))}",
+                                    //   style: GoogleFonts.prompt(
+                                    //     textStyle: TextStyle(
+                                    //       fontSize: 12,
+                                    //       fontWeight: FontWeight.w400,
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -904,7 +952,7 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
                     SizedBox(
                       child: Text(
                         reviews.content.toString(),
-                        style: GoogleFonts.prompt(
+                        style: GoogleFonts.sarabun(
                           textStyle: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,

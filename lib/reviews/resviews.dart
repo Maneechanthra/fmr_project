@@ -11,7 +11,8 @@ import '/globals.dart' as globals;
 
 class ReviewsScreen extends StatefulWidget {
   final int restaurantId;
-  const ReviewsScreen(this.restaurantId, {super.key});
+  final int? userId;
+  const ReviewsScreen(this.restaurantId, {required this.userId, super.key});
 
   @override
   State<ReviewsScreen> createState() => _ReviewsScreenState();
@@ -39,15 +40,14 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
       body: _allReviewsPage(
         context,
         futureReviewByRestaurant,
+        widget.userId ?? 0,
       ),
     );
   }
 }
 
 Widget _allReviewsPage(BuildContext context,
-    Future<List<GetReviewByrestaurant>> futureReviewByRestaurant) {
-  // const String createdBy = "BossKA";
-
+    Future<List<GetReviewByrestaurant>> futureReviewByRestaurant, int userId) {
   String formatThaiDate(DateTime date) {
     return DateFormat("วันที่ d MMM yyy", "th").format(date);
   }
@@ -87,6 +87,7 @@ Widget _allReviewsPage(BuildContext context,
           itemBuilder: (BuildContext context, int index) {
             final review = reviews[index];
             final createdBy = review.name;
+            print(createdBy);
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
@@ -119,29 +120,30 @@ Widget _allReviewsPage(BuildContext context,
                               ),
                             ],
                           ),
-                          review.name == createdBy
+                          review.userId == userId
                               ? IconButton(
                                   onPressed: () async {
-                                    if (review.id != null) {
-                                      AwesomeDialog(
-                                          context: context,
-                                          dialogType: DialogType.question,
-                                          animType: AnimType.topSlide,
-                                          showCloseIcon: true,
-                                          title: "ยืนยันลบบัญชีผู้ใช้?",
-                                          desc:
-                                              "คุณต้องการลบบัญชีผู้ใช้ใช่หรือไม่?",
-                                          btnCancelOnPress: () {},
-                                          btnOkOnPress: () async {
-                                            await deleteReview(review.id);
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ReviewsScreen(review
-                                                            .restaurant_id)));
-                                          }).show();
-                                    }
+                                    AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.question,
+                                        animType: AnimType.topSlide,
+                                        showCloseIcon: true,
+                                        title: "ยืนยันลบบัญชีผู้ใช้?",
+                                        desc:
+                                            "คุณต้องการลบบัญชีผู้ใช้ใช่หรือไม่?",
+                                        btnCancelOnPress: () {},
+                                        btnOkOnPress: () async {
+                                          await deleteReview(review.id);
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ReviewsScreen(
+                                                        review.restaurant_id,
+                                                        userId: userId,
+                                                      )));
+                                        }).show();
+
                                     print("ลบแล้วนะจ๊ะ");
                                   },
                                   icon: const Icon(

@@ -26,6 +26,7 @@ import 'package:like_button/like_button.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:another_carousel_pro/another_carousel_pro.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
@@ -259,17 +260,24 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                               onTap: (bool isLiked) async {
                                                 if (widget.userId == null ||
                                                     widget.userId == 0) {
-                                                  QuickAlert.show(
-                                                    context: context,
-                                                    type:
-                                                        QuickAlertType.warning,
-                                                    text:
-                                                        'กรุณาเข้าสู่ระบบเพื่อใช้ฟังก์ชันนี้',
-                                                    confirmBtnText: 'ตกลง',
-                                                    confirmBtnColor:
-                                                        Color.fromARGB(
-                                                            255, 0, 113, 219),
-                                                  );
+                                                  AwesomeDialog(
+                                                          context: context,
+                                                          dialogType: DialogType
+                                                              .warning,
+                                                          animType:
+                                                              AnimType.topSlide,
+                                                          title:
+                                                              "ไม่สามารถใช้งานฟังก์ชันนี้ได้",
+                                                          desc:
+                                                              "กรุณาเข้าสู่ระบบเพื่อเข้าใช้ฟังก์ชันนี้!",
+                                                          btnOkColor:
+                                                              Color.fromARGB(
+                                                                  255,
+                                                                  255,
+                                                                  174,
+                                                                  0),
+                                                          btnOkOnPress: () {})
+                                                      .show();
                                                   return Future.value(isLiked);
                                                 } else {
                                                   try {
@@ -277,6 +285,13 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                                       await insertFavorite(
                                                           widget.restaurantId,
                                                           widget.userId!);
+                                                      showTopSnackBar(
+                                                        Overlay.of(context),
+                                                        CustomSnackBar.success(
+                                                          message:
+                                                              "คุณได้เพิ่มร้านอาหารที่ชื่นชอบสำเร็จ",
+                                                        ),
+                                                      );
                                                     } else {
                                                       await deleteFavorite(
                                                           favoriteId!);
@@ -284,15 +299,14 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                                         Overlay.of(context),
                                                         CustomSnackBar.success(
                                                           message:
-                                                              "Good job, your release is successful. Have a nice day",
+                                                              "คุณลบร้านอาหารที่ชื่นชอบสำเร็จ",
                                                         ),
                                                       );
                                                     }
 
-                                                    // Refresh UI immediately after addition/deletion
                                                     setState(() {
-                                                      isFavorite =
-                                                          !isFavorite; // Toggle the favorite state
+                                                      isFavorite = !isFavorite;
+                                                      // isLiked = !isLiked;
                                                     });
 
                                                     return Future.value(true);
@@ -350,13 +364,46 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => ReportDialogPage(
-                                          widget.userId ?? 0,
-                                          widget.restaurantId),
-                                    );
+                                    if (widget.userId ==
+                                        restaurantInfo.createdBy) {
+                                      AwesomeDialog(
+                                              context: context,
+                                              dialogType: DialogType.warning,
+                                              animType: AnimType.topSlide,
+                                              titleTextStyle: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                              title:
+                                                  "ไม่สามารถรายงานความไม่เหมาะสมได้",
+                                              desc:
+                                                  "ไม่สามารถรายงานความไม่เหมาะสมได้เนื่องจากคุณเป็นเจ้าของร้าน",
+                                              btnOkOnPress: () {})
+                                          .show();
+                                    } else if (widget.userId == null ||
+                                        widget.userId == 0) {
+                                      AwesomeDialog(
+                                              context: context,
+                                              dialogType: DialogType.warning,
+                                              animType: AnimType.topSlide,
+                                              title:
+                                                  "ไม่สามารถใช้งานฟังก์ชันนี้ได้",
+                                              desc:
+                                                  "กรุณาเข้าสู่ระบบเพื่อเข้าใช้ฟังก์ชันนี้!",
+                                              btnOkColor: Color.fromARGB(
+                                                  255, 255, 174, 0),
+                                              btnOkOnPress: () {})
+                                          .show();
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => ReportDialogPage(
+                                            widget.userId ?? 0,
+                                            widget.restaurantId),
+                                      );
+                                    }
                                   },
+
+                                  // },
                                   child: Container(
                                     width: 50,
                                     height: 50,
@@ -439,7 +486,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                               width: 10,
                             ),
                             SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.7,
+                              width: MediaQuery.of(context).size.width * 0.8,
                               child: Text(
                                 restaurantInfo.address,
                                 style: GoogleFonts.prompt(
@@ -509,7 +556,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                         SizedBox(height: 20),
                         _information(restaurantInfo, context),
                         SizedBox(height: 20),
-                        _reviews(restaurantInfo, context),
+                        _reviews(restaurantInfo, context, widget.userId ?? 0),
                         SizedBox(height: 60),
                       ],
                     ),
@@ -539,6 +586,16 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                     animType: AnimType.topSlide,
                     title: "ไม่สามารถเพิ่มรีวิวได้",
                     desc: "ไม่สามารถเพิ่มรีวิวได้เนื่องจากคุณเป็นเจ้าของร้าน",
+                    btnOkOnPress: () {})
+                .show();
+          } else if (widget.userId == null || widget.userId == 0) {
+            AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.warning,
+                    animType: AnimType.topSlide,
+                    title: "ไม่สามารถใช้งานฟังก์ชันนี้ได้",
+                    desc: "กรุณาเข้าสู่ระบบเพื่อเข้าใช้ฟังก์ชันนี้!",
+                    btnOkColor: Color.fromARGB(255, 255, 174, 0),
                     btnOkOnPress: () {})
                 .show();
           } else {
@@ -579,6 +636,18 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
 }
 
 Widget _address(RestaurantById restaurantInfo, BuildContext context) {
+  void _openGoogleMapsForDirections(
+      double destinationLatitude, double destinationLongitude) async {
+    final url =
+        'https://www.google.com/maps/dir/?api=1&destination=$destinationLatitude,$destinationLongitude';
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   return Column(
     children: [
       Container(
@@ -653,17 +722,23 @@ Widget _address(RestaurantById restaurantInfo, BuildContext context) {
           ),
           Column(
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.145,
-                height: MediaQuery.of(context).size.height * 0.067,
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(75, 250, 198, 42),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.directions,
-                    color: Colors.amber[800],
+              GestureDetector(
+                onTap: () {
+                  _openGoogleMapsForDirections(
+                      restaurantInfo.latitude, restaurantInfo.longitude);
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.145,
+                  height: MediaQuery.of(context).size.height * 0.067,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(75, 250, 198, 42),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.directions,
+                      color: Colors.amber[800],
+                    ),
                   ),
                 ),
               ),
@@ -769,7 +844,8 @@ Widget _information(RestaurantById restaurantInfo, BuildContext context) {
 }
 
 // ============================= reviews ====================================
-Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
+Widget _reviews(
+    RestaurantById restaurantInfo, BuildContext context, int userId) {
   initializeDateFormatting("th");
 
   final DateFormat dateFormatter = DateFormat("EEEE, dd MMMM yyyy", "th");
@@ -796,8 +872,10 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            ReviewsScreen(restaurantInfo.id)));
+                        builder: (context) => ReviewsScreen(
+                              restaurantInfo.id,
+                              userId: userId ?? 0,
+                            )));
               },
               child: Text(
                 "(${restaurantInfo.reviewCount}) ดูรีวิวทั้งหมด",

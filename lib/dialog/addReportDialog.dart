@@ -231,17 +231,27 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
                                   ReportRestaurant? report =
                                       await reportRestaurant();
                                   print("report successfully");
-                                  QuickAlert.show(
-                                    context: context,
-                                    type: QuickAlertType.success,
-                                    text: 'บันทึกข้อมูลสำเร็จ!',
-                                    confirmBtnText: 'ตกลง',
-                                    confirmBtnColor:
-                                        Color.fromARGB(255, 0, 113, 219),
-                                    onConfirmBtnTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                  );
+                                  // QuickAlert.show(
+                                  //   context: context,
+                                  //   type: QuickAlertType.success,
+                                  //   text: 'บันทึกข้อมูลสำเร็จ!',
+                                  //   confirmBtnText: 'ตกลง',
+                                  //   confirmBtnColor:
+                                  //       Color.fromARGB(255, 0, 113, 219),
+                                  //   onConfirmBtnTap: () {
+                                  //     Navigator.pop(context);
+                                  //   },
+                                  // );
+                                  AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.success,
+                                      animType: AnimType.topSlide,
+                                      title: "บันทึกข้อสำเร็จ",
+                                      desc: "รายงานความไม่เหมาะสมสำเร็จ",
+                                      btnOkColor: Colors.red,
+                                      btnOkOnPress: () {
+                                        Navigator.pop(context);
+                                      }).show();
                                   // AwesomeDialog(
                                   //   context: context,
                                   //   animType: AnimType.topSlide,

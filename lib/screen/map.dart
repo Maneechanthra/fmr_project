@@ -178,15 +178,15 @@ class _MapsPageState extends State<MapsPage> {
                           child: Stack(
                             children: [
                               Positioned(
-                                top: MediaQuery.of(context).size.width * 0.03,
-                                left: MediaQuery.of(context).size.width * 0.70,
+                                // top: MediaQuery.of(context).size.width * 0.002,
+                                left: MediaQuery.of(context).size.width * 0.75,
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.pop(context);
                                   },
                                   child: Icon(
                                     Icons.close,
-                                    size: 40,
+                                    size: 30,
                                     color: Colors.red,
                                   ),
                                 ),
@@ -262,44 +262,48 @@ class _MapsPageState extends State<MapsPage> {
                                       ],
                                     ),
                                     SizedBox(height: 7),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: Colors.red,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                restaurant.averageRating
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  fontSize: 14,
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 3),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 50,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: Colors.red,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  restaurant.averageRating!
+                                                      .toStringAsFixed(1),
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                Icon(
+                                                  Icons.star,
+                                                  size: 14,
                                                   color: Colors.white,
                                                 ),
-                                              ),
-                                              Icon(
-                                                Icons.star,
-                                                size: 14,
-                                                color: Colors.white,
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          "${restaurant.reviewCount} รีวิว",
-                                          style: TextStyle(
-                                            color: const Color.fromARGB(
-                                                137, 77, 77, 77),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            "${restaurant.reviewCount} รีวิว",
+                                            style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  137, 77, 77, 77),
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                     SizedBox(height: 10),
                                     Text(

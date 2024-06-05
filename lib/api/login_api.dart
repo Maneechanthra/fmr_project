@@ -7,7 +7,7 @@ class LoginResponse {
   final int userId;
   final String jwtToken;
   final String name;
-  final String message;
+  final String? message;
   final int status;
 
   LoginResponse({
@@ -24,7 +24,7 @@ class LoginResponse {
         userId: json["userId"],
         jwtToken: json["jwt_token"],
         name: json["name"],
-        message: json["message"],
+        message: json["message"] ?? "",
         status: json["status"],
       );
 

@@ -200,11 +200,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               color:
                                                   Color.fromARGB(255, 94, 0, 0),
                                               borderRadius:
-                                                  BorderRadius.circular(10),
+                                                  BorderRadius.circular(0),
                                             ),
                                             child: ClipRRect(
                                               borderRadius:
-                                                  BorderRadius.circular(10),
+                                                  BorderRadius.circular(0),
                                               child: Image.asset(
                                                 "assets/img/bg_2.png",
                                                 fit: BoxFit.cover,
@@ -578,7 +578,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                ChangePasswordPage()));
+                                                ChangePasswordPage(
+                                                  userId: widget.userId!,
+                                                )));
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(

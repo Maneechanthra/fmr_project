@@ -369,7 +369,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           ),
                                         ),
                                         Text(
-                                          "12",
+                                          users.restaurant_count.toString(),
                                           style: GoogleFonts.prompt(
                                             textStyle: TextStyle(
                                                 color: Color.fromARGB(
@@ -402,7 +402,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           ),
                                         ),
                                         Text(
-                                          "12",
+                                          users.favorites_count.toString(),
                                           style: GoogleFonts.prompt(
                                             textStyle: TextStyle(
                                                 color: Color.fromARGB(

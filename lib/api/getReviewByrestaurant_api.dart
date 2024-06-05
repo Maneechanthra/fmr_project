@@ -8,6 +8,8 @@ class GetReviewByrestaurant {
   final double rating;
   final String name;
   final String createdAt;
+  final int userId;
+  final int restaurant_id;
   final List<String> imagePaths;
 
   GetReviewByrestaurant({
@@ -17,6 +19,8 @@ class GetReviewByrestaurant {
     required this.rating,
     required this.name,
     required this.createdAt,
+    required this.userId,
+    required this.restaurant_id,
     required this.imagePaths,
   });
 
@@ -28,6 +32,8 @@ class GetReviewByrestaurant {
         rating: json["rating"]?.toDouble(),
         name: json["name"],
         createdAt: json["created_at"],
+        userId: json["userId"],
+        restaurant_id: json["restaurant_id"],
         imagePaths: List<String>.from(json["image_paths"].map((x) => x)),
       );
 }

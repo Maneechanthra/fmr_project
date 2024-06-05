@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:enefty_icons/enefty_icons.dart';
@@ -12,9 +13,11 @@ import 'package:fmr_project/api/favorites/checkFavorite_api.dart';
 import 'package:fmr_project/api/restaurantById_api.dart';
 import 'package:fmr_project/api/views/view_api.dart';
 import 'package:fmr_project/color/colors.dart';
+import 'package:fmr_project/detail_page/all_review.dart';
 import 'package:fmr_project/dialog/addReportDialog.dart';
 import 'package:fmr_project/dialog/addReviewDialog.dart';
 import 'package:fmr_project/informations_restaurant/informatins.dart';
+import 'package:fmr_project/reviews/resviews.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:like_button/like_button.dart';
@@ -41,6 +44,7 @@ class DetailRestaurantScreen extends StatefulWidget {
 class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
   late int createdBy;
   late bool isFavorite = false;
+  bool isUpdating = false;
   late Future<RestaurantById> futureRestaurants;
   late Future<ChechkFavorite> futureCheckFavorite;
 
@@ -107,6 +111,27 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
     } else {
       throw Exception(
           'Failed to insert favorite. Status code: ${response.statusCode}');
+    }
+  }
+
+  //delete favorite
+  Future<void> deleteFavorite(int favoriteId) async {
+    final response = await http.delete(
+      Uri.parse('http://10.0.2.2:8000/api/favorites/delete/$favoriteId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': '*/*',
+        'connection': 'keep-alive',
+        'Authorization': 'Bearer ' + globals.jwtToken,
+      },
+      body: json.encode({
+        'id': favoriteId,
+      }),
+    );
+    if (response.statusCode == 200) {
+      return null;
+    } else {
+      throw Exception('Failed to delete post from API');
     }
   }
 
@@ -205,6 +230,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                         final item =
                                             snapshot.data as ChechkFavorite;
                                         var isFavorite = item.status == 1;
+
                                         return Container(
                                           width: 50,
                                           height: 50,
@@ -234,19 +260,17 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                                   return Future.value(isLiked);
                                                 } else {
                                                   try {
-                                                    final favorite =
-                                                        await insertFavorite(
-                                                            widget.restaurantId,
-                                                            widget.userId!);
+                                                    if (!isFavorite) {
+                                                      await insertFavorite(
+                                                          widget.restaurantId,
+                                                          widget.userId!);
+                                                    }
 
                                                     setState(() {
-                                                      isFavorite =
-                                                          item.status == 1
-                                                              ? !isLiked
-                                                              : true;
+                                                      isFavorite = true;
                                                     });
-                                                    return Future.value(
-                                                        isFavorite);
+
+                                                    return Future.value(true);
                                                   } catch (e) {
                                                     QuickAlert.show(
                                                       context: context,
@@ -735,13 +759,22 @@ Widget _reviews(RestaurantById restaurantInfo, BuildContext context) {
                 ),
               ),
             ),
-            Text(
-              "(${restaurantInfo.reviewCount}) ดูรีวิวทั้งหมด",
-              style: GoogleFonts.prompt(
-                textStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Color.fromARGB(255, 0, 183, 255),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ReviewsScreen(restaurantInfo.id)));
+              },
+              child: Text(
+                "(${restaurantInfo.reviewCount}) ดูรีวิวทั้งหมด",
+                style: GoogleFonts.prompt(
+                  textStyle: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Color.fromARGB(255, 0, 183, 255),
+                  ),
                 ),
               ),
             ),

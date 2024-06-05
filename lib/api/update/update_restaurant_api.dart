@@ -27,7 +27,7 @@ class getRestaurantModelForUpdated {
   final int createdBy;
   final List<String> restaurantCategory;
   final List<String> imagePaths;
-  final List<OpeningUpdated> OpeningUpdateds;
+  // final List<OpeningUpdated> OpeningUpdateds;
   final List<Review> reviews;
 
   getRestaurantModelForUpdated({
@@ -45,7 +45,7 @@ class getRestaurantModelForUpdated {
     required this.viewCount,
     required this.restaurantCategory,
     required this.imagePaths,
-    required this.OpeningUpdateds,
+    // required this.OpeningUpdateds,
     required this.reviews,
     required this.createdBy,
   });
@@ -68,45 +68,45 @@ class getRestaurantModelForUpdated {
         restaurantCategory:
             List<String>.from(json["restaurant_category"].map((x) => x)),
         imagePaths: List<String>.from(json["image_paths"].map((x) => x)),
-        OpeningUpdateds: List<OpeningUpdated>.from(
-            json["OpeningUpdateds"].map((x) => OpeningUpdated.fromJson(x))),
+        // OpeningUpdateds: List<OpeningUpdated>.from(
+        //     json["OpeningUpdateds"].map((x) => OpeningUpdated.fromJson(x))),
         reviews:
             List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
       );
 }
 
-class OpeningUpdated {
-  final int id;
-  final int restaurantId;
-  final int dayOpen;
-  final String timeOpen;
-  final String timeClose;
-  final String createdAt;
-  final String updatedAt;
-  final String? deletedAt;
+// class OpeningUpdated {
+//   final int id;
+//   final int restaurantId;
+//   final int dayOpen;
+//   final String timeOpen;
+//   final String timeClose;
+//   final String createdAt;
+//   final String updatedAt;
+//   final String deletedAt;
 
-  OpeningUpdated({
-    required this.id,
-    required this.restaurantId,
-    required this.dayOpen,
-    required this.timeOpen,
-    required this.timeClose,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.deletedAt,
-  });
+//   OpeningUpdated({
+//     required this.id,
+//     required this.restaurantId,
+//     required this.dayOpen,
+//     required this.timeOpen,
+//     required this.timeClose,
+//     required this.createdAt,
+//     required this.updatedAt,
+//     required this.deletedAt,
+//   });
 
-  factory OpeningUpdated.fromJson(Map<String, dynamic> json) => OpeningUpdated(
-        id: json["id"],
-        restaurantId: json["restaurant_id"],
-        dayOpen: json["day_open"],
-        timeOpen: json["time_open"],
-        timeClose: json["time_close"],
-        createdAt: json["created_at"],
-        updatedAt: json["updated_at"],
-        deletedAt: json["deleted_at"] ?? null,
-      );
-}
+//   factory OpeningUpdated.fromJson(Map<String, dynamic> json) => OpeningUpdated(
+//         id: json["id"],
+//         restaurantId: json["restaurant_id"],
+//         dayOpen: json["day_open"],
+//         timeOpen: json["time_open"],
+//         timeClose: json["time_close"],
+//         createdAt: json["created_at"],
+//         updatedAt: json["updated_at"],
+//         deletedAt: json["deleted_at"],
+//       );
+// }
 
 class Review {
   final dynamic title;

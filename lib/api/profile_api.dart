@@ -9,6 +9,8 @@ class ProfileModel {
   final dynamic emailVerifiedAt;
   final String createdAt;
   final String updatedAt;
+  final int restaurant_count;
+  final int favorites_count;
 
   ProfileModel({
     required this.id,
@@ -17,6 +19,8 @@ class ProfileModel {
     required this.emailVerifiedAt,
     required this.createdAt,
     required this.updatedAt,
+    required this.restaurant_count,
+    required this.favorites_count,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
@@ -26,6 +30,8 @@ class ProfileModel {
         emailVerifiedAt: json["email_verified_at"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
+        restaurant_count: json["restaurant_count"],
+        favorites_count: json["favorites_count"],
       );
 }
 

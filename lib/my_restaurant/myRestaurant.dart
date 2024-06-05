@@ -87,7 +87,25 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
             final List<MyRestaurantModel>? restaurants = snapshot.data;
             if (restaurants == null || restaurants.isEmpty) {
               return Center(
-                child: Text('No restaurants found.'),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: Image.asset("assets/img/not_data.png"),
+                    ),
+                    Text(
+                      "คุณยังไม่ได้เพิ่มร้านอาหารของตัวเองเลย",
+                      style: GoogleFonts.prompt(
+                        textStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               );
             } else {
               return ListView.builder(
@@ -96,6 +114,8 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                   final MyRestaurantModel restaurant = restaurants[index];
                   final imageUrls =
                       'http://10.0.2.2:8000/api/public/${restaurant.imagePaths[index]}';
+
+                  print("จำนวนร้านอาหาร" + restaurants.length.toString());
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -561,7 +581,6 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                               restaurant.longitude,
                                             ),
                                             images: restaurant.imagePaths,
-                                            // imageUrls: imagePaths,
                                           ),
                                         ),
                                       );

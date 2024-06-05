@@ -54,6 +54,24 @@ class _LoginScreenState extends State<LoginScreen> {
     print(response.body);
     print(response.statusCode);
 
+    if (response.statusCode > 200) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.topSlide,
+        title: "ไม่พบบัญชีผู้ใช้",
+        desc: "กรุณาสร้างบัญชีใหม่",
+        btnOkColor: Colors.red,
+        btnOkOnPress: () {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => RegsiterScreen(),
+            ),
+          );
+        },
+      ).show();
+    }
+
     if (response.statusCode == 200) {
       final Map<String, dynamic>? data = jsonDecode(response.body);
 
@@ -246,30 +264,50 @@ class _LoginScreenState extends State<LoginScreen> {
                                     if (_loginForm.currentState!.validate()) {
                                       LoginResponse response =
                                           await verifyLogin();
-                                      AwesomeDialog(
-                                          context: context,
-                                          dialogType: DialogType.success,
-                                          animType: AnimType.topSlide,
-                                          title: "เข้าสู่ระบบสำเร็จ",
-                                          desc:
-                                              "ยินดีต้อนรับคุณ ${response.name}",
-                                          btnOkOnPress: () {
-                                            Navigator.of(context)
-                                                .pushAndRemoveUntil(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    BottomNavigatorScreen(
-                                                  indexPage: 0,
-                                                  userId: response.userId,
+
+                                      if (response.status == 0) {
+                                        AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.error,
+                                            animType: AnimType.topSlide,
+                                            title: "ไม่พบบัญชีผู้ใช้",
+                                            desc:
+                                                "ไม่พบบัญชีผู้ใช้ กรุณาสร้างบัญชีใหม่",
+                                            btnOkOnPress: () {
+                                              Navigator.of(context)
+                                                  .pushReplacement(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      RegsiterScreen(),
                                                 ),
-                                              ),
-                                              (Route<dynamic> route) => false,
-                                            );
-                                          }).show();
-                                      globals.isLoggedIn = true;
-                                      globals.jwtToken = response.jwtToken;
-                                      print(response.userId);
-                                      print(response.jwtToken);
+                                              );
+                                            }).show();
+                                      } else {
+                                        AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.success,
+                                            animType: AnimType.topSlide,
+                                            title: "เข้าสู่ระบบสำเร็จ",
+                                            desc:
+                                                "ยินดีต้อนรับคุณ ${response.name}",
+                                            btnOkOnPress: () {
+                                              Navigator.of(context)
+                                                  .pushAndRemoveUntil(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      BottomNavigatorScreen(
+                                                    indexPage: 0,
+                                                    userId: response.userId,
+                                                  ),
+                                                ),
+                                                (Route<dynamic> route) => false,
+                                              );
+                                            }).show();
+                                        globals.isLoggedIn = true;
+                                        globals.jwtToken = response.jwtToken;
+                                        print(response.userId);
+                                        print(response.jwtToken);
+                                      }
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(

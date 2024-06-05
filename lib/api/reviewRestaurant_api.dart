@@ -103,19 +103,19 @@ import 'dart:convert';
 class ReviewRestaurant {
   final Review review;
   final int reviewId;
-  final List<File> images;
+  // final List<File> images;
 
   ReviewRestaurant({
     required this.review,
     required this.reviewId,
-    required this.images,
+    // required this.images,
   });
 
   factory ReviewRestaurant.fromJson(Map<String, dynamic> json) =>
       ReviewRestaurant(
         review: Review.fromJson(json["review"]),
         reviewId: json["review_id"],
-        images: List<File>.from(json["images"].map((x) => x)),
+        // images: List<File>.from(json["images"].map((x) => x)),
       );
 }
 
@@ -144,13 +144,11 @@ class Review {
         restaurantId: json["restaurant_id"] ?? "",
         title: json["title"] ?? "",
         content: json["content"],
-        // Check if 'rating' is a double or a string, then convert appropriately
         rating: json["rating"] is double
             ? json["rating"]
             : (json["rating"] is String
-                ? double.tryParse(
-                    json["rating"]) // Try parsing to double safely
-                : null), // If it's neither, set it to null
+                ? double.tryParse(json["rating"])
+                : null),
         reviewBy: json["review_by"],
         updatedAt: json["updated_at"],
         createdAt: json["created_at"],

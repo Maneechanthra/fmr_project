@@ -25,7 +25,7 @@ class UpdatedRestaurantScreen extends StatefulWidget {
 
   final List<Map<String, dynamic>> selectedCategories;
   final List<Map<String, dynamic>> openingList;
-  final dynamic address;
+  final String address;
   final LatLng location;
   // final List<Map<String, dynamic>> imageUrls;
   final List<String> images;
@@ -88,18 +88,17 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
           .join(", "),
     );
 
-    // for (var day in daysOfWeek) {
-    //   TimeStartControllers[day] = TimeOfDay.now();
-    //   TimeEndControllers[day] = TimeOfDay.now();
-    // }
-
     _restaurantNameController.text = widget.restaurantName;
     _telephone_1_Controller.text = widget.telephone1;
     _telephone_2_Controller.text = widget.telephone2 ?? '';
     _address = widget.address;
-    _location = LatLng(widget.location.latitude, widget.location.longitude);
 
-    _openingController.text = widget.openingList
+    _location = LatLng(
+      double.parse(widget.location.latitude.toString()),
+      double.parse(widget.location.longitude.toString()),
+    );
+
+    _openingController.text = (widget.openingList ?? [])
         .map((time) =>
             "${time['day_open']}: ${time['time_open']} - ${time['time_close']}")
         .join("\n");
@@ -108,7 +107,13 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
         .map((file) => 'http://10.0.2.2:8000/api/public/${file}')
         .toList();
 
-    print(_images[1]);
+    print(_address);
+    print(_location);
+    print(_restaurantNameController.text);
+    print(_telephone_1_Controller.text);
+    print(_telephone_2_Controller.text);
+    print(_openingController.text);
+
     super.initState();
   }
 
@@ -193,6 +198,9 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
           await _category(restaurantId);
         } else {
           print("Not category selected");
+        }
+        if (selectedImages.isNotEmpty) {
+          await _uploadImages(restaurantId);
         }
 
         if (openingClosingTimes.isEmpty) {
@@ -338,7 +346,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "เพิ่มข้อมูลร้านอาหาร",
+          "แก้ไขข้อมูลร้านอาหาร",
           style: GoogleFonts.prompt(
             textStyle: TextStyle(fontSize: 16),
           ),

@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fmr_project/add/addReviewPage.dart';
 import 'package:fmr_project/api/reviewRestaurant_api.dart';
 import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
+import 'package:fmr_project/login/login_new.dart';
 import 'package:fmr_project/screen/login.dart';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/models/quickalert_type.dart';
@@ -374,45 +376,45 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                                 onTap: () async {
                                   if (widget.userId == null ||
                                       widget.userId == 0) {
-                                    QuickAlert.show(
-                                      context: context,
-                                      type: QuickAlertType.warning,
-                                      text: 'ยังไม่ได้เข้าสู่ระบบ!',
-                                      confirmBtnText: 'ตกลง',
-                                      confirmBtnColor:
-                                          Color.fromARGB(255, 0, 113, 219),
-                                      onConfirmBtnTap: () {
-                                        Navigator.push(
-                                            context,
+                                    AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.error,
+                                        animType: AnimType.topSlide,
+                                        title: "ไม่พบบัญชีผู้ใช้",
+                                        desc:
+                                            "ไม่พบบัญชีผู้ใช้ กรุณาสร้างบัญชีใหม่",
+                                        btnOkOnPress: () {
+                                          Navigator.of(context).pushReplacement(
                                             MaterialPageRoute(
-                                                builder: (contxt) =>
-                                                    LoginPage()));
-                                      },
-                                    );
+                                              builder: (context) =>
+                                                  LoginScreen(),
+                                            ),
+                                          );
+                                        }).show();
                                   } else {
                                     if (_reviewForm.currentState!.validate()) {
                                       print("progress");
                                       ReviewRestaurant? review =
                                           await _reviewRestaurant();
-                                      QuickAlert.show(
-                                        context: context,
-                                        type: QuickAlertType.success,
-                                        text: 'บันทึกข้อมูลสำเร็จ!',
-                                        confirmBtnText: 'ตกลง',
-                                        confirmBtnColor:
-                                            Color.fromARGB(255, 0, 113, 219),
-                                        onConfirmBtnTap: () {
-                                          Navigator.pushReplacement(
-                                              context,
+                                      AwesomeDialog(
+                                          context: context,
+                                          dialogType: DialogType.success,
+                                          animType: AnimType.topSlide,
+                                          title: "บันทึกข้อมูลสำเร็จ",
+                                          desc: "คุณเพิ่มรีวิวร้านอาหารสำเร็จ",
+                                          btnOkOnPress: () {
+                                            Navigator.of(context)
+                                                .pushReplacement(
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      DetailRestaurantScreen(
-                                                          restaurantId: widget
-                                                              .restaurantId,
-                                                          userId:
-                                                              widget.userId)));
-                                        },
-                                      );
+                                                builder: (context) =>
+                                                    DetailRestaurantScreen(
+                                                  restaurantId:
+                                                      widget.restaurantId,
+                                                  userId: widget.userId,
+                                                ),
+                                              ),
+                                            );
+                                          }).show();
                                     }
 
                                     print("review successfuly");

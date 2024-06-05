@@ -125,19 +125,26 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     final myFavorites = snapshot.data as List<MyFavoriteModel>;
                     // final List<MyFavoriteModel> myFavorites = snapshot.data ?? [];
                     if (myFavorites.isEmpty) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 300,
-                            child: Image.asset("assets/img/not_data.png"),
-                          ),
-                          Text(
-                            "ไม่พบข้อมูล",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: Image.asset("assets/img/not_data.png"),
+                            ),
+                            Text(
+                              "ไม่มีร้านที่คุณชื่นชอบเลยเหรอ?",
+                              style: GoogleFonts.prompt(
+                                textStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     } else {
                       return

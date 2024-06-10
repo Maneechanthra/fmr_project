@@ -23,6 +23,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
+import 'package:lottie/lottie.dart' as lot;
 import 'package:quickalert/quickalert.dart';
 import 'package:another_carousel_pro/another_carousel_pro.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -33,6 +34,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/safe_area_values.dart';
 import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 
 class DetailRestaurantScreen extends StatefulWidget {
   final int restaurantId;
@@ -151,7 +153,8 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: lot.Lottie.network(
+                  'https://lottie.host/6dbef5a4-c62a-4005-9782-a9e3026d4c19/G8MECWroXw.json'),
             );
           } else if (snapshot.hasError) {
             return Center(
@@ -285,23 +288,62 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                                                       await insertFavorite(
                                                           widget.restaurantId,
                                                           widget.userId!);
-                                                      showTopSnackBar(
-                                                        Overlay.of(context),
-                                                        CustomSnackBar.success(
-                                                          message:
-                                                              "คุณได้เพิ่มร้านอาหารที่ชื่นชอบสำเร็จ",
-                                                        ),
-                                                      );
+                                                      AnimatedSnackBar.material(
+                                                        'เพิ่มร้านอาหารที่ชื่นชอบแล้ว',
+                                                        type:
+                                                            AnimatedSnackBarType
+                                                                .success,
+                                                        mobileSnackBarPosition:
+                                                            MobileSnackBarPosition
+                                                                .bottom,
+                                                        desktopSnackBarPosition:
+                                                            DesktopSnackBarPosition
+                                                                .topRight,
+                                                      ).show(context);
+
+                                                      // AnimatedSnackBar
+                                                      //     .rectangle(
+                                                      //   'Success',
+                                                      //   'Add Favorite Success',
+                                                      //   type:
+                                                      //       AnimatedSnackBarType
+                                                      //           .success,
+                                                      //   brightness:
+                                                      //       Brightness.light,
+                                                      // ).show(
+                                                      //   context,
+                                                      // );
+                                                      // showTopSnackBar(
+                                                      //   Overlay.of(context),
+                                                      //   CustomSnackBar.success(
+                                                      //     message:
+                                                      //         "คุณได้เพิ่มร้านอาหารที่ชื่นชอบสำเร็จ",
+                                                      //   ),
+                                                      // );
                                                     } else {
                                                       await deleteFavorite(
                                                           favoriteId!);
-                                                      showTopSnackBar(
-                                                        Overlay.of(context),
-                                                        CustomSnackBar.success(
-                                                          message:
-                                                              "คุณลบร้านอาหารที่ชื่นชอบสำเร็จ",
-                                                        ),
-                                                      );
+
+                                                      AnimatedSnackBar.material(
+                                                        'ลบร้านอาหารที่ชื่นชอบแล้ว!',
+                                                        type:
+                                                            AnimatedSnackBarType
+                                                                .success,
+                                                        mobileSnackBarPosition:
+                                                            MobileSnackBarPosition
+                                                                .bottom,
+                                                        desktopSnackBarPosition:
+                                                            DesktopSnackBarPosition
+                                                                .topRight,
+                                                      ).show(context);
+
+                                                      // showTopSnackBar(
+                                                      //   Overlay.of(context),
+                                                      //   CustomSnackBar.success(
+                                                      //     message:
+                                                      //         "คุณลบร้านอาหารที่ชื่นชอบสำเร็จ",
+                                                      //   ),
+                                                      // );
                                                     }
 
                                                     setState(() {

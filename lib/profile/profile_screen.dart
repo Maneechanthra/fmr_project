@@ -21,6 +21,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/quickalert.dart';
 import '/globals.dart' as globals;
+import 'package:lottie/lottie.dart' as lot;
 
 class ProfileScreen extends StatefulWidget {
   final int? userId;
@@ -171,8 +172,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
-                        child: CircularProgressIndicator(),
-                      );
+                          child: lot.Lottie.network(
+                              'https://lottie.host/6dbef5a4-c62a-4005-9782-a9e3026d4c19/G8MECWroXw.json'));
                     } else {
                       final users = snapshot.data!;
                       return Column(

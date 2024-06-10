@@ -6,6 +6,7 @@ import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
 import 'package:fmr_project/login/login_new.dart';
 import 'package:fmr_project/screen/login.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 class FavoriteScreen extends StatefulWidget {
   final int userId;
@@ -75,14 +76,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   title: Text(
-        //     "ร้านอาหารที่ชื่นชอบ",
-        //     style: GoogleFonts.prompt(textStyle: TextStyle(fontSize: 18)),
-        //   ),
-        //   leading: SizedBox(),
-        //   centerTitle: true,
-        // ),
+        appBar: AppBar(
+          title: Text(
+            "ร้านอาหารที่ชื่นชอบ",
+            style: GoogleFonts.prompt(textStyle: TextStyle(fontSize: 18)),
+          ),
+          leading: SizedBox(),
+          centerTitle: true,
+        ),
         body: widget.userId == 0
             ? _notLodin()
             : FutureBuilder<List<MyFavoriteModel>>(
@@ -90,8 +91,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
-                      child: CircularProgressIndicator(),
-                    );
+                        child: Lottie.network(
+                            'https://lottie.host/6dbef5a4-c62a-4005-9782-a9e3026d4c19/G8MECWroXw.json'));
                   } else if (snapshot.hasError) {
                     return Center(
                       child: GestureDetector(
@@ -123,7 +124,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     );
                   } else if (snapshot.hasData) {
                     final myFavorites = snapshot.data as List<MyFavoriteModel>;
-                    // final List<MyFavoriteModel> myFavorites = snapshot.data ?? [];
                     if (myFavorites.isEmpty) {
                       return Center(
                         child: Column(
@@ -147,26 +147,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                         ),
                       );
                     } else {
-                      return
-                          // Padding(
-                          //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                          //   child: ListView.builder(
-                          //       itemBuilder: (BuildContext context, index) {
-                          //     return Container(
-                          //       decoration: BoxDecoration(
-                          //         borderRadius: BorderRadius.circular(12),
-                          //         color: Colors.white,
-                          //       ),
-                          //     );
-                          //   }),
-                          // );
-
-                          Padding(
+                      return Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 15,
                         ),
                         child: ListView.builder(
+                          padding: EdgeInsets.all(0),
                           itemCount: myFavorites.length,
                           itemBuilder: (BuildContext context, index) {
                             final item = myFavorites[index];
@@ -191,7 +178,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                       MediaQuery.of(context).size.height * 0.15,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    color: Color.fromARGB(98, 255, 210, 159),
+                                    color: Color.fromARGB(255, 255, 255, 255),
                                   ),
                                   child: Row(
                                     crossAxisAlignment:

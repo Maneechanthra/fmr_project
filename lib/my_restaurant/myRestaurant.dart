@@ -15,6 +15,7 @@ import 'package:fmr_project/update/update_restaurant_new.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lottie/lottie.dart';
 import '/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 
@@ -77,8 +78,8 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
-              child: CircularProgressIndicator(),
-            );
+                child: Lottie.network(
+                    'https://lottie.host/6dbef5a4-c62a-4005-9782-a9e3026d4c19/G8MECWroXw.json'));
           } else if (snapshot.hasError) {
             return Center(
               child: Text('Error: ${snapshot.error}'),

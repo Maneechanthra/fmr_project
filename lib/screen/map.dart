@@ -7,6 +7,7 @@ import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart' as lot;
+
 import 'package:slider_controller/slider_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -444,7 +445,9 @@ class _MapsPageState extends State<MapsPage> {
           future: futureGetRestaurantByMap,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                  child: lot.Lottie.network(
+                      'https://lottie.host/6dbef5a4-c62a-4005-9782-a9e3026d4c19/G8MECWroXw.json'));
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (snapshot.data == null) {

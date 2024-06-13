@@ -85,7 +85,7 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
               child: Text('Error: ${snapshot.error}'),
             );
           } else {
-            final List<MyRestaurantModel>? restaurants = snapshot.data;
+            final List<MyRestaurantModel> restaurants = snapshot.data!;
             if (restaurants == null || restaurants.isEmpty) {
               return Center(
                 child: Column(
@@ -108,15 +108,23 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                   ],
                 ),
               );
-            } else {
+            } else if (snapshot.hasData) {
               return ListView.builder(
                 itemCount: restaurants.length,
                 itemBuilder: (context, index) {
                   final MyRestaurantModel restaurant = restaurants[index];
-                  final imageUrls =
-                      'http://10.0.2.2:8000/api/public/${restaurant.imagePaths[index]}';
+                  // final imageUrls =
+                  //     'http://10.0.2.2:8000/api/public/${restaurant.imagePaths[index]}';
 
-                  print("จำนวนร้านอาหาร" + restaurants.length.toString());
+                  final imageUrls = restaurant.imagePaths.isNotEmpty &&
+                          index < restaurant.imagePaths.length
+                      ? 'http://10.0.2.2:8000/api/public/${restaurant.imagePaths[index]}'
+                      : 'assets/img/not_data.png';
+
+                  print("จำนวนร้านอาหาร: ${restaurants.length}");
+                  print(
+                      "จำนวนรูปภาพสำหรับร้านที่ ${index + 1}: ${restaurant.imagePaths.length}");
+
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -472,47 +480,77 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                             ),
                                           ),
                                         )
-                                      : GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AddVerifyScreen(
-                                                          userId: widget.userId,
-                                                          userName: restaurant
-                                                              .userName,
-                                                          restaurantName:
-                                                              restaurant
-                                                                  .restaurantName,
-                                                          restaurantid:
-                                                              restaurant.id,
-                                                        )));
-                                          },
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.3,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.04,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue,
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                "ยืนยันร้านอาหาร",
-                                                style: TextStyle(
-                                                  color: Colors.white,
+                                      : restaurant.verified == 2
+                                          ? GestureDetector(
+                                              onTap: () {},
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.3,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.04,
+                                                decoration: BoxDecoration(
+                                                  color: Color.fromARGB(
+                                                      172, 142, 196, 241),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    "ได้รับการรับรองแล้ว",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            AddVerifyScreen(
+                                                              userId:
+                                                                  widget.userId,
+                                                              userName:
+                                                                  restaurant
+                                                                      .userName,
+                                                              restaurantName:
+                                                                  restaurant
+                                                                      .restaurantName,
+                                                              restaurantid:
+                                                                  restaurant.id,
+                                                            )));
+                                              },
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.3,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.04,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blue,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    "ยืนยันร้านอาหาร",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ),
                                   GestureDetector(
                                     onTap: () {
                                       // List<RestaurantCategory>
@@ -672,6 +710,8 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                   );
                 },
               );
+            } else {
+              return SizedBox();
             }
           }
         },

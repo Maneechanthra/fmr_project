@@ -9,7 +9,7 @@ class ProfileModel {
   final dynamic emailVerifiedAt;
   final String createdAt;
   final String updatedAt;
-  final int restaurant_count;
+  final int? restaurant_count;
   final int favorites_count;
 
   ProfileModel({
@@ -30,7 +30,7 @@ class ProfileModel {
         emailVerifiedAt: json["email_verified_at"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
-        restaurant_count: json["restaurant_count"],
+        restaurant_count: json["restaurant_count"] ?? 0,
         favorites_count: json["favorites_count"],
       );
 }
@@ -38,10 +38,9 @@ class ProfileModel {
 Future<ProfileModel?> fetchProfile(int? userId) async {
   if (userId == null || userId == 0) {
     print("User ID is null or zero, skipping API call.");
-    return null; // คืนค่า null หรือละเว้นการทำงาน
+    return null;
   }
 
-  // หาก userId ถูกต้อง, เรียกใช้งาน API ตามปกติ
   final response = await http.get(
     Uri.parse('http://10.0.2.2:8000/api/user/$userId'),
     headers: <String, String>{
@@ -57,10 +56,8 @@ Future<ProfileModel?> fetchProfile(int? userId) async {
 
   if (response.statusCode == 200) {
     final data = json.decode(response.body);
-    return ProfileModel.fromJson(
-        data); // คืนค่า ProfileModel หากสถานะ HTTP เป็น 200
+    return ProfileModel.fromJson(data);
   } else {
-    throw Exception(
-        'Failed to load data from API'); // โยนข้อผิดพลาดหากเกิดข้อผิดพลาดในการเรียกใช้ API
+    throw Exception('Failed to load data from API');
   }
 }

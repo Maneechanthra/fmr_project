@@ -223,6 +223,7 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
     }
   }
 
+//////////////////// upload time openning ///////////////////
   Future<void> _insertTimeOpeing(int restaurantId) async {
     final Uri url = Uri.parse(
         'http://10.0.2.2:8000/api/restaurant/insertOpenings/$restaurantId');
@@ -625,29 +626,6 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                 ),
                 SizedBox(height: 5),
-                // Container(
-                //   width: MediaQuery.of(context).size.width,
-                //   height: MediaQuery.of(context).size.height * 0.25,
-                //   decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(12),
-                //     color: Colors.black12,
-                //   ),
-                //   child: ClipRRect(
-                //     borderRadius: BorderRadius.circular(12),
-                //     child: GoogleMap(
-                //       initialCameraPosition: CameraPosition(
-                //         target: _latLng,
-                //         zoom: 15,
-                //       ),
-                //       markers: {
-                //         Marker(
-                //           markerId: MarkerId('1'),
-                //           position: _latLng,
-                //         ),
-                //       },
-                //     ),
-                //   ),
-                // ),
                 SizedBox(
                   height: 10,
                 ),
@@ -664,7 +642,6 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
                         mounted) {
                       setState(() {
                         _address = address["address"];
-                        // ตรวจสอบว่า address["latLng"] มีค่าหรือไม่และเป็นชนิดข้อมูลที่ถูกต้อง
                         _location = address["latLng"];
                       });
                     }

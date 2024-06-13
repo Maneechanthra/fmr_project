@@ -52,17 +52,20 @@ class DetailRestaurantScreen extends StatefulWidget {
 
 class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
   late int createdBy;
-  late bool isFavorite = false;
   bool isUpdating = false;
+  bool isFavorite = false;
+  int? favoriteId;
+
   late Future<RestaurantById> futureRestaurants;
-  late Future<ChechkFavorite> futureCheckFavorite;
+  // late Future<ChechkFavorite> futureCheckFavorite;
 
   @override
   void initState() {
     super.initState();
     futureRestaurants = getRestaurantById(widget.restaurantId);
-    futureCheckFavorite =
-        fetchCheckFavorite(widget.userId!, widget.restaurantId);
+    // futureCheckFavorite =
+    //     fetchCheckFavorite(widget.userId!, widget.restaurantId);
+    checkFavoriteStatus(widget.userId!, widget.restaurantId);
 
     addViews(widget.userId, widget.restaurantId);
   }
@@ -97,8 +100,36 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
     }
   }
 
-  // add favorite
-  Future<FavoritesModel> insertFavorite(int userId, int restaurantId) async {
+  Future<void> checkFavoriteStatus(int userId, int restaurantId) async {
+    final response = await http.get(
+      Uri.parse(
+          'http://10.0.2.2:8000/api/favorites/checkFavorites/$userId/$restaurantId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': '*/*',
+        'connection': 'keep-alive',
+        'Authorization': 'Bearer ' + globals.jwtToken,
+      },
+    );
+
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final bool status = data['status'] == 1;
+      final List<dynamic> favorites = data['favorites'];
+
+      setState(() {
+        isFavorite = status && favorites.isNotEmpty;
+        favoriteId = isFavorite ? favorites[0]['id'] : null;
+      });
+    } else {
+      throw Exception(
+          'Failed to load favorite status. Status code: ${response.statusCode}');
+    }
+  }
+
+  Future<void> insertFavorite() async {
     final body = {
       'restaurant_id': widget.restaurantId.toString(),
       'favorite_by': widget.userId.toString(),
@@ -116,15 +147,19 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
     );
     if (response.statusCode == 200 || response.statusCode == 201) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      return FavoritesModel.fromJson(data);
+      setState(() {
+        isFavorite = true;
+        favoriteId = data['id'];
+      });
     } else {
       throw Exception(
           'Failed to insert favorite. Status code: ${response.statusCode}');
     }
   }
 
-  //delete favorite
-  Future<void> deleteFavorite(int favoriteId) async {
+  Future<void> deleteFavorite() async {
+    if (favoriteId == null) return;
+
     final response = await http.delete(
       Uri.parse('http://10.0.2.2:8000/api/favorites/delete/$favoriteId'),
       headers: <String, String>{
@@ -138,10 +173,13 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
       }),
     );
     if (response.statusCode == 200) {
-      print("ลบร้านชื่นชอบสำเร็จ");
-      return null;
+      setState(() {
+        isFavorite = false;
+        favoriteId = null;
+      });
     } else {
-      throw Exception('Failed to delete post from API');
+      throw Exception(
+          'Failed to delete favorite. Status code: ${response.statusCode}');
     }
   }
 
@@ -228,178 +266,53 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
                             ),
                             Row(
                               children: [
-                                FutureBuilder(
-                                  future: futureCheckFavorite,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    } else {
-                                      if (snapshot.hasData) {
-                                        final item =
-                                            snapshot.data as ChechkFavorite;
-
-                                        int? favoriteId =
-                                            item.favorites.isNotEmpty
-                                                ? item.favorites[0]?.id
-                                                : null;
-
-                                        var isFavorite = item.status == 1;
-
-                                        return Container(
-                                          width: 50,
-                                          height: 50,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(100),
-                                            color: Color.fromARGB(
-                                                255, 255, 255, 255),
-                                          ),
-                                          child: Center(
-                                            child: LikeButton(
-                                              isLiked: isFavorite,
-                                              onTap: (bool isLiked) async {
-                                                if (widget.userId == null ||
-                                                    widget.userId == 0) {
-                                                  AwesomeDialog(
-                                                          context: context,
-                                                          dialogType: DialogType
-                                                              .warning,
-                                                          animType:
-                                                              AnimType.topSlide,
-                                                          title:
-                                                              "ไม่สามารถใช้งานฟังก์ชันนี้ได้",
-                                                          desc:
-                                                              "กรุณาเข้าสู่ระบบเพื่อเข้าใช้ฟังก์ชันนี้!",
-                                                          btnOkColor:
-                                                              Color.fromARGB(
-                                                                  255,
-                                                                  255,
-                                                                  174,
-                                                                  0),
-                                                          btnOkOnPress: () {})
-                                                      .show();
-                                                  return Future.value(isLiked);
-                                                } else {
-                                                  try {
-                                                    if (!isFavorite) {
-                                                      await insertFavorite(
-                                                          widget.restaurantId,
-                                                          widget.userId!);
-                                                      AnimatedSnackBar.material(
-                                                        'เพิ่มร้านอาหารที่ชื่นชอบแล้ว',
-                                                        type:
-                                                            AnimatedSnackBarType
-                                                                .success,
-                                                        mobileSnackBarPosition:
-                                                            MobileSnackBarPosition
-                                                                .bottom,
-                                                        desktopSnackBarPosition:
-                                                            DesktopSnackBarPosition
-                                                                .topRight,
-                                                      ).show(context);
-
-                                                      // AnimatedSnackBar
-                                                      //     .rectangle(
-                                                      //   'Success',
-                                                      //   'Add Favorite Success',
-                                                      //   type:
-                                                      //       AnimatedSnackBarType
-                                                      //           .success,
-                                                      //   brightness:
-                                                      //       Brightness.light,
-                                                      // ).show(
-                                                      //   context,
-                                                      // );
-                                                      // showTopSnackBar(
-                                                      //   Overlay.of(context),
-                                                      //   CustomSnackBar.success(
-                                                      //     message:
-                                                      //         "คุณได้เพิ่มร้านอาหารที่ชื่นชอบสำเร็จ",
-                                                      //   ),
-                                                      // );
-                                                    } else {
-                                                      await deleteFavorite(
-                                                          favoriteId!);
-
-                                                      AnimatedSnackBar.material(
-                                                        'ลบร้านอาหารที่ชื่นชอบแล้ว!',
-                                                        type:
-                                                            AnimatedSnackBarType
-                                                                .success,
-                                                        mobileSnackBarPosition:
-                                                            MobileSnackBarPosition
-                                                                .bottom,
-                                                        desktopSnackBarPosition:
-                                                            DesktopSnackBarPosition
-                                                                .topRight,
-                                                      ).show(context);
-
-                                                      // showTopSnackBar(
-                                                      //   Overlay.of(context),
-                                                      //   CustomSnackBar.success(
-                                                      //     message:
-                                                      //         "คุณลบร้านอาหารที่ชื่นชอบสำเร็จ",
-                                                      //   ),
-                                                      // );
-                                                    }
-
-                                                    setState(() {
-                                                      isFavorite = !isFavorite;
-                                                      // isLiked = !isLiked;
-                                                    });
-
-                                                    return Future.value(true);
-                                                  } catch (e) {
-                                                    QuickAlert.show(
-                                                      context: context,
-                                                      type:
-                                                          QuickAlertType.error,
-                                                      text:
-                                                          'เกิดข้อผิดพลาด: $e',
-                                                      confirmBtnText: 'ตกลง',
-                                                      confirmBtnColor:
-                                                          Colors.red,
-                                                    );
-                                                    return Future.value(
-                                                        isLiked);
-                                                  }
-                                                }
-                                              },
-                                              size: 30,
-                                              circleColor: CircleColor(
-                                                start: Colors.pink,
-                                                end: Colors.red,
-                                              ),
-                                              bubblesColor: BubblesColor(
-                                                dotPrimaryColor: Colors.pink,
-                                                dotSecondaryColor: Colors.red,
-                                              ),
-                                              likeBuilder: (bool isLiked) {
-                                                return Icon(
-                                                  isFavorite
-                                                      ? Icons.favorite
-                                                      : Icons.favorite_border,
-                                                  color: isFavorite
-                                                      ? Colors.red
-                                                      : (isLiked
-                                                          ? Colors.pink
-                                                          : Colors.grey),
-                                                  size: 30,
-                                                );
-                                              },
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  child: Center(
+                                    child: IconButton(
+                                      icon: Icon(
+                                        isFavorite
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: isFavorite
+                                            ? Colors.red
+                                            : Colors.grey,
+                                      ),
+                                      onPressed: () {
+                                        if (widget.userId == null ||
+                                            widget.userId == 0) {
+                                          AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.warning,
+                                            animType: AnimType.topSlide,
+                                            titleTextStyle: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                          ),
-                                        );
-                                      } else if (snapshot.hasError) {
-                                        return Text('Error: ${snapshot.error}');
-                                      } else {
-                                        return Text('No data');
-                                      }
-                                    }
-                                  },
+                                            title:
+                                                "ไม่สามารถเพิ่มร้านที่ชื่นชอบได้",
+                                            desc:
+                                                "กรุณาเข้าสู่ระบบเพื่อเข้าใช้งาน",
+                                            btnOkColor: Color.fromARGB(
+                                                255, 255, 174, 0),
+                                            btnOkOnPress: () {},
+                                          ).show();
+                                        } else {
+                                          if (isFavorite) {
+                                            deleteFavorite();
+                                          } else {
+                                            insertFavorite();
+                                          }
+                                        }
+                                      },
+                                      iconSize: 30.0,
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 20,

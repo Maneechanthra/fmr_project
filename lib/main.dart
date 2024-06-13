@@ -28,10 +28,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'FMReataurant',
         theme: ThemeData(
-          primarySwatch: myBlue,
-          fontFamily: GoogleFonts.mitr().fontFamily,
-          scaffoldBackgroundColor: Colors.white,
-        ),
+            primarySwatch: myBlue,
+            fontFamily: GoogleFonts.mitr().fontFamily,
+            scaffoldBackgroundColor: Colors.white,
+            appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
         home: SplashScreen());
   }
 }

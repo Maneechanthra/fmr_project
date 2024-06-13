@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fmr_project/api/register_api.dart';
 import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
+import 'package:fmr_project/color/colors.dart';
 import 'package:fmr_project/login/login_new.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/globals.dart' as globals;
@@ -74,7 +75,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 0, 119, 255),
+      backgroundColor: AppColors.primaryColor,
       body: SafeArea(
         child: Form(
           key: _registerForm,
@@ -234,7 +235,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                                         horizontal: 20, vertical: 15),
                                     prefixIcon:
                                         Icon(EneftyIcons.profile_outline),
-                                    prefixIconColor: Colors.blue,
+                                    prefixIconColor: AppColors.primaryColor,
                                   ),
                                 ),
                               ),
@@ -272,7 +273,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 15),
                                     prefixIcon: Icon(Icons.email_outlined),
-                                    prefixIconColor: Colors.blue,
+                                    prefixIconColor: AppColors.primaryColor,
                                   ),
                                 ),
                               ),
@@ -314,7 +315,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                                         horizontal: 20, vertical: 15),
                                     prefixIcon:
                                         Icon(EneftyIcons.lock_2_outline),
-                                    prefixIconColor: Colors.blue,
+                                    prefixIconColor: AppColors.primaryColor,
                                   ),
                                 ),
                               ),
@@ -356,7 +357,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                                         horizontal: 20, vertical: 15),
                                     prefixIcon:
                                         Icon(EneftyIcons.lock_2_outline),
-                                    prefixIconColor: Colors.blue,
+                                    prefixIconColor: AppColors.primaryColor,
                                   ),
                                 ),
                               ),
@@ -412,7 +413,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                                   height:
                                       MediaQuery.of(context).size.height * 0.07,
                                   decoration: BoxDecoration(
-                                      color: Colors.blue,
+                                      color: AppColors.primaryColor,
                                       borderRadius: BorderRadius.circular(12),
                                       boxShadow: [
                                         BoxShadow(
@@ -443,7 +444,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
 
                               Center(
                                 child: Text(
-                                  "มีบัญชีผู้ใช้?",
+                                  "มีบัญชีผู้ใช้แล้ว",
                                   style: GoogleFonts.prompt(
                                       textStyle: TextStyle(
                                           color: Colors.black45, fontSize: 16)),
@@ -470,7 +471,9 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                                         color: const Color.fromARGB(
                                             255, 255, 255, 255),
                                         borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: Colors.blue),
+                                        border: Border.all(
+                                          color: AppColors.primaryColor,
+                                        ),
                                         boxShadow: [
                                           BoxShadow(
                                             color:
@@ -486,7 +489,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                                           textStyle: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
-                                            color: Colors.blue,
+                                            color: AppColors.primaryColor,
                                           ),
                                         ),
                                       ),

@@ -28,7 +28,8 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
     _searchHistory = [];
     futureGetRestaurantSearchByName = fetchRestaurantSearch();
     futureGetRestaurantSearchByName.then((restaurants) {
-      allRestaurantsByName = restaurants; // เก็บข้อมูลร้านอาหารในตัวแปร
+      allRestaurantsByName = restaurants;
+      _loadSearchHistory();
     });
   }
 
@@ -38,20 +39,21 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
     super.dispose();
   }
 
-  // Future<void> _loadSearchHistory() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final List<String>? searchHistory = prefs.getStringList('search_history');
-
-  //   if (searchHistory != null) {
-  //     setState(() {
-  //       _searchHistory = searchHistory; // ตรวจสอบว่าข้อมูลถูกโหลดและถูกเพิ่ม
-  //     });
-  //   }
-  // }
+  void _removeSearchHistory(String queryWithDate) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> updatedSearchHistory = [..._searchHistory];
+    updatedSearchHistory.remove(queryWithDate);
+    await prefs.setStringList('search_history', updatedSearchHistory);
+    setState(() {
+      _searchHistory = updatedSearchHistory;
+    });
+    _loadSearchHistory();
+  }
 
   Future<void> _loadSearchHistory() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final List<String>? searchHistory = prefs.getStringList('search_history');
+
     if (searchHistory != null) {
       setState(() {
         _searchHistory = searchHistory;
@@ -67,15 +69,15 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
     });
   }
 
-  void _removeSearchHistory(String queryWithDate) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> updatedSearchHistory = [..._searchHistory];
-    updatedSearchHistory.remove(queryWithDate);
-    await prefs.setStringList('search_history', updatedSearchHistory);
-    setState(() {
-      _searchHistory = updatedSearchHistory;
-    });
-    _loadSearchHistory();
+  void searchRestaurant(String query) {
+    _searchResult.clear();
+
+    for (GetRestaurantsSearchByName restaurant in allRestaurantsByName) {
+      if (restaurant.restaurantName.contains(query)) {
+        _searchResult.add(restaurant);
+      }
+    }
+    setState(() {});
   }
 
   Future<void> _saveSearchHistory(String query) async {
@@ -88,19 +90,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('search_history', _searchHistory);
-  }
-
-  void searchRestaurant(String query) {
-    _searchResult.clear();
-
-    for (GetRestaurantsSearchByName restaurant in allRestaurantsByName) {
-      // เปลี่ยนตัวแปร
-      if (restaurant.restaurantName.contains(query)) {
-        // ค้นหาตามชื่อ
-        _searchResult.add(restaurant);
-      }
-    }
-    setState(() {});
+    _loadSearchHistory();
   }
 
   @override
@@ -302,7 +292,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                                   borderRadius: BorderRadius.circular(12),
                                   child: Image.network(
                                     imageUrl,
-                                    width: 100,
+                                    width: 120,
                                   ),
                                 ),
                                 SizedBox(
@@ -322,11 +312,18 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      Text(
-                                        item.categoryTitle,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.5,
+                                        child: Text(
+                                          item.restaurantCategory.join(" / "),
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                       Row(
@@ -338,9 +335,13 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                                           ),
                                           Row(
                                             children: [
-                                              Text(
-                                                "${item.averageRating.toString()}",
-                                              ),
+                                              item.averageRating == null
+                                                  ? Text(
+                                                      "0",
+                                                    )
+                                                  : Text(
+                                                      "${item.averageRating.toString()}",
+                                                    ),
                                               Text(
                                                 " (${item.reviewCount.toString()} รีวิว)",
                                                 style: TextStyle(

@@ -77,6 +77,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.white,
           title: Text(
             "ร้านอาหารที่ชื่นชอบ",
             style: GoogleFonts.prompt(textStyle: TextStyle(fontSize: 18)),

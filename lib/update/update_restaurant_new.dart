@@ -91,12 +91,20 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
     _restaurantNameController.text = widget.restaurantName;
     _telephone_1_Controller.text = widget.telephone1;
     _telephone_2_Controller.text = widget.telephone2 ?? '';
-    _address = widget.address;
 
-    _location = LatLng(
-      double.parse(widget.location.latitude.toString()),
-      double.parse(widget.location.longitude.toString()),
-    );
+    // _address = widget.address;
+    // _location = LatLng(
+    //   double.parse(widget.location.latitude.toString()),
+    //   double.parse(widget.location.longitude.toString()),
+    // );
+
+    _address = widget.address;
+    if (widget.location != null) {
+      _location = LatLng(
+        double.parse(widget.location.latitude.toString()),
+        double.parse(widget.location.longitude.toString()),
+      );
+    }
 
     _openingController.text = (widget.openingList ?? [])
         .map((time) =>
@@ -107,8 +115,8 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
         .map((file) => 'http://10.0.2.2:8000/api/public/${file}')
         .toList();
 
-    print(_address);
-    print(_location);
+    print("Address: $_address");
+    print("Location: $_location");
     print(_restaurantNameController.text);
     print(_telephone_1_Controller.text);
     print(_telephone_2_Controller.text);
@@ -203,14 +211,11 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
           await _uploadImages(restaurantId);
         }
 
-        if (openingClosingTimes.isEmpty) {
-          print("Not openingClosingTimes selected");
-          await _insertTimeOpeing(restaurantId);
-        } else {
-          if (openingClosingTimes.isNotEmpty) {
-            await _insertTimeOpeing(restaurantId);
-          }
-        }
+        // if (openingClosingTimes.isNotEmpty) {
+        //   await _insertTimeOpeing(restaurantId);
+        // } else {
+        //   print("ไม่มีข้อมูลเวลา");
+        // }
 
         return MyRestaurantModel.fromJson(data);
       } else {
@@ -317,7 +322,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
 
     var response = jsonDecode(openingTimeBody.body);
 
-    // print("Response Status Code: ${response.statusCode}");
+    print("Response Status Code: ${response.statusCode}");
 
     if (openingTimeBody.statusCode != 200 &&
         openingTimeBody.statusCode != 201) {

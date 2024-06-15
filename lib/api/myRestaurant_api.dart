@@ -95,6 +95,7 @@ class MyRestaurantModel {
   final List<Review> reviews;
   final int reportCount;
   final String userName;
+  final String? rejectDetail;
   final int status;
 
   MyRestaurantModel({
@@ -118,6 +119,7 @@ class MyRestaurantModel {
     required this.createdBy,
     required this.reportCount,
     required this.userName,
+    required this.rejectDetail,
     required this.status,
   });
 
@@ -148,6 +150,7 @@ class MyRestaurantModel {
             List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
         reportCount: json["reports_count"],
         userName: json["name"],
+        rejectDetail: json["reject_detail"] ?? null,
         status: json["status"],
       );
 }

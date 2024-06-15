@@ -112,7 +112,7 @@ class Review {
   final String content;
   final int id;
   final double rating;
-  final String name;
+  final String? name;
   final String createdAt;
   final List<String> imagePathsReview;
 
@@ -131,7 +131,7 @@ class Review {
         content: json["content"],
         id: json["id"],
         rating: json["rating"]?.toDouble(),
-        name: json["name"],
+        name: json["name"] ?? "",
         createdAt: json["created_at"],
         imagePathsReview:
             List<String>.from(json["image_paths_review"].map((x) => x)),

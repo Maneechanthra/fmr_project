@@ -337,6 +337,22 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                   SizedBox(
                                     height: 10,
                                   ),
+                                  restaurant.rejectDetail == null &&
+                                              restaurant.verified == 0 ||
+                                          restaurant.verified == 2
+                                      ? SizedBox()
+                                      : restaurant.verified == 1
+                                          ? SizedBox()
+                                          : Text(
+                                              "เหตุผลที่ปฏิเสธ: " +
+                                                  restaurant.rejectDetail
+                                                      .toString(),
+                                              style: GoogleFonts.prompt(
+                                                  color: Colors.red),
+                                            ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -645,11 +661,7 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap: () async {
-                                      DeletedRestaurantModel item =
-                                          await _deleteRestaurant(
-                                              restaurant.id);
-
+                                    onTap: () {
                                       AwesomeDialog(
                                         context: context,
                                         dialogType: DialogType.question,
@@ -658,7 +670,11 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                         desc:
                                             "คุณต้องการลบข้อมูลร้านอาหารใช่หรือไม่",
                                         btnCancelOnPress: () {},
-                                        btnOkOnPress: () {
+                                        btnOkOnPress: () async {
+                                          DeletedRestaurantModel item =
+                                              await _deleteRestaurant(
+                                                  restaurant.id);
+
                                           AwesomeDialog(
                                             context: context,
                                             dialogType: DialogType.success,

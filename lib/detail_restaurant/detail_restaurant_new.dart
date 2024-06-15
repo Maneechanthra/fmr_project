@@ -900,25 +900,40 @@ Widget _reviews(
                                 SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.5,
-                                  child: Text(
-                                    reviews.name,
-                                    style: GoogleFonts.prompt(
-                                      textStyle: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: const Color.fromARGB(
-                                            255, 0, 84, 153),
-                                      ),
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                  child: reviews.name == ""
+                                      ? Text(
+                                          "ผู้ใช้งานระบบ",
+                                          style: GoogleFonts.prompt(
+                                            textStyle: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color: const Color.fromARGB(
+                                                  255, 0, 84, 153),
+                                            ),
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        )
+                                      : Text(
+                                          reviews.name!,
+                                          style: GoogleFonts.prompt(
+                                            textStyle: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color: const Color.fromARGB(
+                                                  255, 0, 84, 153),
+                                            ),
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "เมื่อ: ${DateFormat("EEEE, dd MMMM yyyy", "th").format(DateTime.parse(reviews.createdAt))}",
+                                      // "เผยแพร่: ${DateFormat("EEEE, dd MMMM yyyy", "th").format(DateTime.parse(reviews.createdAt))}",
+                                      "เผยแพร่: ${reviews.createdAt}",
                                       style: GoogleFonts.prompt(
                                         textStyle: TextStyle(
                                           fontSize: 12,

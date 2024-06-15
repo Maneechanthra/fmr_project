@@ -111,13 +111,21 @@ Widget _allReviewsPage(BuildContext context,
                               const SizedBox(
                                 width: 10,
                               ),
-                              Text(
-                                review.name,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                              review.name == ""
+                                  ? Text(
+                                      "ผู้ใช้งานระบบ",
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )
+                                  : Text(
+                                      review.name!,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                             ],
                           ),
                           review.userId == userId

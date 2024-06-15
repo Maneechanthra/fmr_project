@@ -221,8 +221,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide(
-                                        color: const Color.fromARGB(
-                                            255, 0, 132, 240),
+                                        color: AppColors.primaryColor,
                                         width: 2.0,
                                       ),
                                     ),
@@ -260,8 +259,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide(
-                                        color: const Color.fromARGB(
-                                            255, 0, 132, 240),
+                                        color: AppColors.primaryColor,
                                         width: 2.0,
                                       ),
                                     ),
@@ -342,8 +340,7 @@ class _RegsiterScreenState extends State<RegsiterScreen> {
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
                                       borderSide: BorderSide(
-                                        color: const Color.fromARGB(
-                                            255, 0, 132, 240),
+                                        color: AppColors.primaryColor,
                                         width: 2.0,
                                       ),
                                     ),

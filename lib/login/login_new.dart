@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:fmr_project/api/login_api.dart';
 import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
 import 'package:fmr_project/color/colors.dart';
+import 'package:fmr_project/forgot_password/forgotpassword.dart';
 import 'package:fmr_project/register/register_new.dart';
 import 'package:fmr_project/screen/register.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -365,10 +366,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       SizedBox(),
-                                      Text(
-                                        "ลืมรหัสผ่าน",
-                                        style: GoogleFonts.prompt(
-                                          textStyle: TextStyle(fontSize: 18),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ForgotPasswordPage()));
+                                        },
+                                        child: Text(
+                                          "ลืมรหัสผ่าน",
+                                          style: GoogleFonts.prompt(
+                                            textStyle: TextStyle(fontSize: 18),
+                                          ),
                                         ),
                                       )
                                     ],

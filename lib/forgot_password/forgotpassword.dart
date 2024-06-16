@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -8,6 +9,26 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final String _baseUrl = 'http://10.0.2.2:8000/api';
+
+  void _sendResetLink() async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/forgot-password'),
+      body: {'email': _emailController.text},
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Password reset link sent')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error sending reset link')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +56,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             width: 330,
             height: 50,
             child: TextFormField(
+              controller: _emailController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -47,7 +69,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             height: 10,
           ),
           InkWell(
-            onTap: () {},
+            onTap: _sendResetLink,
             child: Container(
               width: 330,
               height: 40,

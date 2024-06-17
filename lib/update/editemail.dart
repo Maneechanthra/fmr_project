@@ -42,7 +42,7 @@ class _EditEmailPageState extends State<EditEmailPage> {
     };
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/user/edit/email'),
+      Uri.parse('https://www.smt-online.com/api/user/edit/email'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': "*/*",

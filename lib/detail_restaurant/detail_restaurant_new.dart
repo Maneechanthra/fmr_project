@@ -77,7 +77,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
     };
 
     final response = await http.post(
-      Uri.parse("http://10.0.2.2:8000/api/view/insert"),
+      Uri.parse("https://www.smt-online.com/api/view/insert"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': "*/*",
@@ -103,7 +103,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
   Future<void> checkFavoriteStatus(int userId, int restaurantId) async {
     final response = await http.get(
       Uri.parse(
-          'http://10.0.2.2:8000/api/favorites/checkFavorites/$userId/$restaurantId'),
+          'https://www.smt-online.com/api/favorites/checkFavorites/$userId/$restaurantId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': '*/*',
@@ -136,7 +136,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
     };
 
     final response = await http.post(
-      Uri.parse("http://10.0.2.2:8000/api/favorites/insert"),
+      Uri.parse("https://www.smt-online.com/api/favorites/insert"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': "*/*",
@@ -161,7 +161,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
     if (favoriteId == null) return;
 
     final response = await http.delete(
-      Uri.parse('http://10.0.2.2:8000/api/favorites/delete/$favoriteId'),
+      Uri.parse('https://www.smt-online.com/api/favorites/delete/$favoriteId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': '*/*',
@@ -205,7 +205,7 @@ class _DetailRestaurantScreenState extends State<DetailRestaurantScreen> {
             print("created by in futureBuilder : " + createdBy.toString());
             final List<String> imageUrls =
                 restaurantInfo.imagePaths.map((path) {
-              return 'http://10.0.2.2:8000/api/public/$path';
+              return 'https://www.smt-online.com/api/public/$path';
             }).toList();
 
             return SingleChildScrollView(
@@ -858,7 +858,7 @@ Widget _reviews(
           final reviews = restaurantInfo.reviews[index];
           final List<String> imageUrlsReview = reviews.imagePathsReview != null
               ? reviews.imagePathsReview.map((path) {
-                  return 'http://10.0.2.2:8000/api/public/$path';
+                  return 'https://www.smt-online.com/api/public/$path';
                 }).toList()
               : [];
 

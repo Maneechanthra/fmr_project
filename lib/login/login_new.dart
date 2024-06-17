@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
     };
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/login'),
+      Uri.parse('https://www.smt-online.com/api/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': "*/*",

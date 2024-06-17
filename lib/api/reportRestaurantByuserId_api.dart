@@ -48,7 +48,7 @@ class ReportRestaurantByuserIdList {
 Future<ReportRestaurantByuserIdList> fetchReportRestaurantByuserId(
     int? userId) async {
   final response = await http.get(
-    Uri.parse('http://10.0.2.2:8000/api/reports/$userId'),
+    Uri.parse('https://www.smt-online.com/api/reports/$userId'),
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': '*/*',

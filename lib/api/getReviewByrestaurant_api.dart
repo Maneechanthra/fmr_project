@@ -41,7 +41,7 @@ class GetReviewByrestaurant {
 Future<List<GetReviewByrestaurant>> fetchReviewByRestaurant(
     int restaurantId) async {
   final response = await http.get(
-    Uri.parse('http://10.0.2.2:8000/api/reviews/$restaurantId'),
+    Uri.parse('https://www.smt-online.com/api/reviews/$restaurantId'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': '*/*',

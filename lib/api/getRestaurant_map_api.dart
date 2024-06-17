@@ -135,7 +135,7 @@ import 'dart:convert';
 
 // Future<List<GetResturantByMap>> fetchRestaurantMap() async {
 //   final response = await http.get(
-//     Uri.parse('http://10.0.2.2:8000/api/restaurants/map'),
+//     Uri.parse('https://www.smt-online.com/api/restaurants/map'),
 //     headers: {
 //       'Content-Type': 'application/json; charset=UTF-8',
 //       'Accept': '*/*',
@@ -167,7 +167,7 @@ import 'dart:convert';
 
 // Future<GetResturantByMap?> fetchRestaurantMap() async {
 //   final response = await http.get(
-//     Uri.parse('http://10.0.2.2:8000/api/restaurants/map'),
+//     Uri.parse('https://www.smt-online.com/api/restaurants/map'),
 //     headers: <String, String>{
 //       'Content-Type': 'application/json; charset=UTF-8',
 //       'Accept': '*/*',
@@ -290,7 +290,7 @@ class Restaurant {
 Future<GetResturantByMap?> fetchRestaurantMap() async {
   try {
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:8000/api/restaurants/map'),
+      Uri.parse('https://www.smt-online.com/api/restaurants/map'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': '*/*',

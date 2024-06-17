@@ -79,7 +79,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
   }
 
   Future<ReviewRestaurant?> _reviewRestaurant() async {
-    final Uri url = Uri.parse('http://10.0.2.2:8000/api/review/insert');
+    final Uri url = Uri.parse('https://www.smt-online.com/api/review/insert');
 
     var request = http.MultipartRequest('POST', url);
 
@@ -123,7 +123,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
 
   Future<void> _uploadImages(int reviewId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/review/insert/insertImages/$reviewId');
+        'https://www.smt-online.com/api/review/insert/insertImages/$reviewId');
 
     var imageRequest = http.MultipartRequest('POST', url);
     imageRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';

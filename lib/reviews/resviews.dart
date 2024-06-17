@@ -54,7 +54,7 @@ Widget _allReviewsPage(BuildContext context,
 
   Future<void> deleteReview(int review_id) async {
     final response = await http.delete(
-      Uri.parse('http://10.0.2.2:8000/api/review/delete/$review_id'),
+      Uri.parse('https://www.smt-online.com/api/review/delete/$review_id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': '*/*',
@@ -219,7 +219,7 @@ Widget _allReviewsPage(BuildContext context,
                                 itemCount: review.imagePaths.length,
                                 itemBuilder: (context, index) {
                                   final String imageUrl =
-                                      'http://10.0.2.2:8000/api/public/${review.imagePaths[index]}';
+                                      'https://www.smt-online.com/api/public/${review.imagePaths[index]}';
                                   return Padding(
                                     padding: const EdgeInsets.only(right: 10.0),
                                     child: ClipRRect(

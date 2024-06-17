@@ -39,7 +39,7 @@ class Favorite {
 Future<ChechkFavorite> fetchCheckFavorite(int userId, int restaurantId) async {
   final response = await http.get(
     Uri.parse(
-        'http://10.0.2.2:8000/api/favorites/checkFavorites/$userId/$restaurantId'),
+        'https://www.smt-online.com/api/favorites/checkFavorites/$userId/$restaurantId'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': '*/*',

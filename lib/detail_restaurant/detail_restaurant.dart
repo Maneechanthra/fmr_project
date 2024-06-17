@@ -66,7 +66,7 @@
 //     };
 
 //     final response = await http.post(
-//       Uri.parse("http://10.0.2.2:8000/api/favorites/insert"),
+//       Uri.parse("https://www.smt-online.com/api/favorites/insert"),
 //       headers: <String, String>{
 //         'Content-Type': 'application/json; charset=UTF-8',
 //         'Accept': "*/*",
@@ -99,7 +99,7 @@
 //                 final data = snapshot.data!;
 //                 print(data.address);
 //                 final List<String> imageUrls = data.imagePaths.map((path) {
-//                   return 'http://10.0.2.2:8000/api/public/$path';
+//                   return 'https://www.smt-online.com/api/public/$path';
 //                 }).toList();
 
 //                 print(imageUrls);
@@ -904,7 +904,7 @@
 
 //       final review = restaurantId.reviews[index];
 //       final List<String> imageUrlsReview = review.imagePathsReview!.map((path) {
-//         return 'http://10.0.2.2:8000/api/public/$path';
+//         return 'https://www.smt-online.com/api/public/$path';
 //       }).toList();
 
 //       return Column(

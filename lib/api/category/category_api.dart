@@ -40,7 +40,7 @@ class CategoryModel {
 
 Future<List<CategoryModel>> fetchCategory() async {
   final response = await http.get(
-    Uri.parse('http://10.0.2.2:8000/api/categories'),
+    Uri.parse('https://www.smt-online.com/api/categories'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': '*/*',

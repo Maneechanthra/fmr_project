@@ -259,7 +259,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                     itemBuilder: (context, index) {
                       final item = _searchResult[index];
                       final String imageUrl =
-                          'http://10.0.2.2:8000/api/public/${item.imagePath}';
+                          'https://www.smt-online.com/api/public/${item.imagePath}';
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: InkWell(

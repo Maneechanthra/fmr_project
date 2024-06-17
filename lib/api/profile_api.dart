@@ -42,7 +42,7 @@ Future<ProfileModel?> fetchProfile(int? userId) async {
   }
 
   final response = await http.get(
-    Uri.parse('http://10.0.2.2:8000/api/user/$userId'),
+    Uri.parse('https://www.smt-online.com/api/user/$userId'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': '*/*',

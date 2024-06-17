@@ -99,8 +99,8 @@ class _AddVerifyScreenState extends State<AddVerifyScreen> {
 
   //////////////////// future add restaurant /////////////////////
   Future<VerifiedModel> _verifiedResturant(int restaurantId) async {
-    final Uri url =
-        Uri.parse('http://10.0.2.2:8000/api/verified/insert/$restaurantId');
+    final Uri url = Uri.parse(
+        'https://www.smt-online.com/api/verified/insert/$restaurantId');
     var request = http.MultipartRequest('POST', url);
     request.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
     // request.fields['restaurant_name'] = _nameController.text;
@@ -135,7 +135,7 @@ class _AddVerifyScreenState extends State<AddVerifyScreen> {
   //////////////////// upload imaged ///////////////////
   Future<void> _uploadImages(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/verified/insertImages/$restaurantId');
+        'https://www.smt-online.com/api/verified/insertImages/$restaurantId');
 
     var imageRequest = http.MultipartRequest('POST', url);
     imageRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';

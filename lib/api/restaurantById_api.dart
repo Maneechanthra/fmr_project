@@ -142,7 +142,7 @@ class Review {
 // ----------------------------------------------------------------
 // Future<RestaurantById> getRestaurantById(int restaurantId) async {
 //   final response = await http.get(
-//     Uri.parse('http://10.0.2.2:8000/api/restaurant/$restaurantId'),
+//     Uri.parse('https://www.smt-online.com/api/restaurant/$restaurantId'),
 //     headers: <String, String>{
 //       'Content-Type': 'application/json; charset=UTF-8',
 //       'Accept': '*/*',
@@ -179,7 +179,7 @@ class Review {
 
 Future<RestaurantById> getRestaurantById(int restaurantId) async {
   final response = await http.get(
-    Uri.parse('http://10.0.2.2:8000/api/restaurant/$restaurantId'),
+    Uri.parse('https://www.smt-online.com/api/restaurant/$restaurantId'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': '*/*',

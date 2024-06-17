@@ -44,7 +44,8 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
   //////////////////// future  _deleteRestaurant /////////////////////
   Future<DeletedRestaurantModel> _deleteRestaurant(int restaurantId) async {
     final response = await http.delete(
-      Uri.parse('http://10.0.2.2:8000/api/restaurant/delete/$restaurantId'),
+      Uri.parse(
+          'https://www.smt-online.com/api/restaurant/delete/$restaurantId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': '*/*',
@@ -114,11 +115,11 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                 itemBuilder: (context, index) {
                   final MyRestaurantModel restaurant = restaurants[index];
                   // final imageUrls =
-                  //     'http://10.0.2.2:8000/api/public/${restaurant.imagePaths[index]}';
+                  //     'https://www.smt-online.com/api/public/${restaurant.imagePaths[index]}';
 
                   final imageUrls = restaurant.imagePaths.isNotEmpty &&
                           index < restaurant.imagePaths.length
-                      ? 'http://10.0.2.2:8000/api/public/${restaurant.imagePaths[index]}'
+                      ? 'https://www.smt-online.com/api/public/${restaurant.imagePaths[index]}'
                       : 'assets/img/not_data.png';
 
                   print("จำนวนร้านอาหาร: ${restaurants.length}");

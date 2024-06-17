@@ -66,7 +66,7 @@ class MyFavoriteModel {
 
 Future<List<MyFavoriteModel>> fetchMyFavorites(int? userId) async {
   final response = await http.get(
-    Uri.parse('http://10.0.2.2:8000/api/favorites/my/$userId'),
+    Uri.parse('https://www.smt-online.com/api/favorites/my/$userId'),
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': '*/*',

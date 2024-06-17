@@ -237,7 +237,7 @@ class Review {
 
 Future<List<MyRestaurantModel>> fetchMyRestaurants(int? userId) async {
   final response = await http.get(
-    Uri.parse('http://10.0.2.2:8000/api/restaurant/myrestaurant/$userId'),
+    Uri.parse('https://www.smt-online.com/api/restaurant/myrestaurant/$userId'),
     headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': '*/*',

@@ -43,7 +43,7 @@ class _EditNamePageState extends State<EditNamePage> {
     };
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/user/edit/name'),
+      Uri.parse('https://www.smt-online.com/api/user/edit/name'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': "*/*",

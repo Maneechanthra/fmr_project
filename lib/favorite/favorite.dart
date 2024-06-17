@@ -159,7 +159,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           itemBuilder: (BuildContext context, index) {
                             final item = myFavorites[index];
                             final String imageUrl =
-                                'http://10.0.2.2:8000/api/public/${item.imagePath}';
+                                'https://www.smt-online.com/api/public/${item.imagePath}';
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5),
                               child: InkWell(

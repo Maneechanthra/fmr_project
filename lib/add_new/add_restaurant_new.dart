@@ -122,7 +122,8 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
 
   //////////////////// future add restaurant /////////////////////
   Future<AddRestaurantModel?> _addRestaurant() async {
-    final Uri url = Uri.parse('http://10.0.2.2:8000/api/restaurant/insert');
+    final Uri url =
+        Uri.parse('https://www.smt-online.com/api/restaurant/insert');
     var request = http.MultipartRequest('POST', url);
     request.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
 
@@ -170,7 +171,7 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
 //////////////////// add categories ////////////////////
   Future<void> _category(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/restaurant/insertCategories/$restaurantId');
+        'https://www.smt-online.com/api/restaurant/insertCategories/$restaurantId');
     var categoryRequest = http.MultipartRequest('POST', url);
     categoryRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
 
@@ -196,7 +197,7 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
   //////////////////// upload imaged ///////////////////
   Future<void> _uploadImages(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/restaurant/insertImages/$restaurantId');
+        'https://www.smt-online.com/api/restaurant/insertImages/$restaurantId');
 
     var imageRequest = http.MultipartRequest('POST', url);
     imageRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
@@ -226,7 +227,7 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
 //////////////////// upload time openning ///////////////////
   Future<void> _insertTimeOpeing(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/restaurant/insertOpenings/$restaurantId');
+        'https://www.smt-online.com/api/restaurant/insertOpenings/$restaurantId');
 
     List<Map<String, dynamic>> openingsData = [];
 

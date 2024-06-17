@@ -77,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
   // ฟังก์ชั่นเพื่อลบผู้ใช้
   Future<void> deleteUser(int user_id) async {
     final response = await http.delete(
-      Uri.parse('http://10.0.2.2:8000/api/user/delete/$user_id'),
+      Uri.parse('https://www.smt-online.com/api/user/delete/$user_id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': '*/*',
@@ -110,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
   // ฟังก์ชั่นเพื่อออกจากระบบ
   Future<void> logout() async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/logout'),
+      Uri.parse('https://www.smt-online.com/api/logout'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': '*/*',

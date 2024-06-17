@@ -156,7 +156,7 @@ class _MapsPageState extends State<MapsPage> {
 
         List<Marker> restaurantMarkers = restaurantsInCircle.map((restaurant) {
           final String imageUrl =
-              'http://10.0.2.2:8000/api/public/${restaurant.imagePaths}';
+              'https://www.smt-online.com/api/public/${restaurant.imagePaths}';
           return Marker(
             markerId: MarkerId(restaurant.restaurantName),
             position: LatLng(restaurant.latitude, restaurant.longitude),
@@ -180,7 +180,7 @@ class _MapsPageState extends State<MapsPage> {
                             children: [
                               Positioned(
                                 // top: MediaQuery.of(context).size.width * 0.002,
-                                left: MediaQuery.of(context).size.width * 0.75,
+                                left: MediaQuery.of(context).size.width * 0.72,
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.pop(context);
@@ -209,7 +209,7 @@ class _MapsPageState extends State<MapsPage> {
                                         itemBuilder: (BuildContext context,
                                             int imageIndex) {
                                           final String imageUrl =
-                                              'http://10.0.2.2:8000/api/public/${restaurant.imagePaths[imageIndex]}';
+                                              'https://www.smt-online.com/api/public/${restaurant.imagePaths[imageIndex]}';
                                           return Padding(
                                             padding: const EdgeInsets.only(
                                                 right: 10.0, top: 10),
@@ -250,14 +250,14 @@ class _MapsPageState extends State<MapsPage> {
                                                 color: Colors.blue,
                                               ),
                                             SizedBox(width: 5),
-                                            Text(
-                                              "เปิดอยู่",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.green,
-                                              ),
-                                            ),
+                                            // Text(
+                                            //   "เปิดอยู่",
+                                            //   style: TextStyle(
+                                            //     fontSize: 16,
+                                            //     fontWeight: FontWeight.w500,
+                                            //     color: Colors.green,
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                       ],
@@ -307,11 +307,17 @@ class _MapsPageState extends State<MapsPage> {
                                       ),
                                     ),
                                     SizedBox(height: 10),
-                                    Text(
-                                      "ประเภทร้าน: ${restaurant.restaurantCategory}",
-                                      style: TextStyle(
-                                        color: const Color.fromARGB(
-                                            137, 77, 77, 77),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.6,
+                                      child: Text(
+                                        "ประเภทร้าน: ${restaurant.restaurantCategory.join(", ")}",
+                                        style: TextStyle(
+                                          color:
+                                              Color.fromARGB(137, 77, 77, 77),
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
                                       ),
                                     ),
                                     Divider(),
@@ -556,7 +562,7 @@ class _MapsPageState extends State<MapsPage> {
                                             final path = restaurant
                                                 .imagePaths[imageIndex];
                                             final imageUrls =
-                                                'http://10.0.2.2:8000/api/public/$path';
+                                                'https://www.smt-online.com/api/public/$path';
                                             return Padding(
                                               padding: const EdgeInsets.only(
                                                   right: 10.0, top: 10),

@@ -112,7 +112,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
         .join("\n");
 
     _images = widget.images
-        .map((file) => 'http://10.0.2.2:8000/api/public/${file}')
+        .map((file) => 'https://www.smt-online.com/api/public/${file}')
         .toList();
 
     print("Address: $_address");
@@ -168,7 +168,8 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
   }
 
   Future<MyRestaurantModel> _updatedRestaurant() async {
-    final Uri url = Uri.parse('http://10.0.2.2:8000/api/restaurant/updated');
+    final Uri url =
+        Uri.parse('https://www.smt-online.com/api/restaurant/updated');
     var request = http.MultipartRequest('POST', url);
     request.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
 
@@ -230,7 +231,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
 //////////////////// add categories ////////////////////
   Future<void> _category(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/restaurant/updateCategories/$restaurantId');
+        'https://www.smt-online.com/api/restaurant/updateCategories/$restaurantId');
     var categoryRequest = http.MultipartRequest('POST', url);
     categoryRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
 
@@ -256,7 +257,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
   //////////////////// upload imaged ///////////////////
   Future<void> _uploadImages(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/restaurant/updatedImages/$restaurantId');
+        'https://www.smt-online.com/api/restaurant/updatedImages/$restaurantId');
 
     var imageRequest = http.MultipartRequest('POST', url);
     imageRequest.headers['Authorization'] = 'Bearer ${globals.jwtToken}';
@@ -285,7 +286,7 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
 
   Future<void> _insertTimeOpeing(int restaurantId) async {
     final Uri url = Uri.parse(
-        'http://10.0.2.2:8000/api/restaurant/updatedOpening/$restaurantId');
+        'https://www.smt-online.com/api/restaurant/updatedOpening/$restaurantId');
 
     List<Map<String, dynamic>> openingsData = [];
 

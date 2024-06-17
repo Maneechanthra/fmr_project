@@ -48,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
     };
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/register'),
+      Uri.parse('https://www.smt-online.com/api/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Accept': '*/*',

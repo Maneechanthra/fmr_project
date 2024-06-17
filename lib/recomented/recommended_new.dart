@@ -182,7 +182,7 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
                 var item = topRestaurants[index];
                 final String imagePath = restaurantInfo[index].imagePath;
                 final String imageUrl =
-                    'http://10.0.2.2:8000/api/public/$imagePath';
+                    'https://www.smt-online.com/api/public/$imagePath';
 
                 Future.delayed(Duration(seconds: 0), () {
                   setState(() {

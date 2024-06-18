@@ -379,7 +379,7 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                         ],
                                       ),
                                       SizedBox(
-                                        width: 20,
+                                        width: 10,
                                       ),
                                       Row(
                                         children: [
@@ -403,7 +403,7 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                         ],
                                       ),
                                       SizedBox(
-                                        width: 20,
+                                        width: 10,
                                       ),
                                       Row(
                                         children: [
@@ -426,7 +426,7 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                         ],
                                       ),
                                       SizedBox(
-                                        width: 20,
+                                        width: 10,
                                       ),
                                       Row(
                                         children: [
@@ -446,9 +446,6 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                               fontSize: 14,
                                               fontWeight: FontWeight.w400,
                                             )),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
                                           ),
                                         ],
                                       ),

@@ -342,7 +342,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 horizontal: 15, vertical: 10),
                             child: Container(
                               width: MediaQuery.of(context).size.width * 1,
-                              height: MediaQuery.of(context).size.height * 0.1,
+                              height: MediaQuery.of(context).size.height * 0.12,
                               decoration: BoxDecoration(
                                 color: AppColors.primaryColor,
                                 borderRadius: BorderRadius.circular(10),

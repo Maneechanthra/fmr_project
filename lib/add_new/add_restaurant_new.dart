@@ -237,9 +237,11 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
       var openingData = {
         'day_open': dayNumbers[0],
         'time_open': TimeStartControllers[daysOfWeek[dayNumbers[0] - 1]]!
-            .format(context),
+                .format(context) +
+            ' AM', // ปรับรูปแบบเวลาที่ส่ง
         'time_close':
-            TimeEndControllers[daysOfWeek[dayNumbers[0] - 1]]!.format(context),
+            TimeEndControllers[daysOfWeek[dayNumbers[0] - 1]]!.format(context) +
+                ' PM', // ปรับรูปแบบเวลาที่ส่ง
       };
 
       openingsData.add(openingData);
@@ -260,17 +262,20 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
       body: jsonEncode(requestBody),
     );
 
-    print("Response Body: ${openingTimeBody.body}");
-
-    var response = jsonDecode(openingTimeBody.body);
-
-    // print("Response Status Code: ${response.statusCode}");
-
-    if (openingTimeBody.statusCode != 200 &&
-        openingTimeBody.statusCode != 201) {
-      throw Exception("Failed to upload openings");
-    } else {
+    if (openingTimeBody.statusCode == 200 ||
+        openingTimeBody.statusCode == 201) {
       print("Upload openings successfully");
+    } else {
+      print(
+          "Failed to upload openings. Status code: ${openingTimeBody.statusCode}");
+      print("Response Body: ${openingTimeBody.body}");
+      try {
+        var response = jsonDecode(openingTimeBody.body);
+        print("Response Data: $response");
+      } catch (e) {
+        print("Error parsing response: $e");
+      }
+      throw Exception("Failed to upload openings");
     }
   }
 

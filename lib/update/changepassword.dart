@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fmr_project/api/chang_password/chang_password_api.dart';
 import 'package:fmr_project/api/login_api.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
 import 'package:fmr_project/color/colors.dart';
 import 'package:fmr_project/login/login_new.dart';
 import 'package:fmr_project/profile/profile_screen.dart';
@@ -257,8 +258,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                             btnOkOnPress: () {
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                  builder: (context) => ProfileScreen(
+                                  builder: (context) => BottomNavigatorScreen(
                                     userId: widget.userId,
+                                    indexPage: 3,
                                   ),
                                 ),
                               );

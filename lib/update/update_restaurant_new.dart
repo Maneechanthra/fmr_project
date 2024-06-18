@@ -284,68 +284,68 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
     }
   }
 
-  Future<void> _insertTimeOpeing(int restaurantId) async {
-    final Uri url = Uri.parse(
-        'https://www.smt-online.com/api/restaurant/updatedOpening/$restaurantId');
+  // Future<void> _insertTimeOpeing(int restaurantId) async {
+  //   final Uri url = Uri.parse(
+  //       'https://www.smt-online.com/api/restaurant/updatedOpening/$restaurantId');
 
-    List<Map<String, dynamic>> openingsData = [];
+  //   List<Map<String, dynamic>> openingsData = [];
 
-    for (var opening in openingClosingTimes) {
-      List<int> dayNumbers = _convertDaysToNumbers(opening.days);
+  //   for (var opening in openingClosingTimes) {
+  //     List<int> dayNumbers = _convertDaysToNumbers(opening.days);
 
-      var openingData = {
-        'day_open': dayNumbers[0],
-        'time_open': TimeStartControllers[daysOfWeek[dayNumbers[0] - 1]]!
-            .format(context),
-        'time_close':
-            TimeEndControllers[daysOfWeek[dayNumbers[0] - 1]]!.format(context),
-      };
+  //     var openingData = {
+  //       'day_open': dayNumbers[0],
+  //       'time_open': TimeStartControllers[daysOfWeek[dayNumbers[0] - 1]]!
+  //           .format(context),
+  //       'time_close':
+  //           TimeEndControllers[daysOfWeek[dayNumbers[0] - 1]]!.format(context),
+  //     };
 
-      openingsData.add(openingData);
-    }
+  //     openingsData.add(openingData);
+  //   }
 
-    var requestBody = {
-      'restaurant_id': restaurantId.toString(),
-      'openings': openingsData,
-    };
+  //   var requestBody = {
+  //     'restaurant_id': restaurantId.toString(),
+  //     'openings': openingsData,
+  //   };
 
-    print("requestBody: $requestBody");
-    var openingTimeBody = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer ${globals.jwtToken}',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(requestBody),
-    );
+  //   print("requestBody: $requestBody");
+  //   var openingTimeBody = await http.post(
+  //     url,
+  //     headers: {
+  //       'Authorization': 'Bearer ${globals.jwtToken}',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: jsonEncode(requestBody),
+  //   );
 
-    print("Response Body: ${openingTimeBody.body}");
+  //   print("Response Body: ${openingTimeBody.body}");
 
-    var response = jsonDecode(openingTimeBody.body);
+  //   var response = jsonDecode(openingTimeBody.body);
 
-    print("Response Status Code: ${response.statusCode}");
+  //   print("Response Status Code: ${response.statusCode}");
 
-    if (openingTimeBody.statusCode != 200 &&
-        openingTimeBody.statusCode != 201) {
-      throw Exception("Failed to upload openings");
-    } else {
-      print("Upload openings successfully");
-    }
-  }
+  //   if (openingTimeBody.statusCode != 200 &&
+  //       openingTimeBody.statusCode != 201) {
+  //     throw Exception("Failed to upload openings");
+  //   } else {
+  //     print("Upload openings successfully");
+  //   }
+  // }
 
-  List<int> _convertDaysToNumbers(List<String> days) {
-    final Map<String, int> daysOfWeekMap = {
-      'จันทร์': 1,
-      'อังคาร': 2,
-      'พุธ': 3,
-      'พฤหัสบดี': 4,
-      'ศุกร์': 5,
-      'เสาร์': 6,
-      'อาทิตย์': 7
-    };
+  // List<int> _convertDaysToNumbers(List<String> days) {
+  //   final Map<String, int> daysOfWeekMap = {
+  //     'จันทร์': 1,
+  //     'อังคาร': 2,
+  //     'พุธ': 3,
+  //     'พฤหัสบดี': 4,
+  //     'ศุกร์': 5,
+  //     'เสาร์': 6,
+  //     'อาทิตย์': 7
+  //   };
 
-    return days.map((day) => daysOfWeekMap[day]!).toList();
-  }
+  //   return days.map((day) => daysOfWeekMap[day]!).toList();
+  // }
 
   @override
   Widget build(BuildContext context) {

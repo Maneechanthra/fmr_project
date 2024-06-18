@@ -167,7 +167,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
               crossAxisCount: 2,
               mainAxisSpacing: 3,
               shrinkWrap: true,
-              childAspectRatio: 0.95,
+              childAspectRatio: 0.85,
               physics: const NeverScrollableScrollPhysics(),
               children: List.generate(topRestaurants.length, (index) {
                 var item = topRestaurants[index];
@@ -288,7 +288,9 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       SizedBox(
-                                        width: 145,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.2,
                                         child: Text(item.restaurantName,
                                             style: GoogleFonts.prompt(
                                               fontSize: 16,

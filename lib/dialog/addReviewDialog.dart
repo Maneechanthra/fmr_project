@@ -9,6 +9,7 @@ import 'package:fmr_project/api/reviewRestaurant_api.dart';
 import 'package:fmr_project/detail_restaurant/detail_restaurant_new.dart';
 import 'package:fmr_project/login/login_new.dart';
 import 'package:fmr_project/screen/login.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
@@ -178,14 +179,14 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                 children: [
                   Positioned(
                       top: 3,
-                      left: 290,
+                      left: MediaQuery.of(context).size.width * 0.70,
                       child: InkWell(
                         onTap: () {
                           Navigator.pop(context);
                         },
                         child: Icon(
                           Icons.close,
-                          size: 40,
+                          size: 28,
                           color: Colors.red,
                         ),
                       )),
@@ -198,9 +199,8 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                         Center(
                             child: Text(
                           "ให้คะแนนร้านนี้",
-                          style: TextStyle(
-                              fontFamily: 'EkkamaiNew',
-                              fontWeight: FontWeight.w900),
+                          style:
+                              GoogleFonts.sarabun(fontWeight: FontWeight.w600),
                         )),
                         SizedBox(
                           height: 10,
@@ -422,7 +422,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                                 },
                                 child: Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.475,
+                                      MediaQuery.of(context).size.width * 0.400,
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: Color.fromARGB(255, 0, 153, 255),

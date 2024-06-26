@@ -180,7 +180,7 @@ class _MapsPageState extends State<MapsPage> {
                             children: [
                               Positioned(
                                 // top: MediaQuery.of(context).size.width * 0.002,
-                                left: MediaQuery.of(context).size.width * 0.72,
+                                left: MediaQuery.of(context).size.width * 0.68,
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.pop(context);
@@ -188,7 +188,7 @@ class _MapsPageState extends State<MapsPage> {
                                   child: Icon(
                                     Icons.close,
                                     size: 30,
-                                    color: Colors.red,
+                                    color: const Color.fromARGB(255, 0, 0, 0),
                                   ),
                                 ),
                               ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fmr_project/api/reportRestaurant_api.dart';
 import 'package:fmr_project/screen/login.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
@@ -24,6 +25,10 @@ List<String> _optionreport = [
   'ภาพไม่เหมาะสม',
   'เนื้อหาไม่เหมาะสม',
   'ตำแหน่งของร้านไม่ถูกต้อง',
+  'คุณภาพของอาหารไม่ดี',
+  'ความสะอาดและสุขอนามัย',
+  'ราคาไม่สมเหตุสมผล',
+  'พนักงานบริการไม่เหมาะสม',
 ];
 
 class _ReportDialogPageState extends State<ReportDialogPage> {
@@ -96,16 +101,15 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
                 child: Stack(
                   children: [
                     Positioned(
-                        top: 0,
-                        left: 290,
-                        // bottom: 530,
+                        top: 3,
+                        left: MediaQuery.of(context).size.width * 0.70,
                         child: InkWell(
                           onTap: () {
                             Navigator.pop(context);
                           },
                           child: Icon(
                             Icons.close,
-                            size: 40,
+                            size: 28,
                             color: Colors.red,
                           ),
                         )),
@@ -118,10 +122,9 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
                           Center(
                             child: Text(
                               "รายงาน",
-                              style: TextStyle(
+                              style: GoogleFonts.sarabun(
                                 fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: 'EkkamaiNew',
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
@@ -130,10 +133,10 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
                             height: 10,
                           ),
                           Text(
-                            "โปรดเลือกปัญหา",
-                            style: TextStyle(
+                            "เลือกเหตุผล",
+                            style: GoogleFonts.kanit(
                               fontSize: 25,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           Text(
@@ -141,21 +144,25 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
+                              color: Color.fromARGB(113, 0, 0, 0),
                             ),
                           ),
                           SizedBox(
                             height: 5,
                           ),
                           SizedBox(
-                            width: 250,
+                            width: MediaQuery.of(context).size.width * 1,
+                            // width: 250,
                             child: DropdownButton<String>(
+                              dropdownColor: Colors.white,
                               value: currentOptionReport,
                               items: _optionreport.map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(
                                     value,
-                                    style: TextStyle(fontSize: 18),
+                                    style: GoogleFonts.sarabun(fontSize: 16),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 );
                               }).toList(),
@@ -171,7 +178,10 @@ class _ReportDialogPageState extends State<ReportDialogPage> {
                           ),
                           Text(
                             "คำอธิบายเพิ่มเติม",
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black54,
+                            ),
                           ),
                           SizedBox(
                             height: 5,

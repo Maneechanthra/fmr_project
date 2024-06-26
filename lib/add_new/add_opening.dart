@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class OpeningTimeScreen extends StatefulWidget {
   const OpeningTimeScreen({super.key});
@@ -114,6 +115,14 @@ class _OpeningTimeScreenState extends State<OpeningTimeScreen> {
                                         await showTimePicker(
                                       context: context,
                                       initialTime: openingTimeControllers[day]!,
+                                      builder: (BuildContext context,
+                                          Widget? child) {
+                                        return MediaQuery(
+                                          data: MediaQuery.of(context).copyWith(
+                                              alwaysUse24HourFormat: false),
+                                          child: child!,
+                                        );
+                                      },
                                     );
                                     if (selectedTime != null) {
                                       setState(() {
@@ -143,6 +152,14 @@ class _OpeningTimeScreenState extends State<OpeningTimeScreen> {
                                         await showTimePicker(
                                       context: context,
                                       initialTime: closingTimeControllers[day]!,
+                                      builder: (BuildContext context,
+                                          Widget? child) {
+                                        return MediaQuery(
+                                          data: MediaQuery.of(context).copyWith(
+                                              alwaysUse24HourFormat: false),
+                                          child: child!,
+                                        );
+                                      },
                                     );
                                     if (selectedTime != null) {
                                       setState(() {

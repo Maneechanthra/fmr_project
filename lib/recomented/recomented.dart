@@ -238,8 +238,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                 ),
                                 Positioned(
                                   top: 8,
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.325,
+                                  left: MediaQuery.of(context).size.width * 0.3,
                                   child: Container(
                                     width: 50,
                                     height: 20,
@@ -290,7 +289,7 @@ class _RecomentedPageState extends State<RecomentedPage> {
                                       SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
-                                                0.2,
+                                                0.32,
                                         child: Text(item.restaurantName,
                                             style: GoogleFonts.prompt(
                                               fontSize: 16,

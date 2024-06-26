@@ -508,16 +508,18 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                                     0.04,
                                                 decoration: BoxDecoration(
                                                   color: Color.fromARGB(
-                                                      172, 142, 196, 241),
+                                                      172, 255, 255, 255),
                                                   borderRadius:
                                                       BorderRadius.circular(5),
                                                 ),
                                                 child: Center(
                                                   child: Text(
-                                                    "ได้รับการรับรองแล้ว",
+                                                    "รับรองแล้ว",
                                                     style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 14),
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            255, 0, 0, 0),
+                                                        fontSize: 12),
                                                   ),
                                                 ),
                                               ),
@@ -633,6 +635,16 @@ class _MyRestaurantScreenState extends State<MyRestaurantScreen> {
                                               restaurant.latitude,
                                               restaurant.longitude,
                                             ),
+
+                                            // location: LatLng(
+                                            //   double.tryParse(
+                                            //           restaurant.latitude) ??
+                                            //       0.0,
+                                            //   double.tryParse(
+                                            //           restaurant.longitude) ??
+                                            //       0.0,
+                                            // ),
+
                                             images: restaurant.imagePaths,
                                           ),
                                         ),

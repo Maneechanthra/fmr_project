@@ -225,6 +225,75 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
   }
 
 //////////////////// upload time openning ///////////////////
+//////////////////// upload time openning ///////////////////
+  // Future<void> _insertTimeOpeing(int restaurantId) async {
+  //   final Uri url = Uri.parse(
+  //       'https://www.smt-online.com/api/restaurant/insertOpenings/$restaurantId');
+
+  //   List<Map<String, dynamic>> openingsData = [];
+
+  //   for (var opening in openingClosingTimes) {
+  //     List<int> dayNumbers = _convertDaysToNumbers(opening.days);
+
+  //     var openingData = {
+  //       'day_open': dayNumbers[0],
+  //       'time_open': TimeStartControllers[daysOfWeek[dayNumbers[0] - 1]]!
+  //               .format(context) +
+  //           ' AM',
+  //       'time_close':
+  //           TimeEndControllers[daysOfWeek[dayNumbers[0] - 1]]!.format(context) +
+  //               ' PM',
+  //     };
+
+  //     openingsData.add(openingData);
+  //   }
+
+  //   var requestBody = {
+  //     'restaurant_id': restaurantId.toString(),
+  //     'openings': openingsData,
+  //   };
+
+  //   print("requestBody: $requestBody");
+  //   var openingTimeBody = await http.post(
+  //     url,
+  //     headers: {
+  //       'Authorization': 'Bearer ${globals.jwtToken}',
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: jsonEncode(requestBody),
+  //   );
+
+  //   if (openingTimeBody.statusCode == 200 ||
+  //       openingTimeBody.statusCode == 201) {
+  //     print("Upload openings successfully");
+  //   } else {
+  //     print(
+  //         "Failed to upload openings. Status code: ${openingTimeBody.statusCode}");
+  //     print("Response Body: ${openingTimeBody.body}");
+  //     try {
+  //       var response = jsonDecode(openingTimeBody.body);
+  //       print("Response Data: $response");
+  //     } catch (e) {
+  //       print("Error parsing response: $e");
+  //     }
+  //     throw Exception("Failed to upload openings");
+  //   }
+  // }
+
+  // List<int> _convertDaysToNumbers(List<String> days) {
+  //   final Map<String, int> daysOfWeekMap = {
+  //     'จันทร์': 1,
+  //     'อังคาร': 2,
+  //     'พุธ': 3,
+  //     'พฤหัสบดี': 4,
+  //     'ศุกร์': 5,
+  //     'เสาร์': 6,
+  //     'อาทิตย์': 7
+  //   };
+
+  //   return days.map((day) => daysOfWeekMap[day]!).toList();
+  // }
+
   Future<void> _insertTimeOpeing(int restaurantId) async {
     final Uri url = Uri.parse(
         'https://www.smt-online.com/api/restaurant/insertOpenings/$restaurantId');
@@ -234,14 +303,16 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
     for (var opening in openingClosingTimes) {
       List<int> dayNumbers = _convertDaysToNumbers(opening.days);
 
+      var timeOpen = opening.openingTime;
+      var timeClose = opening.closingTime;
+
+      var formattedTimeOpen = _formatTimeWithAmPm(timeOpen);
+      var formattedTimeClose = _formatTimeWithAmPm(timeClose);
+
       var openingData = {
         'day_open': dayNumbers[0],
-        'time_open': TimeStartControllers[daysOfWeek[dayNumbers[0] - 1]]!
-                .format(context) +
-            ' AM', // ปรับรูปแบบเวลาที่ส่ง
-        'time_close':
-            TimeEndControllers[daysOfWeek[dayNumbers[0] - 1]]!.format(context) +
-                ' PM', // ปรับรูปแบบเวลาที่ส่ง
+        'time_open': formattedTimeOpen,
+        'time_close': formattedTimeClose,
       };
 
       openingsData.add(openingData);
@@ -277,6 +348,14 @@ class _AddRestaurantScreenState extends State<AddRestaurantScreen> {
       }
       throw Exception("Failed to upload openings");
     }
+  }
+
+  String _formatTimeWithAmPm(TimeOfDay time) {
+    final hour = time.hour;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = hour < 12 ? 'AM' : 'PM';
+    final formattedHour = hour % 12 == 0 ? 12 : hour % 12;
+    return '$formattedHour:$minute $period';
   }
 
   List<int> _convertDaysToNumbers(List<String> days) {

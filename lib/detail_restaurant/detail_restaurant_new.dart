@@ -777,7 +777,7 @@ Widget _information(RestaurantById restaurantInfo, BuildContext context) {
                             ),
                           ),
                           Text(
-                            restaurantInfo.telephone1,
+                            restaurantInfo.telephone2!,
                             style: GoogleFonts.prompt(
                               textStyle: TextStyle(
                                 fontSize: 14,
@@ -836,7 +836,7 @@ Widget _reviews(
                 "(${restaurantInfo.reviewCount}) ดูรีวิวทั้งหมด",
                 style: GoogleFonts.prompt(
                   textStyle: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: Color.fromARGB(255, 0, 183, 255),
                   ),
@@ -962,6 +962,7 @@ Widget _reviews(
                               Icon(
                                 EneftyIcons.star_bold,
                                 color: Colors.amber,
+                                size: 18,
                               ),
                               SizedBox(
                                 width: 5,

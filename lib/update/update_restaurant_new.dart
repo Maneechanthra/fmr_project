@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,10 +10,13 @@ import 'package:fmr_project/add_new/add_opening.dart';
 import 'package:fmr_project/api/addRestaurant_api.dart';
 import 'package:fmr_project/api/myRestaurant_api.dart';
 import 'package:fmr_project/api/update/update_restaurant_api.dart';
+import 'package:fmr_project/bottom_navigator/bottom_navigator_new.dart';
+import 'package:fmr_project/my_restaurant/myRestaurant.dart';
 import 'package:fmr_project/type_category/all_type_category.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import '/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 
@@ -21,13 +25,11 @@ class UpdatedRestaurantScreen extends StatefulWidget {
   final String restaurantName;
   final String telephone1;
   final String? telephone2;
-  // final List<RestaurantCategory> selectedCategories;
 
   final List<Map<String, dynamic>> selectedCategories;
   final List<Map<String, dynamic>> openingList;
   final String address;
   final LatLng location;
-  // final List<Map<String, dynamic>> imageUrls;
   final List<String> images;
   final int userId;
 
@@ -92,19 +94,18 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
     _telephone_1_Controller.text = widget.telephone1;
     _telephone_2_Controller.text = widget.telephone2 ?? '';
 
-    // _address = widget.address;
+    _address = widget.address;
     // _location = LatLng(
-    //   double.parse(widget.location.latitude.toString()),
-    //   double.parse(widget.location.longitude.toString()),
+    //   double.tryParse(widget.location.latitude) ?? 0.0,
+    //   double.tryParse(widget.location.longitude) ?? 0.0,
     // );
 
-    _address = widget.address;
-    if (widget.location != null) {
-      _location = LatLng(
-        double.parse(widget.location.latitude.toString()),
-        double.parse(widget.location.longitude.toString()),
-      );
-    }
+    _location = widget.location;
+
+    // _address = widget.address;
+    // if (widget.location != null) {
+    //   _location = LatLng(widget.location.latitude, widget.location.longitude);
+    // }
 
     _openingController.text = (widget.openingList ?? [])
         .map((time) =>
@@ -121,7 +122,6 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
     print(_telephone_1_Controller.text);
     print(_telephone_2_Controller.text);
     print(_openingController.text);
-
     super.initState();
   }
 
@@ -182,20 +182,27 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
     request.fields['latitude'] = _location!.latitude.toString();
     request.fields['longitude'] = _location!.longitude.toString();
 
+    // request.fields['latitude'] = _location?.latitude.toString() ?? '0';
+    // request.fields['longitude'] = _location?.longitude.toString() ?? '0';
+
     print(_restaurantNameController.text);
     print(_telephone_1_Controller.text);
     print(_telephone_2_Controller.text);
     print(widget.userId.toString());
     print(_telephone_2_Controller.text);
     print(_address);
-    print(_location!.longitude);
+    print('Latitude: ${_location?.latitude}');
+    print('Longitude: ${_location?.longitude}');
 
     try {
       var response = await request.send();
+      print(response.statusCode);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseJson = await response.stream.bytesToString();
         final Map<String, dynamic> data = jsonDecode(responseJson);
+
+        print(data);
 
         final restaurantId = widget.restaurantId;
         print("restaurantId of add restaurant : " + restaurantId.toString());
@@ -212,11 +219,29 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
           await _uploadImages(restaurantId);
         }
 
-        // if (openingClosingTimes.isNotEmpty) {
-        //   await _insertTimeOpeing(restaurantId);
-        // } else {
-        //   print("ไม่มีข้อมูลเวลา");
-        // }
+        if (openingClosingTimes.isNotEmpty) {
+          await _updautedTimeOpeing(restaurantId);
+        } else {
+          print("ไม่มีข้อมูลเวลา");
+        }
+        AwesomeDialog(
+            context: context,
+            dialogType: DialogType.question,
+            animType: AnimType.topSlide,
+            showCloseIcon: true,
+            title: "ยืนยันแก้ไขข้อมูล?",
+            desc: "คุณต้องการอีเมลใช่หรือไม่?",
+            btnCancelOnPress: () {},
+            btnOkOnPress: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => MyRestaurantScreen(
+                    userId: widget.userId,
+                  ),
+                ),
+                (Route<dynamic> route) => false,
+              );
+            }).show();
 
         return MyRestaurantModel.fromJson(data);
       } else {
@@ -284,21 +309,85 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
     }
   }
 
+  Future<void> _updautedTimeOpeing(int restaurantId) async {
+    final Uri url = Uri.parse(
+        'https://www.smt-online.com/api/restaurant/insertOpenings/$restaurantId');
+
+    List<Map<String, dynamic>> openingsData = [];
+
+    for (var opening in openingClosingTimes) {
+      List<int> dayNumbers = _convertDaysToNumbers(opening.days);
+
+      var openingData = {
+        'day_open': dayNumbers[0],
+        'time_open': TimeStartControllers[daysOfWeek[dayNumbers[0] - 1]]!
+                .format(context) +
+            ' AM',
+        'time_close':
+            TimeEndControllers[daysOfWeek[dayNumbers[0] - 1]]!.format(context) +
+                ' PM',
+      };
+
+      openingsData.add(openingData);
+    }
+
+    var requestBody = {
+      'restaurant_id': restaurantId.toString(),
+      'openings': openingsData,
+    };
+
+    print("requestBody: $requestBody");
+    var openingTimeBody = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${globals.jwtToken}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+
+    if (openingTimeBody.statusCode == 200 ||
+        openingTimeBody.statusCode == 201) {
+      print("Upload openings successfully");
+    } else {
+      print(
+          "Failed to upload openings. Status code: ${openingTimeBody.statusCode}");
+      print("Response Body: ${openingTimeBody.body}");
+      try {
+        var response = jsonDecode(openingTimeBody.body);
+        print("Response Data: $response");
+      } catch (e) {
+        print("Error parsing response: $e");
+      }
+      throw Exception("Failed to upload openings");
+    }
+  }
+
+  List<int> _convertDaysToNumbers(List<String> days) {
+    final Map<String, int> daysOfWeekMap = {
+      'จันทร์': 1,
+      'อังคาร': 2,
+      'พุธ': 3,
+      'พฤหัสบดี': 4,
+      'ศุกร์': 5,
+      'เสาร์': 6,
+      'อาทิตย์': 7
+    };
+
+    return days.map((day) => daysOfWeekMap[day]!).toList();
+  }
+
   // Future<void> _insertTimeOpeing(int restaurantId) async {
   //   final Uri url = Uri.parse(
   //       'https://www.smt-online.com/api/restaurant/updatedOpening/$restaurantId');
 
   //   List<Map<String, dynamic>> openingsData = [];
 
-  //   for (var opening in openingClosingTimes) {
-  //     List<int> dayNumbers = _convertDaysToNumbers(opening.days);
-
+  //   for (var opening in widget.openingList) {
   //     var openingData = {
-  //       'day_open': dayNumbers[0],
-  //       'time_open': TimeStartControllers[daysOfWeek[dayNumbers[0] - 1]]!
-  //           .format(context),
-  //       'time_close':
-  //           TimeEndControllers[daysOfWeek[dayNumbers[0] - 1]]!.format(context),
+  //       'day_open': opening['day_open'],
+  //       'time_open': _formatTime(opening['time_open']),
+  //       'time_close': _formatTime(opening['time_close']),
   //     };
 
   //     openingsData.add(openingData);
@@ -310,41 +399,38 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
   //   };
 
   //   print("requestBody: $requestBody");
-  //   var openingTimeBody = await http.post(
-  //     url,
-  //     headers: {
-  //       'Authorization': 'Bearer ${globals.jwtToken}',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: jsonEncode(requestBody),
-  //   );
 
-  //   print("Response Body: ${openingTimeBody.body}");
+  //   try {
+  //     var openingTimeBody = await http.post(
+  //       url,
+  //       headers: {
+  //         'Authorization': 'Bearer ${globals.jwtToken}',
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: jsonEncode(requestBody),
+  //     );
 
-  //   var response = jsonDecode(openingTimeBody.body);
+  //     print("Response Body: ${openingTimeBody.body}");
 
-  //   print("Response Status Code: ${response.statusCode}");
-
-  //   if (openingTimeBody.statusCode != 200 &&
-  //       openingTimeBody.statusCode != 201) {
+  //     if (openingTimeBody.statusCode == 200 ||
+  //         openingTimeBody.statusCode == 201) {
+  //       print("Upload openings successfully");
+  //     } else {
+  //       print("Failed to upload openings: ${openingTimeBody.statusCode}");
+  //       throw Exception("Failed to upload openings");
+  //     }
+  //   } catch (e) {
+  //     print("Error uploading openings: $e");
   //     throw Exception("Failed to upload openings");
-  //   } else {
-  //     print("Upload openings successfully");
   //   }
   // }
 
-  // List<int> _convertDaysToNumbers(List<String> days) {
-  //   final Map<String, int> daysOfWeekMap = {
-  //     'จันทร์': 1,
-  //     'อังคาร': 2,
-  //     'พุธ': 3,
-  //     'พฤหัสบดี': 4,
-  //     'ศุกร์': 5,
-  //     'เสาร์': 6,
-  //     'อาทิตย์': 7
-  //   };
+  // String _formatTime(String time) {
+  //   // Parse the input time assuming it's in "h:mm a" format (e.g., "4:00 PM")
+  //   final parsedTime = DateFormat("h:mm a").parse(time);
 
-  //   return days.map((day) => daysOfWeekMap[day]!).toList();
+  //   // Format the parsed time in 24-hour format (HH:mm)
+  //   return DateFormat("HH:mm").format(parsedTime);
   // }
 
   @override
@@ -699,6 +785,23 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                   height: 10,
                 ),
                 InkWell(
+                  // onTap: () async {
+                  //   final address = await Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => PlaceMarkerPage(),
+                  //     ),
+                  //   );
+                  //   if (address != null &&
+                  //       address is Map<String, dynamic> &&
+                  //       mounted) {
+                  //     setState(() {
+                  //       _address = address["address"];
+
+                  //       _location = address["latLng"].toDouble();
+                  //     });
+                  //   }
+                  // },
                   onTap: () async {
                     final address = await Navigator.push(
                       context,
@@ -712,10 +815,24 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                       setState(() {
                         _address = address["address"];
 
-                        _location = address["latLng"];
+                        if (address["latLng"] is LatLng) {
+                          _location = address["latLng"] as LatLng;
+                          print("to double");
+                        } else if (address["latLng"] is Map<String, dynamic>) {
+                          final latLng =
+                              address["latLng"] as Map<String, dynamic>;
+                          if (latLng.containsKey('latitude') &&
+                              latLng.containsKey('longitude')) {
+                            _location = LatLng(
+                              latLng['latitude'].toDouble(),
+                              latLng['longitude'].toDouble(),
+                            );
+                          }
+                        }
                       });
                     }
                   },
+
                   child: Center(
                     child: Text(
                       _address != null
@@ -823,6 +940,11 @@ class _UpdatedRestaurantScreenState extends State<UpdatedRestaurantScreen> {
                   onTap: () async {
                     if (_updatedRestaurantForm.currentState!.validate()) {
                       MyRestaurantModel restaurant = await _updatedRestaurant();
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MyRestaurantScreen(userId: widget.userId)));
                     }
                     print("_categoryController : " + _categoryController.text);
                     if (selectedCategories.isNotEmpty) {

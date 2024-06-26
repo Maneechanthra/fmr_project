@@ -127,8 +127,10 @@ class MyRestaurantModel {
       MyRestaurantModel(
         id: json["id"],
         restaurantName: json["restaurant_name"],
-        latitude: json["latitude"]?.toDouble(),
-        longitude: json["longitude"]?.toDouble(),
+        // latitude: json["latitude"]?.toDouble(),
+        // longitude: json["longitude"]?.toDouble(),
+        latitude: json["latitude"],
+        longitude: json["longitude"],
         address: json["address"],
         telephone1: json["telephone_1"],
         telephone2: json["telephone_2"] ?? "",
